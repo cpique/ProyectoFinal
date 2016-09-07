@@ -33,6 +33,7 @@ namespace ProyectoFinal.Controllers
                 return HttpNotFound();
             }
             return View(client);
+
         }
 
         // GET: Clients/Create
@@ -46,7 +47,8 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ClientID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password,PasswordSalt")] Client client)
+        //public ActionResult Create([Bind(Include = "ClientID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password,PasswordSalt")] Client client)
+        public ActionResult Create(Client client)
         {
             if (ModelState.IsValid)
             {

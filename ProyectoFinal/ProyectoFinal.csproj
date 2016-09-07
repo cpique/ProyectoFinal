@@ -136,10 +136,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Activity.cs" />
+    <Compile Include="Models\ActivityType.cs" />
+    <Compile Include="Models\Assistance.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\File.cs" />
     <Compile Include="Models\GymContext.cs" />
     <Compile Include="Models\MedicalRecord.cs" />
+    <Compile Include="Models\Payment.cs" />
+    <Compile Include="Models\PaymentType.cs" />
     <Compile Include="Models\Routine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -209,6 +214,12 @@
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProyectoFinal.Utils\ProyectoFinal.Utils.csproj">
+      <Project>{88667bb9-8f37-4d1b-aa59-5b71d4f68052}</Project>
+      <Name>ProyectoFinal.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

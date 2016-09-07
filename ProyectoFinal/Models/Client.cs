@@ -19,11 +19,13 @@ namespace ProyectoFinal.Models
         [Required]
         public int DocNumber { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BirthDate { get; set; }
-
         [Required]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateFrom { get; set; }
         [Required]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateTo { get; set; }
         [Required]
         public string IdentityCard { get; set; } //Cedula   
@@ -38,5 +40,7 @@ namespace ProyectoFinal.Models
 
         public ICollection<MedicalRecord> MedicalRecords { get; set; }
         public ICollection<Routine> Routines { get; set; }
+        public virtual ICollection<Activity> Activities { get; set; }
+        public ICollection<Payment> Payments { get; set; }
     }
 }
