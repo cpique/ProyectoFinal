@@ -25,6 +25,26 @@ namespace ProyectoFinal.Models
 
         public GymContext() : base("GymContext")
         { }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.ActivitySchedule> ActivitySchedules { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.ActivityType> ActivityTypes { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.Admin> Admins { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.Article> Articles { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.Supplier> Suppliers { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.Assistance> Assistances { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.Instructor> Instructors { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.Machine> Machines { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.PaymentTypePrice> PaymentTypePrices { get; set; }
+
+        public System.Data.Entity.DbSet<ProyectoFinal.Models.Stock> Stocks { get; set; }
     }
 
     public class GymInitializer : DropCreateDatabaseAlways<GymContext>

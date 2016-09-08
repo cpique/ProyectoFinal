@@ -10,6 +10,8 @@ namespace ProyectoFinal.Models
         public Activity()
         {
             this.Clients = new HashSet<Client>();
+            this.Instructors = new HashSet<Instructor>();
+            this.ActivitySchedules = new HashSet<ActivitySchedule>();
         }
 
         public int ActivityID { get; set; }
@@ -17,6 +19,8 @@ namespace ProyectoFinal.Models
         public string Description { get; set; }
         
         public virtual ICollection<Client> Clients { get; set; }
+        public virtual ICollection<Instructor> Instructors { get; set; }
+        public virtual ICollection<ActivitySchedule> ActivitySchedules { get; set; }
 
     }
 }

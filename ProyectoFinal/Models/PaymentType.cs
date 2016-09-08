@@ -13,5 +13,6 @@ namespace ProyectoFinal.Models
         public Catalog.Status Status { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
+        public ICollection<PaymentTypePrice> PaymentTypePrices { get; set; }
     }
 }

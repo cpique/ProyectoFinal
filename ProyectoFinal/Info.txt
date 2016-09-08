@@ -1,0 +1,5 @@
+﻿TO DO:
+1 - Chequear que controladores no son necesarios. Por ej, PaymentTypePricesController creo que no sería necesario, ya que desde el controlador PaymentTypeController debería
+    actualizar el precio y realizar update en BD.
+2 - Implementar Authorization y Authentication
+3 - En vistas, las properties int renderizan en textbox tipo number. Quitar las flechas de los textboxs.

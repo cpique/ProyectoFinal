@@ -1,0 +1,34 @@
+﻿@model ProyectoFinal.Models.Assistance
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Assistance</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.assistanceDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.assistanceDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClientID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClientID)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.AssistanceID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

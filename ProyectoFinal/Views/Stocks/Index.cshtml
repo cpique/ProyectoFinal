@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ProyectoFinal.Models.Stock>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ArticleID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CantInStock)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DesiredStock)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArticleID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CantInStock)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DesiredStock)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.StockID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.StockID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.StockID })
+        </td>
+    </tr>
+}
+
+</table>
