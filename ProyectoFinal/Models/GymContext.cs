@@ -10,14 +10,6 @@ namespace ProyectoFinal.Models
 {
     public class GymContext : DbContext
     {
-        public DbSet<MedicalRecord> MedicalRecords { get; set; }
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<Routine> Routines { get; set; }
-        public DbSet<File> Files { get; set; }
-        public DbSet<Activity> Activities { get; set; }
-        public DbSet<Payment> Payments { get; set; }
-        public DbSet<PaymentType> PaymentTypes { get; set; }
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
@@ -26,25 +18,41 @@ namespace ProyectoFinal.Models
         public GymContext() : base("GymContext")
         { }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.ActivitySchedule> ActivitySchedules { get; set; }
+        #region DbSets
+        public DbSet<Activity> Activities { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.ActivityType> ActivityTypes { get; set; }
+        public DbSet<ActivitySchedule> ActivitySchedules { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.Admin> Admins { get; set; }
+        public DbSet<ActivityType> ActivityTypes { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.Article> Articles { get; set; }
+        public DbSet<Admin> Admins { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.Supplier> Suppliers { get; set; }
+        public DbSet<Article> Articles { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.Assistance> Assistances { get; set; }
+        public DbSet<Assistance> Assistances { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.Instructor> Instructors { get; set; }
+        public DbSet<Client> Clients { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.Machine> Machines { get; set; }
+        public DbSet<File> Files { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.PaymentTypePrice> PaymentTypePrices { get; set; }
+        public DbSet<Instructor> Instructors { get; set; }
 
-        public System.Data.Entity.DbSet<ProyectoFinal.Models.Stock> Stocks { get; set; }
+        public DbSet<Machine> Machines { get; set; }
+
+        public DbSet<MedicalRecord> MedicalRecords { get; set; }
+
+        public DbSet<Payment> Payments { get; set; }
+
+        public DbSet<PaymentType> PaymentTypes { get; set; }
+
+        public DbSet<PaymentTypePrice> PaymentTypePrices { get; set; }
+
+        public DbSet<Routine> Routines { get; set; }
+
+        public DbSet<Stock> Stocks { get; set; }
+
+        public DbSet<Supplier> Suppliers { get; set; }
+        #endregion
     }
 
     public class GymInitializer : DropCreateDatabaseAlways<GymContext>
@@ -52,15 +60,20 @@ namespace ProyectoFinal.Models
         protected override void Seed(GymContext context)
         {
             #region Clients
+            var passwordSalt1 = PasswordUtilities.CreateSalt(16);
+            var password1 = PasswordUtilities.GenerateSHA256Hash("12345", passwordSalt1);
+            var passwordSalt2 = PasswordUtilities.CreateSalt(16);
+            var password2 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt2);
+
             var clients = new List<Client>
             {
                 new Client { FirstName = "John", LastName = "Doe", DocType = "DNI", DocNumber = 34578800, BirthDate = new DateTime(1990, 12, 31),
                 DateFrom = new DateTime(2016, 09, 01), DateTo = new DateTime(2016, 12, 31), IdentityCard = "34578644", Email = "john.doe@hotmail.com",
-                Password = "123456789", PasswordSalt = "123456789" },
+                Password = password1, PasswordSalt = passwordSalt1 },
 
                 new Client { FirstName = "Cristian", LastName = "Piqué", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1989, 12, 31),
                 DateFrom = new DateTime(2016, 09, 01), DateTo = new DateTime(2016, 12, 31), IdentityCard = "34578644", Email = "cristian.pique@hotmail.com",
-                Password = "123456789", PasswordSalt = "123456789" }
+                Password = password2, PasswordSalt = passwordSalt2 }
             };
 
             clients.ForEach(c => context.Clients.Add(c));

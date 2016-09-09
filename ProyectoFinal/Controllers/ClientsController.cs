@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Utils;
 
 namespace ProyectoFinal.Controllers
 {
@@ -32,6 +33,7 @@ namespace ProyectoFinal.Controllers
             {
                 return HttpNotFound();
             }
+
             return View(client);
 
         }
@@ -52,6 +54,9 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
+                client.PasswordSalt = PasswordUtilities.CreateSalt(16);
+                client.Password = PasswordUtilities.GenerateSHA256Hash(client.Password, client.PasswordSalt);
+
                 db.Clients.Add(client);
                 db.SaveChanges();
                 return RedirectToAction("Index");
