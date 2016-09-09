@@ -3,3 +3,4 @@
     actualizar el precio y realizar update en BD.
 2 - Implementar Authorization y Authentication
 3 - En vistas, las properties int renderizan en textbox tipo number. Quitar las flechas de los textboxs.
+4 - Campos tipo float como por ej height en Medical Records, no me permiten ingresar '.' ni ','.

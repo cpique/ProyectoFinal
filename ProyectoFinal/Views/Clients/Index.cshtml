@@ -73,7 +73,9 @@
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ClientID }) |
             @Html.ActionLink("Details", "Details", new { id=item.ClientID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ClientID })
+            @Html.ActionLink("Delete", "Delete", new { id=item.ClientID }) |
+            @Html.ActionLink("Historial médico", "Details" , "MedicalRecords", new { id = item.ClientID }, null) |
+            @Html.ActionLink("Rutina", "Details", "Routines", new { id = item.ClientID }, null)
         </td>
     </tr>
 }

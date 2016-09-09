@@ -83,7 +83,8 @@ namespace ProyectoFinal.Models
             #region Routines
             var routines = new List<Routine>
             {
-                new Routine { ClientID = 1, Description = "Rutina personalizada", Files = new List<File>() }
+                new Routine { ClientID = 1, Description = "Rutina personalizada", Files = new List<File>() },
+                new Routine { ClientID = 2, Description = "Rutina gimnasio 5 días a la semana", Files = new List<File>() }
             };
 
             routines.ForEach(r => context.Routines.Add(r));
@@ -93,7 +94,8 @@ namespace ProyectoFinal.Models
             #region MedicalRecords
             var medicalRecords = new List<MedicalRecord>
             {
-                new MedicalRecord { ClientID = 1, Age = 26, Gender = 'M', Heigth = (float)1.80, Weight = 72 } 
+                new MedicalRecord { ClientID = 1, Age = 26, Gender = 'M', Heigth = (float)1.80, Weight = 72 },
+                new MedicalRecord { ClientID = 2, Age = 26, Gender = 'M', Heigth = (float)1.81, Weight = 75 },
             };
 
             medicalRecords.ForEach(m => context.MedicalRecords.Add(m));

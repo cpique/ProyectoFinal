@@ -20,7 +20,7 @@ namespace ProyectoFinal.Models
         public int Age { get; set; }
 
         [ForeignKey("ClientID")]
-        public Client Client { get; set; }
+        public virtual Client Client { get; set; }
         public int ClientID { get; set; }
 
     }

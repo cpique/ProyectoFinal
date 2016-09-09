@@ -59,7 +59,8 @@ namespace ProyectoFinal.Controllers
 
                 db.Clients.Add(client);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                //return RedirectToAction("Index");
+                return RedirectToAction("Create", "MedicalRecords", new { ClientID = client.ClientID  });
             }
 
             return View(client);

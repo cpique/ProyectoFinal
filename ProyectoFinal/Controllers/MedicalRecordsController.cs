@@ -29,6 +29,7 @@ namespace ProyectoFinal.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             MedicalRecord medicalRecord = db.MedicalRecords.Find(id);
+            //medicalRecord.Client = db.Clients.Find(id);
             if (medicalRecord == null)
             {
                 return HttpNotFound();
@@ -37,9 +38,15 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: MedicalRecords/Create
-        public ActionResult Create()
+        public ActionResult Create(int? id)
         {
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName");
+            SelectList selectList;
+            if (id != null)
+                selectList = new SelectList(db.Clients, "ClientID", "FirstName", id.ToString());
+            else
+                selectList = new SelectList(db.Clients, "ClientID", "FirstName");
+
+            ViewBag.ClientID = selectList;
             return View();
         }
 
