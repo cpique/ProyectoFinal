@@ -7,17 +7,39 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class PaymentsController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IPaymentRepository paymentRepository;
+        private IPaymentTypeRepository paymentTypeRepository;
+        private IClientRepository clientRepository;
+        #endregion
+
+        #region Constructors
+        public PaymentsController()
+        {
+            this.paymentRepository = new PaymentRepository(new GymContext());
+            this.paymentTypeRepository = new PaymentTypeRepository(new GymContext());
+            this.clientRepository = new ClientRepository(new GymContext());
+        }
+
+        public PaymentsController(IPaymentRepository paymentRepository, IPaymentTypeRepository paymentTypeRepository, IClientRepository clientRepository)
+        {
+            this.paymentRepository = paymentRepository;
+            this.paymentTypeRepository = paymentTypeRepository;
+            this.clientRepository = clientRepository;
+        }
+        #endregion
+
 
         // GET: Payments
         public ActionResult Index()
         {
-            var payments = db.Payments.Include(p => p.Client).Include(p => p.PaymentType);
+            var payments = paymentRepository.GetPayments();
             return View(payments.ToList());
         }
 
@@ -28,7 +50,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Payment payment = db.Payments.Find(id);
+            Payment payment = paymentRepository.GetPaymentByID((int)id);
             if (payment == null)
             {
                 return HttpNotFound();
@@ -39,8 +61,8 @@ namespace ProyectoFinal.Controllers
         // GET: Payments/Create
         public ActionResult Create()
         {
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName");
-            ViewBag.PaymentTypeID = new SelectList(db.PaymentTypes, "PaymentTypeID", "Description");
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName");
+            ViewBag.PaymentTypeID = new SelectList(paymentTypeRepository.GetPaymentTypes(), "PaymentTypeID", "Description");
             return View();
         }
 
@@ -53,13 +75,13 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Payments.Add(payment);
-                db.SaveChanges();
+                paymentRepository.InsertPayment(payment);
+                paymentRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", payment.ClientID);
-            ViewBag.PaymentTypeID = new SelectList(db.PaymentTypes, "PaymentTypeID", "Description", payment.PaymentTypeID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", payment.ClientID);
+            ViewBag.PaymentTypeID = new SelectList(paymentTypeRepository.GetPaymentTypes(), "PaymentTypeID", "Description", payment.PaymentTypeID);
             return View(payment);
         }
 
@@ -70,13 +92,13 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Payment payment = db.Payments.Find(id);
+            Payment payment = paymentRepository.GetPaymentByID((int)id);
             if (payment == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", payment.ClientID);
-            ViewBag.PaymentTypeID = new SelectList(db.PaymentTypes, "PaymentTypeID", "Description", payment.PaymentTypeID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", payment.ClientID);
+            ViewBag.PaymentTypeID = new SelectList(paymentTypeRepository.GetPaymentTypes(), "PaymentTypeID", "Description", payment.PaymentTypeID);
             return View(payment);
         }
 
@@ -89,12 +111,12 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(payment).State = EntityState.Modified;
-                db.SaveChanges();
+                paymentRepository.UpdatePayment(payment);
+                paymentRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", payment.ClientID);
-            ViewBag.PaymentTypeID = new SelectList(db.PaymentTypes, "PaymentTypeID", "Description", payment.PaymentTypeID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", payment.ClientID);
+            ViewBag.PaymentTypeID = new SelectList(paymentTypeRepository.GetPaymentTypes(), "PaymentTypeID", "Description", payment.PaymentTypeID);
             return View(payment);
         }
 
@@ -105,7 +127,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Payment payment = db.Payments.Find(id);
+            Payment payment = paymentRepository.GetPaymentByID((int)id);
             if (payment == null)
             {
                 return HttpNotFound();
@@ -118,9 +140,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Payment payment = db.Payments.Find(id);
-            db.Payments.Remove(payment);
-            db.SaveChanges();
+            Payment payment = paymentRepository.GetPaymentByID((int)id);
+            paymentRepository.DeletePayment((int)id);
+            paymentRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -128,7 +150,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                paymentRepository.Dispose();
             }
             base.Dispose(disposing);
         }

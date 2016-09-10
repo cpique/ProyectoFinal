@@ -7,17 +7,32 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class StocksController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IStockRepository stockRepository;
+        #endregion
+
+        #region Constructors
+        public StocksController()
+        {
+            this.stockRepository = new StockRepository(new GymContext());
+        }
+
+        public StocksController(IStockRepository stockRepository)
+        {
+            this.stockRepository = stockRepository;
+        }
+        #endregion
 
         // GET: Stocks
         public ActionResult Index()
         {
-            return View(db.Stocks.ToList());
+            return View(stockRepository.GetStocks());
         }
 
         // GET: Stocks/Details/5
@@ -27,7 +42,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Stock stock = db.Stocks.Find(id);
+            Stock stock = stockRepository.GetStockByID((int)id);
             if (stock == null)
             {
                 return HttpNotFound();
@@ -50,8 +65,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Stocks.Add(stock);
-                db.SaveChanges();
+                stockRepository.InsertStock(stock);
+                stockRepository.Save();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +80,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Stock stock = db.Stocks.Find(id);
+            Stock stock = stockRepository.GetStockByID((int)id);
             if (stock == null)
             {
                 return HttpNotFound();
@@ -82,8 +97,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(stock).State = EntityState.Modified;
-                db.SaveChanges();
+                stockRepository.UpdateStock(stock);
+                stockRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(stock);
@@ -96,7 +111,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Stock stock = db.Stocks.Find(id);
+            Stock stock = stockRepository.GetStockByID((int)id);
             if (stock == null)
             {
                 return HttpNotFound();
@@ -109,9 +124,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Stock stock = db.Stocks.Find(id);
-            db.Stocks.Remove(stock);
-            db.SaveChanges();
+            Stock stock = stockRepository.GetStockByID((int)id);
+            stockRepository.DeleteStock((int)id);
+            stockRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +134,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                stockRepository.Dispose();
             }
             base.Dispose(disposing);
         }

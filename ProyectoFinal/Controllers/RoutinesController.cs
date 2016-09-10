@@ -7,18 +7,36 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class RoutinesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IRoutineRepository routineRepository;
+        private IClientRepository clientRepository;
+        #endregion
+
+        #region Constructors
+        public RoutinesController()
+        {
+            this.routineRepository = new RoutineRepository(new GymContext());
+            this.clientRepository = new ClientRepository(new GymContext());
+        }
+
+        public RoutinesController(IRoutineRepository routineRepository, IClientRepository clientRepository)
+        {
+            this.routineRepository = routineRepository;
+            this.clientRepository = clientRepository;
+        }
+        #endregion
 
         // GET: Routines
         public ActionResult Index()
         {
-            var routines = db.Routines.Include(r => r.Client);
-            return View(routines.ToList());
+            var routines = routineRepository.GetRoutines();
+            return View(routines);
         }
 
         // GET: Routines/Details/5
@@ -28,7 +46,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Routine routine = db.Routines.Find(id);
+            Routine routine = routineRepository.GetRoutineByID((int)id);
             if (routine == null)
             {
                 return HttpNotFound();
@@ -39,7 +57,7 @@ namespace ProyectoFinal.Controllers
         // GET: Routines/Create
         public ActionResult Create()
         {
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName");
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName");
             return View();
         }
 
@@ -52,12 +70,12 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Routines.Add(routine);
-                db.SaveChanges();
+                routineRepository.InsertRoutine(routine);
+                routineRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", routine.ClientID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", routine.ClientID);
             return View(routine);
         }
 
@@ -68,12 +86,12 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Routine routine = db.Routines.Find(id);
+            Routine routine = routineRepository.GetRoutineByID((int)id);
             if (routine == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", routine.ClientID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", routine.ClientID);
             return View(routine);
         }
 
@@ -86,11 +104,11 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(routine).State = EntityState.Modified;
-                db.SaveChanges();
+                routineRepository.UpdateRoutine(routine);
+                routineRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", routine.ClientID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", routine.ClientID);
             return View(routine);
         }
 
@@ -101,7 +119,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Routine routine = db.Routines.Find(id);
+            Routine routine = routineRepository.GetRoutineByID((int)id);
             if (routine == null)
             {
                 return HttpNotFound();
@@ -114,9 +132,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Routine routine = db.Routines.Find(id);
-            db.Routines.Remove(routine);
-            db.SaveChanges();
+            Routine routine = routineRepository.GetRoutineByID((int)id);
+            routineRepository.DeleteRoutine((int)id);
+            routineRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -124,7 +142,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                routineRepository.Dispose();
             }
             base.Dispose(disposing);
         }

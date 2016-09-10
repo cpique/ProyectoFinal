@@ -7,17 +7,36 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class PaymentTypePricesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IPaymentTypePriceRepository paymentTypePriceRepository;
+        private IPaymentTypeRepository paymentTypeRepository;
+        #endregion
+
+        #region Constructors
+        public PaymentTypePricesController()
+        {
+            this.paymentTypePriceRepository = new PaymentTypePriceRepository(new GymContext());
+            this.paymentTypeRepository = new PaymentTypeRepository(new GymContext());
+        }
+
+        public PaymentTypePricesController(IPaymentTypePriceRepository paymentTypePriceRepository, IPaymentTypeRepository paymentTypeRepository)
+        {
+            this.paymentTypePriceRepository = paymentTypePriceRepository;
+            this.paymentTypeRepository = paymentTypeRepository;
+        }
+        #endregion
+
 
         // GET: PaymentTypePrices
         public ActionResult Index()
         {
-            var paymentTypePrices = db.PaymentTypePrices.Include(p => p.PaymentType);
+            var paymentTypePrices = paymentTypeRepository.GetPaymentTypes();
             return View(paymentTypePrices.ToList());
         }
 
@@ -28,7 +47,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentTypePrice paymentTypePrice = db.PaymentTypePrices.Find(id);
+            PaymentTypePrice paymentTypePrice = paymentTypePriceRepository.GetPaymentTypePriceByID((int)id);
             if (paymentTypePrice == null)
             {
                 return HttpNotFound();
@@ -39,7 +58,7 @@ namespace ProyectoFinal.Controllers
         // GET: PaymentTypePrices/Create
         public ActionResult Create()
         {
-            ViewBag.PaymentTypeID = new SelectList(db.PaymentTypes, "PaymentTypeID", "Description");
+            ViewBag.PaymentTypeID = new SelectList(paymentTypeRepository.GetPaymentTypes(), "PaymentTypeID", "Description");
             return View();
         }
 
@@ -52,12 +71,12 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.PaymentTypePrices.Add(paymentTypePrice);
-                db.SaveChanges();
+                paymentTypePriceRepository.InsertPaymentTypePrice(paymentTypePrice);
+                paymentTypePriceRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.PaymentTypeID = new SelectList(db.PaymentTypes, "PaymentTypeID", "Description", paymentTypePrice.PaymentTypeID);
+            ViewBag.PaymentTypeID = new SelectList(paymentTypeRepository.GetPaymentTypes(), "PaymentTypeID", "Description", paymentTypePrice.PaymentTypeID);
             return View(paymentTypePrice);
         }
 
@@ -68,12 +87,12 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentTypePrice paymentTypePrice = db.PaymentTypePrices.Find(id);
+            PaymentTypePrice paymentTypePrice = paymentTypePriceRepository.GetPaymentTypePriceByID((int)id);
             if (paymentTypePrice == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.PaymentTypeID = new SelectList(db.PaymentTypes, "PaymentTypeID", "Description", paymentTypePrice.PaymentTypeID);
+            ViewBag.PaymentTypeID = new SelectList(paymentTypeRepository.GetPaymentTypes(), "PaymentTypeID", "Description", paymentTypePrice.PaymentTypeID);
             return View(paymentTypePrice);
         }
 
@@ -86,11 +105,11 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(paymentTypePrice).State = EntityState.Modified;
-                db.SaveChanges();
+                paymentTypePriceRepository.UpdatePaymentTypePrice(paymentTypePrice);
+                paymentTypePriceRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.PaymentTypeID = new SelectList(db.PaymentTypes, "PaymentTypeID", "Description", paymentTypePrice.PaymentTypeID);
+            ViewBag.PaymentTypeID = new SelectList(paymentTypeRepository.GetPaymentTypes(), "PaymentTypeID", "Description", paymentTypePrice.PaymentTypeID);
             return View(paymentTypePrice);
         }
 
@@ -101,7 +120,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentTypePrice paymentTypePrice = db.PaymentTypePrices.Find(id);
+            PaymentTypePrice paymentTypePrice = paymentTypePriceRepository.GetPaymentTypePriceByID((int)id);
             if (paymentTypePrice == null)
             {
                 return HttpNotFound();
@@ -114,9 +133,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            PaymentTypePrice paymentTypePrice = db.PaymentTypePrices.Find(id);
-            db.PaymentTypePrices.Remove(paymentTypePrice);
-            db.SaveChanges();
+            PaymentTypePrice paymentTypePrice = paymentTypePriceRepository.GetPaymentTypePriceByID((int)id);
+            paymentTypePriceRepository.DeletePaymentTypePrice((int)id);
+            paymentTypePriceRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -124,7 +143,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                paymentTypePriceRepository.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -7,17 +7,33 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class PaymentTypesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IPaymentTypeRepository paymentTypeRepository;
+        #endregion
+
+        #region Constructors
+        public PaymentTypesController()
+        {
+            this.paymentTypeRepository = new PaymentTypeRepository(new GymContext());
+        }
+
+        public PaymentTypesController(IPaymentTypeRepository paymentTypeRepository)
+        {
+            this.paymentTypeRepository = paymentTypeRepository;
+        }
+        #endregion
+
 
         // GET: PaymentTypes
         public ActionResult Index()
         {
-            return View(db.PaymentTypes.ToList());
+            return View(paymentTypeRepository.GetPaymentTypes());
         }
 
         // GET: PaymentTypes/Details/5
@@ -27,7 +43,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentType paymentType = db.PaymentTypes.Find(id);
+            PaymentType paymentType = paymentTypeRepository.GetPaymentTypeByID((int)id);
             if (paymentType == null)
             {
                 return HttpNotFound();
@@ -50,8 +66,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.PaymentTypes.Add(paymentType);
-                db.SaveChanges();
+                paymentTypeRepository.InsertPaymentType(paymentType);
+                paymentTypeRepository.Save();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +81,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentType paymentType = db.PaymentTypes.Find(id);
+            PaymentType paymentType = paymentTypeRepository.GetPaymentTypeByID((int)id);
             if (paymentType == null)
             {
                 return HttpNotFound();
@@ -82,8 +98,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(paymentType).State = EntityState.Modified;
-                db.SaveChanges();
+                paymentTypeRepository.UpdatePaymentType(paymentType);
+                paymentTypeRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(paymentType);
@@ -96,7 +112,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentType paymentType = db.PaymentTypes.Find(id);
+            PaymentType paymentType = paymentTypeRepository.GetPaymentTypeByID((int)id);
             if (paymentType == null)
             {
                 return HttpNotFound();
@@ -109,9 +125,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            PaymentType paymentType = db.PaymentTypes.Find(id);
-            db.PaymentTypes.Remove(paymentType);
-            db.SaveChanges();
+            PaymentType paymentType = paymentTypeRepository.GetPaymentTypeByID((int)id);
+            paymentTypeRepository.DeletePaymentType((int)id);
+            paymentTypeRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +135,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                paymentTypeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

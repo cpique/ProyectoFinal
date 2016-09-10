@@ -23,7 +23,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface implementation
         public IEnumerable<Routine> GetRoutines()
         {
-            return context.Routines.ToList();
+            return context.Routines.Include(r => r.Client).ToList();
         }
 
         public Routine GetRoutineByID(int id)

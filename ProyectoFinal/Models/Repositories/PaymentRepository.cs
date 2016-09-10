@@ -23,7 +23,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface implementation
         public IEnumerable<Payment> GetPayments()
         {
-            return context.Payments.ToList();
+            return context.Payments.Include(p => p.Client).Include(p => p.PaymentType).ToList();
         }
 
         public Payment GetPaymentByID(int id)
