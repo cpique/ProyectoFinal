@@ -7,17 +7,32 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class AdminsController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IAdminRepository adminRepository;
+        #endregion
+
+        #region Constructors
+        public AdminsController()
+        {
+            this.adminRepository = new AdminRepository(new GymContext());
+        }
+
+        public AdminsController(IAdminRepository adminRepository)
+        {
+            this.adminRepository = adminRepository;
+        }
+        #endregion
 
         // GET: Admins
         public ActionResult Index()
         {
-            return View(db.Admins.ToList());
+            return View(adminRepository.GetAdmins());
         }
 
         // GET: Admins/Details/5
@@ -27,7 +42,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Admin admin = db.Admins.Find(id);
+            Admin admin = adminRepository.GetAdminByID((int)id);
             if (admin == null)
             {
                 return HttpNotFound();
@@ -50,8 +65,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Admins.Add(admin);
-                db.SaveChanges();
+                adminRepository.InsertAdmin(admin);
+                adminRepository.Save();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +80,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Admin admin = db.Admins.Find(id);
+            Admin admin = adminRepository.GetAdminByID((int)id);
             if (admin == null)
             {
                 return HttpNotFound();
@@ -82,8 +97,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(admin).State = EntityState.Modified;
-                db.SaveChanges();
+                adminRepository.UpdateAdmin(admin);
+                adminRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(admin);
@@ -96,7 +111,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Admin admin = db.Admins.Find(id);
+            Admin admin = adminRepository.GetAdminByID((int)id);
             if (admin == null)
             {
                 return HttpNotFound();
@@ -109,9 +124,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Admin admin = db.Admins.Find(id);
-            db.Admins.Remove(admin);
-            db.SaveChanges();
+            Admin admin = adminRepository.GetAdminByID((int)id);
+            adminRepository.DeleteAdmin((int)id);
+            adminRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +134,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                adminRepository.Dispose();
             }
             base.Dispose(disposing);
         }

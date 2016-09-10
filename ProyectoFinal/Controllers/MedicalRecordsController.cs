@@ -7,17 +7,35 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class MedicalRecordsController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IMedicalRecordRepository medicalRepository;
+        private IClientRepository clientRepository;
+        #endregion
+
+        #region Constructors
+        public MedicalRecordsController()
+        {
+            this.medicalRepository = new MedicalRecordRepository(new GymContext());
+            this.clientRepository = new ClientRepository(new GymContext());
+        }
+
+        public MedicalRecordsController(IMedicalRecordRepository medicalRepository, IClientRepository clientRepository)
+        {
+            this.medicalRepository = medicalRepository;
+            this.clientRepository = clientRepository;
+        }
+        #endregion
 
         // GET: MedicalRecords
         public ActionResult Index()
         {
-            var medicalRecords = db.MedicalRecords.Include(m => m.Client);
+            var medicalRecords = medicalRepository.GetMedicalRecords();
             return View(medicalRecords.ToList());
         }
 
@@ -28,8 +46,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MedicalRecord medicalRecord = db.MedicalRecords.Find(id);
-            //medicalRecord.Client = db.Clients.Find(id);
+            MedicalRecord medicalRecord = medicalRepository.GetMedicalRecordByID((int)id);
             if (medicalRecord == null)
             {
                 return HttpNotFound();
@@ -42,9 +59,9 @@ namespace ProyectoFinal.Controllers
         {
             SelectList selectList;
             if (id != null)
-                selectList = new SelectList(db.Clients, "ClientID", "FirstName", id.ToString());
+                selectList = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", id.ToString());
             else
-                selectList = new SelectList(db.Clients, "ClientID", "FirstName");
+                selectList = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName");
 
             ViewBag.ClientID = selectList;
             return View();
@@ -59,12 +76,12 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.MedicalRecords.Add(medicalRecord);
-                db.SaveChanges();
+                medicalRepository.InsertMedicalRecord(medicalRecord);
+                medicalRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", medicalRecord.ClientID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", medicalRecord.ClientID);
             return View(medicalRecord);
         }
 
@@ -75,12 +92,12 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MedicalRecord medicalRecord = db.MedicalRecords.Find(id);
+            MedicalRecord medicalRecord = medicalRepository.GetMedicalRecordByID((int)id);
             if (medicalRecord == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", medicalRecord.ClientID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", medicalRecord.ClientID);
             return View(medicalRecord);
         }
 
@@ -93,11 +110,11 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(medicalRecord).State = EntityState.Modified;
-                db.SaveChanges();
+                medicalRepository.UpdateMedicalRecord(medicalRecord);
+                medicalRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "FirstName", medicalRecord.ClientID);
+            ViewBag.ClientID = new SelectList(clientRepository.GetClients(), "ClientID", "FirstName", medicalRecord.ClientID);
             return View(medicalRecord);
         }
 
@@ -108,7 +125,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MedicalRecord medicalRecord = db.MedicalRecords.Find(id);
+            MedicalRecord medicalRecord = medicalRepository.GetMedicalRecordByID((int)id);
             if (medicalRecord == null)
             {
                 return HttpNotFound();
@@ -121,9 +138,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            MedicalRecord medicalRecord = db.MedicalRecords.Find(id);
-            db.MedicalRecords.Remove(medicalRecord);
-            db.SaveChanges();
+            MedicalRecord medicalRecord = medicalRepository.GetMedicalRecordByID((int)id);
+            medicalRepository.DeleteMedicalRecord((int)id);
+            medicalRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -131,7 +148,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                medicalRepository.Dispose();
             }
             base.Dispose(disposing);
         }

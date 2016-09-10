@@ -7,17 +7,32 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class ActivityTypesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IActivityTypeRepository activityTypeRepository;
+        #endregion
+
+        #region Constructors
+        public ActivityTypesController()
+        {
+            this.activityTypeRepository = new ActivityTypeRepository(new GymContext());
+        }
+
+        public ActivityTypesController(IActivityTypeRepository activityTypeRepository)
+        {
+            this.activityTypeRepository = activityTypeRepository;
+        }
+        #endregion
 
         // GET: ActivityTypes
         public ActionResult Index()
         {
-            return View(db.ActivityTypes.ToList());
+            return View(activityTypeRepository.GetActivityTypes());
         }
 
         // GET: ActivityTypes/Details/5
@@ -27,7 +42,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ActivityType activityType = db.ActivityTypes.Find(id);
+            ActivityType activityType = activityTypeRepository.GetActivityTypeByID((int)id);
             if (activityType == null)
             {
                 return HttpNotFound();
@@ -50,8 +65,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ActivityTypes.Add(activityType);
-                db.SaveChanges();
+                activityTypeRepository.InsertActivityType(activityType);
+                activityTypeRepository.Save();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +80,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ActivityType activityType = db.ActivityTypes.Find(id);
+            ActivityType activityType = activityTypeRepository.GetActivityTypeByID((int)id);
             if (activityType == null)
             {
                 return HttpNotFound();
@@ -82,8 +97,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(activityType).State = EntityState.Modified;
-                db.SaveChanges();
+                activityTypeRepository.UpdateActivityType(activityType);
+                activityTypeRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(activityType);
@@ -96,7 +111,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ActivityType activityType = db.ActivityTypes.Find(id);
+            ActivityType activityType = activityTypeRepository.GetActivityTypeByID((int)id);
             if (activityType == null)
             {
                 return HttpNotFound();
@@ -109,9 +124,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ActivityType activityType = db.ActivityTypes.Find(id);
-            db.ActivityTypes.Remove(activityType);
-            db.SaveChanges();
+            ActivityType activityType = activityTypeRepository.GetActivityTypeByID((int)id);
+            activityTypeRepository.DeleteActivityType(id);
+            activityTypeRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +134,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                activityTypeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

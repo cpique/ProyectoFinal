@@ -7,18 +7,36 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class ArticlesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IArticleRepository articleRepository;
+        private ISupplierRepository supplierRepository;
+        #endregion
+
+        #region Constructors
+        public ArticlesController()
+        {
+            this.articleRepository = new ArticleRepository(new GymContext());
+            this.supplierRepository = new SupplierRepository(new GymContext());
+        }
+
+        public ArticlesController(IArticleRepository articleRepository, ISupplierRepository supplierRepository)
+        {
+            this.articleRepository = articleRepository;
+            this.supplierRepository = supplierRepository;
+        }
+        #endregion
 
         // GET: Articles
         public ActionResult Index()
         {
-            var articles = db.Articles.Include(a => a.Supplier);
-            return View(articles.ToList());
+            var articles = articleRepository.GetArticles();
+            return View(articles);
         }
 
         // GET: Articles/Details/5
@@ -28,7 +46,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = db.Articles.Find(id);
+            Article article = articleRepository.GetArticleByID((int)id);
             if (article == null)
             {
                 return HttpNotFound();
@@ -39,7 +57,7 @@ namespace ProyectoFinal.Controllers
         // GET: Articles/Create
         public ActionResult Create()
         {
-            ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "BusinessName");
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName");
             return View();
         }
 
@@ -52,12 +70,12 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Articles.Add(article);
-                db.SaveChanges();
+                articleRepository.InsertArticle(article);
+                articleRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "BusinessName", article.SupplierID);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", article.SupplierID);
             return View(article);
         }
 
@@ -68,12 +86,12 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = db.Articles.Find(id);
+            Article article = articleRepository.GetArticleByID((int)id);
             if (article == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "BusinessName", article.SupplierID);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", article.SupplierID);
             return View(article);
         }
 
@@ -86,11 +104,11 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(article).State = EntityState.Modified;
-                db.SaveChanges();
+                articleRepository.UpdateArticle(article);
+                articleRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "BusinessName", article.SupplierID);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", article.SupplierID);
             return View(article);
         }
 
@@ -101,7 +119,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = db.Articles.Find(id);
+            Article article = articleRepository.GetArticleByID((int)id);
             if (article == null)
             {
                 return HttpNotFound();
@@ -114,9 +132,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Article article = db.Articles.Find(id);
-            db.Articles.Remove(article);
-            db.SaveChanges();
+            Article article = articleRepository.GetArticleByID((int)id);
+            articleRepository.DeleteArticle((int)id);
+            articleRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -124,7 +142,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                articleRepository.Dispose();
             }
             base.Dispose(disposing);
         }

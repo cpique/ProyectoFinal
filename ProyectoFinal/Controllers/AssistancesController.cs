@@ -7,17 +7,32 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class AssistancesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IAssistanceRepository assistanceRepository;
+        #endregion
+
+        #region Constructors
+        public AssistancesController()
+        {
+            this.assistanceRepository = new AssistanceRepository(new GymContext());
+        }
+
+        public AssistancesController(IAssistanceRepository assistanceRepository)
+        {
+            this.assistanceRepository = assistanceRepository;
+        }
+        #endregion
 
         // GET: Assistances
         public ActionResult Index()
         {
-            return View(db.Assistances.ToList());
+            return View(assistanceRepository.GetAssistances());
         }
 
         // GET: Assistances/Details/5
@@ -27,7 +42,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Assistance assistance = db.Assistances.Find(id);
+            Assistance assistance = assistanceRepository.GetAssistanceByID((int)id);
             if (assistance == null)
             {
                 return HttpNotFound();
@@ -50,8 +65,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Assistances.Add(assistance);
-                db.SaveChanges();
+                assistanceRepository.InsertAssistance(assistance);
+                assistanceRepository.Save();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +80,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Assistance assistance = db.Assistances.Find(id);
+            Assistance assistance = assistanceRepository.GetAssistanceByID((int)id);
             if (assistance == null)
             {
                 return HttpNotFound();
@@ -82,8 +97,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(assistance).State = EntityState.Modified;
-                db.SaveChanges();
+                assistanceRepository.UpdateAssistance(assistance);
+                assistanceRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(assistance);
@@ -96,7 +111,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Assistance assistance = db.Assistances.Find(id);
+            Assistance assistance = assistanceRepository.GetAssistanceByID((int)id);
             if (assistance == null)
             {
                 return HttpNotFound();
@@ -109,9 +124,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Assistance assistance = db.Assistances.Find(id);
-            db.Assistances.Remove(assistance);
-            db.SaveChanges();
+            Assistance assistance = assistanceRepository.GetAssistanceByID((int)id);
+            assistanceRepository.DeleteAssistance(id);
+            assistanceRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +134,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                assistanceRepository.Dispose();
             }
             base.Dispose(disposing);
         }

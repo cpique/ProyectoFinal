@@ -23,7 +23,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface implementation
         public IEnumerable<File> GetFiles()
         {
-            return context.Files.ToList();
+            return context.Files.Include(f => f.Routine).ToList();
         }
 
         public File GetFileByID(int id)

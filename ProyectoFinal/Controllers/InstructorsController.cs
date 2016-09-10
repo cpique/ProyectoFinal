@@ -7,17 +7,32 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class InstructorsController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IInstructorRepository instructorRepository;
+        #endregion
+
+        #region Constructors
+        public InstructorsController()
+        {
+            this.instructorRepository = new InstructorRepository(new GymContext());
+        }
+
+        public InstructorsController(IInstructorRepository instructorRepository)
+        {
+            this.instructorRepository = instructorRepository;
+        }
+        #endregion
 
         // GET: Instructors
         public ActionResult Index()
         {
-            return View(db.Instructors.ToList());
+            return View(instructorRepository.GetInstructors());
         }
 
         // GET: Instructors/Details/5
@@ -27,7 +42,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Instructor instructor = db.Instructors.Find(id);
+            Instructor instructor = instructorRepository.GetInstructorByID((int)id);
             if (instructor == null)
             {
                 return HttpNotFound();
@@ -50,8 +65,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Instructors.Add(instructor);
-                db.SaveChanges();
+                instructorRepository.InsertInstructor(instructor);
+                instructorRepository.Save();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +80,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Instructor instructor = db.Instructors.Find(id);
+            Instructor instructor = instructorRepository.GetInstructorByID((int)id);
             if (instructor == null)
             {
                 return HttpNotFound();
@@ -82,8 +97,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(instructor).State = EntityState.Modified;
-                db.SaveChanges();
+                instructorRepository.UpdateInstructor(instructor);
+                instructorRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(instructor);
@@ -96,7 +111,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Instructor instructor = db.Instructors.Find(id);
+            Instructor instructor = instructorRepository.GetInstructorByID((int)id);
             if (instructor == null)
             {
                 return HttpNotFound();
@@ -109,9 +124,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Instructor instructor = db.Instructors.Find(id);
-            db.Instructors.Remove(instructor);
-            db.SaveChanges();
+            Instructor instructor = instructorRepository.GetInstructorByID((int)id);
+            instructorRepository.DeleteInstructor((int)id);
+            instructorRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +134,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                instructorRepository.Dispose();
             }
             base.Dispose(disposing);
         }

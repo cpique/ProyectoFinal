@@ -23,7 +23,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface implementation
         public IEnumerable<MedicalRecord> GetMedicalRecords()
         {
-            return context.MedicalRecords.ToList();
+            return context.MedicalRecords.Include(m => m.Client).ToList();
         }
 
         public MedicalRecord GetMedicalRecordByID(int id)

@@ -23,7 +23,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface Implementation
         public IEnumerable<Article> GetArticles()
         {
-            return context.Articles.ToList();
+            return context.Articles.Include(a => a.Supplier).ToList();
         }
 
         public Article GetArticleByID(int id)

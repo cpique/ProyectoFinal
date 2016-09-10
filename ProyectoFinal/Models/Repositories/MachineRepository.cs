@@ -23,7 +23,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface implementation
         public IEnumerable<Machine> GetMachines()
         {
-            return context.Machines.ToList();
+            return context.Machines.Include(m => m.Supplier).ToList();
         }
 
         public Machine GetMachineByID(int id)

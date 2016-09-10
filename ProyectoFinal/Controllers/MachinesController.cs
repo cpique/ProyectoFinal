@@ -7,17 +7,35 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class MachinesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IMachineRepository machineRepository;
+        private ISupplierRepository supplierRepository;
+        #endregion
+
+        #region Constructors
+        public MachinesController()
+        {
+            this.machineRepository = new MachineRepository(new GymContext());
+            this.supplierRepository = new SupplierRepository(new GymContext());
+        }
+
+        public MachinesController(IMachineRepository machineRepository, ISupplierRepository supplierRepository)
+        {
+            this.machineRepository = machineRepository;
+            this.supplierRepository = supplierRepository;
+        }
+        #endregion
 
         // GET: Machines
         public ActionResult Index()
         {
-            var machines = db.Machines.Include(m => m.Supplier);
+            var machines = machineRepository.GetMachines();
             return View(machines.ToList());
         }
 
@@ -28,7 +46,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Machine machine = db.Machines.Find(id);
+            Machine machine = machineRepository.GetMachineByID((int)id);
             if (machine == null)
             {
                 return HttpNotFound();
@@ -39,7 +57,7 @@ namespace ProyectoFinal.Controllers
         // GET: Machines/Create
         public ActionResult Create()
         {
-            ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "BusinessName");
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName");
             return View();
         }
 
@@ -52,12 +70,12 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Machines.Add(machine);
-                db.SaveChanges();
+                machineRepository.InsertMachine(machine);
+                machineRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "BusinessName", machine.SupplierID);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", machine.SupplierID);
             return View(machine);
         }
 
@@ -68,12 +86,12 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Machine machine = db.Machines.Find(id);
+            Machine machine = machineRepository.GetMachineByID((int)id);
             if (machine == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "BusinessName", machine.SupplierID);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", machine.SupplierID);
             return View(machine);
         }
 
@@ -86,11 +104,11 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(machine).State = EntityState.Modified;
-                db.SaveChanges();
+                machineRepository.UpdateMachine(machine);
+                machineRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "BusinessName", machine.SupplierID);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", machine.SupplierID);
             return View(machine);
         }
 
@@ -101,7 +119,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Machine machine = db.Machines.Find(id);
+            Machine machine = machineRepository.GetMachineByID((int)id);
             if (machine == null)
             {
                 return HttpNotFound();
@@ -114,9 +132,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Machine machine = db.Machines.Find(id);
-            db.Machines.Remove(machine);
-            db.SaveChanges();
+            Machine machine = machineRepository.GetMachineByID((int)id);
+            machineRepository.DeleteMachine((int)id);
+            machineRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -124,7 +142,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                machineRepository.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -7,17 +7,35 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class FilesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IFileRepository fileRepository;
+        private IRoutineRepository routineRepository;
+        #endregion
+
+        #region Constructors
+        public FilesController()
+        {
+            this.fileRepository = new FileRepository(new GymContext());
+            this.routineRepository = new RoutineRepository(new GymContext());
+        }
+
+        public FilesController(IFileRepository fileRepository, IRoutineRepository routineRepository)
+        {
+            this.fileRepository = fileRepository;
+            this.routineRepository = routineRepository;
+        }
+        #endregion
 
         // GET: Files
         public ActionResult Index()
         {
-            var files = db.Files.Include(f => f.Routine);
+            var files = fileRepository.GetFiles();
             return View(files.ToList());
         }
 
@@ -28,7 +46,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            File file = db.Files.Find(id);
+            File file = fileRepository.GetFileByID((int)id);
             if (file == null)
             {
                 return HttpNotFound();
@@ -39,7 +57,7 @@ namespace ProyectoFinal.Controllers
         // GET: Files/Create
         public ActionResult Create()
         {
-            ViewBag.RoutineID = new SelectList(db.Routines, "RoutineID", "Description");
+            ViewBag.RoutineID = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description");
             return View();
         }
 
@@ -52,12 +70,12 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Files.Add(file);
-                db.SaveChanges();
+                fileRepository.InsertFile(file);
+                fileRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.RoutineID = new SelectList(db.Routines, "RoutineID", "Description", file.RoutineID);
+            ViewBag.RoutineID = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description", file.RoutineID);
             return View(file);
         }
 
@@ -68,12 +86,12 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            File file = db.Files.Find(id);
+            File file = fileRepository.GetFileByID((int)id);
             if (file == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.RoutineID = new SelectList(db.Routines, "RoutineID", "Description", file.RoutineID);
+            ViewBag.RoutineID = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description", file.RoutineID);
             return View(file);
         }
 
@@ -86,11 +104,11 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(file).State = EntityState.Modified;
-                db.SaveChanges();
+                fileRepository.UpdateFile(file);
+                fileRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.RoutineID = new SelectList(db.Routines, "RoutineID", "Description", file.RoutineID);
+            ViewBag.RoutineID = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description", file.RoutineID);
             return View(file);
         }
 
@@ -101,7 +119,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            File file = db.Files.Find(id);
+            File file = fileRepository.GetFileByID((int)id);
             if (file == null)
             {
                 return HttpNotFound();
@@ -114,9 +132,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            File file = db.Files.Find(id);
-            db.Files.Remove(file);
-            db.SaveChanges();
+            File file = fileRepository.GetFileByID((int)id);
+            fileRepository.DeleteFile((int)id);
+            fileRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -124,7 +142,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                fileRepository.Dispose();
             }
             base.Dispose(disposing);
         }

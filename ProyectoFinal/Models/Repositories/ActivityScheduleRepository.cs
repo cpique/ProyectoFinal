@@ -23,7 +23,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface Implementation
         public IEnumerable<ActivitySchedule> GetActivitySchedules()
         {
-            return context.ActivitySchedules.ToList();
+            return context.ActivitySchedules.Include(a => a.Activity).ToList();
         }
 
         public ActivitySchedule GetActivityScheduleByID(int id)

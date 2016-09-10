@@ -7,17 +7,32 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class ActivitiesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IActivityRepository activityRepository;
+        #endregion
+
+        #region Constructors
+        public ActivitiesController()
+        {
+            this.activityRepository = new ActivityRepository(new GymContext());
+        }
+
+        public ActivitiesController(IActivityRepository activityRepository)
+        {
+            this.activityRepository = activityRepository;
+        }
+        #endregion
 
         // GET: Activities
         public ActionResult Index()
         {
-            return View(db.Activities.ToList());
+            return View(activityRepository.GetActivities());
         }
 
         // GET: Activities/Details/5
@@ -27,7 +42,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Activity activity = db.Activities.Find(id);
+            Activity activity = activityRepository.GetActivityByID((int)id);
             if (activity == null)
             {
                 return HttpNotFound();
@@ -50,8 +65,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Activities.Add(activity);
-                db.SaveChanges();
+                activityRepository.InsertActivity(activity);
+                activityRepository.Save();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +80,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Activity activity = db.Activities.Find(id);
+            Activity activity = activityRepository.GetActivityByID((int)id);
             if (activity == null)
             {
                 return HttpNotFound();
@@ -82,8 +97,8 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(activity).State = EntityState.Modified;
-                db.SaveChanges();
+                activityRepository.UpdateActivity(activity);
+                activityRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(activity);
@@ -96,7 +111,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Activity activity = db.Activities.Find(id);
+            Activity activity = activityRepository.GetActivityByID((int)id);
             if (activity == null)
             {
                 return HttpNotFound();
@@ -109,9 +124,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Activity activity = db.Activities.Find(id);
-            db.Activities.Remove(activity);
-            db.SaveChanges();
+            Activity activity = activityRepository.GetActivityByID((int)id);
+            activityRepository.DeleteActivity((int)id);
+            activityRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +134,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                activityRepository.Dispose();
             }
             base.Dispose(disposing);
         }

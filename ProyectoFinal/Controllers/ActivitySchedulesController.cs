@@ -7,17 +7,35 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class ActivitySchedulesController : Controller
     {
-        private GymContext db = new GymContext();
+        #region Properties
+        private IActivityScheduleRepository activityScheduleRepository;
+        private IActivityRepository activityRepository;
+        #endregion
+
+        #region Constructors
+        public ActivitySchedulesController()
+        {
+            this.activityScheduleRepository = new ActivityScheduleRepository(new GymContext());
+            this.activityRepository = new ActivityRepository(new GymContext());
+        }
+
+        public ActivitySchedulesController(IActivityScheduleRepository activityScheduleRepository, ActivityRepository activityRepository)
+        {
+            this.activityScheduleRepository = activityScheduleRepository;
+            this.activityRepository = activityRepository;
+        }
+        #endregion
 
         // GET: ActivitySchedules
         public ActionResult Index()
         {
-            var activitySchedules = db.ActivitySchedules.Include(a => a.Activity);
+            var activitySchedules = activityScheduleRepository.GetActivitySchedules();
             return View(activitySchedules.ToList());
         }
 
@@ -28,7 +46,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ActivitySchedule activitySchedule = db.ActivitySchedules.Find(id);
+            ActivitySchedule activitySchedule = activityScheduleRepository.GetActivityScheduleByID((int)id);
             if (activitySchedule == null)
             {
                 return HttpNotFound();
@@ -39,7 +57,7 @@ namespace ProyectoFinal.Controllers
         // GET: ActivitySchedules/Create
         public ActionResult Create()
         {
-            ViewBag.ActivityID = new SelectList(db.Activities, "ActivityID", "Name");
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name");
             return View();
         }
 
@@ -52,12 +70,12 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ActivitySchedules.Add(activitySchedule);
-                db.SaveChanges();
+                activityScheduleRepository.InsertActivitySchedule(activitySchedule);
+                activityScheduleRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ActivityID = new SelectList(db.Activities, "ActivityID", "Name", activitySchedule.ActivityID);
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", activitySchedule.ActivityID);
             return View(activitySchedule);
         }
 
@@ -68,12 +86,12 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ActivitySchedule activitySchedule = db.ActivitySchedules.Find(id);
+            ActivitySchedule activitySchedule = activityScheduleRepository.GetActivityScheduleByID((int)id);
             if (activitySchedule == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ActivityID = new SelectList(db.Activities, "ActivityID", "Name", activitySchedule.ActivityID);
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", activitySchedule.ActivityID);
             return View(activitySchedule);
         }
 
@@ -86,11 +104,11 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(activitySchedule).State = EntityState.Modified;
-                db.SaveChanges();
+                activityScheduleRepository.UpdateActivitySchedule(activitySchedule);
+                activityScheduleRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.ActivityID = new SelectList(db.Activities, "ActivityID", "Name", activitySchedule.ActivityID);
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", activitySchedule.ActivityID);
             return View(activitySchedule);
         }
 
@@ -101,7 +119,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ActivitySchedule activitySchedule = db.ActivitySchedules.Find(id);
+            ActivitySchedule activitySchedule = activityScheduleRepository.GetActivityScheduleByID((int)id);
             if (activitySchedule == null)
             {
                 return HttpNotFound();
@@ -114,9 +132,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ActivitySchedule activitySchedule = db.ActivitySchedules.Find(id);
-            db.ActivitySchedules.Remove(activitySchedule);
-            db.SaveChanges();
+            ActivitySchedule activitySchedule = activityScheduleRepository.GetActivityScheduleByID((int)id);
+            activityScheduleRepository.DeleteActivitySchedule((int)id);
+            activityScheduleRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -124,7 +142,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                activityScheduleRepository.Dispose();
             }
             base.Dispose(disposing);
         }
