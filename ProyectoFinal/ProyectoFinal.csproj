@@ -163,6 +163,8 @@
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\PaymentType.cs" />
     <Compile Include="Models\PaymentTypePrice.cs" />
+    <Compile Include="Models\Repositories\ClientRepository.cs" />
+    <Compile Include="Models\Repositories\IClientRepository.cs" />
     <Compile Include="Models\Routine.cs" />
     <Compile Include="Models\Stock.cs" />
     <Compile Include="Models\Supplier.cs" />

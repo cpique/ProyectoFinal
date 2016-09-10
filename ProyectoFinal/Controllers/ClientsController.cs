@@ -8,27 +8,34 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Utils;
+using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
     public class ClientsController : Controller
     {
-        private GymContext db = new GymContext();
+        private IClientRepository clientRepository;
+
+        public ClientsController()
+        {
+            this.clientRepository = new ClientRepository(new GymContext());
+        }
+
+        public ClientsController(IClientRepository clientRepository)
+        {
+            this.clientRepository = clientRepository;
+        }
 
         // GET: Clients
         public ActionResult Index()
         {
-            return View(db.Clients.ToList());
+            return View(clientRepository.GetClients());
         }
 
         // GET: Clients/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Client client = db.Clients.Find(id);
+            Client client = clientRepository.GetClientByID(id);
             if (client == null)
             {
                 return HttpNotFound();
@@ -54,12 +61,9 @@ namespace ProyectoFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                client.PasswordSalt = PasswordUtilities.CreateSalt(16);
-                client.Password = PasswordUtilities.GenerateSHA256Hash(client.Password, client.PasswordSalt);
-
-                db.Clients.Add(client);
-                db.SaveChanges();
-                //return RedirectToAction("Index");
+                clientRepository.HashPassword(client);
+                clientRepository.InsertClient(client);
+                clientRepository.Save();
                 return RedirectToAction("Create", "MedicalRecords", new { ClientID = client.ClientID  });
             }
 
@@ -73,7 +77,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Client client = db.Clients.Find(id);
+            Client client = clientRepository.GetClientByID((int)id);
             if (client == null)
             {
                 return HttpNotFound();
@@ -86,12 +90,13 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ClientID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password,PasswordSalt")] Client client)
+        public ActionResult Edit([Bind(Include = "ClientID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password")] Client client)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(client).State = EntityState.Modified;
-                db.SaveChanges();
+                clientRepository.HashPassword(client);
+                clientRepository.UpdateClient(client);
+                clientRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(client);
@@ -104,7 +109,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Client client = db.Clients.Find(id);
+            Client client = clientRepository.GetClientByID((int)id);
             if (client == null)
             {
                 return HttpNotFound();
@@ -117,9 +122,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Client client = db.Clients.Find(id);
-            db.Clients.Remove(client);
-            db.SaveChanges();
+            Client client = clientRepository.GetClientByID(id);
+            clientRepository.DeleteClient(id);
+            clientRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -127,7 +132,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                clientRepository.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -35,7 +35,9 @@ namespace ProyectoFinal.Models
         public string Email { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
+        [Editable(false)]
         public string PasswordSalt { get; set; }
 
         public ICollection<MedicalRecord> MedicalRecords { get; set; }
