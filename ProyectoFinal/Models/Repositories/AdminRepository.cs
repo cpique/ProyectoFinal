@@ -1,5 +1,4 @@
-﻿using ProyectoFinal.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Web;
 
 namespace ProyectoFinal.Models.Repositories
 {
-    public class ClientRepository : IClientRepository, IDisposable
+    public class AdminRepository : IAdminRepository, IDisposable
     {
         #region Properties
         public GymContext context;
@@ -15,32 +14,32 @@ namespace ProyectoFinal.Models.Repositories
         #endregion
 
         #region Constructors
-        public ClientRepository(GymContext context)
+        public AdminRepository(GymContext context)
         {
-            this.context = context; 
+            this.context = context;
         }
         #endregion
 
         #region Interface Implementation
-        public IEnumerable<Client> GetClients()
+        public IEnumerable<Admin> GetAdmins()
         {
-            return context.Clients.ToList();
+            return context.Admins.ToList();
         }
 
-        public Client GetClientByID(int id)
+        public Admin GetAdminByID(int id)
         {
-            return context.Clients.Find(id);
+            return context.Admins.Find(id);
         }
 
-        public void InsertClient(Client client)
+        public void InsertAdmin(Admin admin)
         {
-            context.Clients.Add(client);
+            context.Admins.Add(admin);
         }
 
-        public void DeleteClient(int id)
+        public void DeleteAdmin(int id)
         {
-            Client client = context.Clients.Find(id);
-            context.Clients.Remove(client);
+            Admin admin = context.Admins.Find(id);
+            context.Admins.Remove(admin);
         }
 
         public void Save()
@@ -48,15 +47,9 @@ namespace ProyectoFinal.Models.Repositories
             context.SaveChanges();
         }
 
-        public void UpdateClient(Client client)
+        public void UpdateAdmin(Admin admin)
         {
-            context.Entry(client).State = EntityState.Modified;
-        }
-
-        public void HashPassword(Client client)
-        {
-            client.PasswordSalt = PasswordUtilities.CreateSalt(16);
-            client.Password = PasswordUtilities.GenerateSHA256Hash(client.Password, client.PasswordSalt);
+            context.Entry(admin).State = EntityState.Modified;
         }
 
         public void Dispose()
@@ -77,6 +70,5 @@ namespace ProyectoFinal.Models.Repositories
             }
             this.disposed = true;
         }
-
     }
 }

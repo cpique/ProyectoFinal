@@ -1,5 +1,4 @@
-﻿using ProyectoFinal.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Web;
 
 namespace ProyectoFinal.Models.Repositories
 {
-    public class ClientRepository : IClientRepository, IDisposable
+    public class AssistanceRepository : IAssistanceRepository, IDisposable
     {
         #region Properties
         public GymContext context;
@@ -15,32 +14,32 @@ namespace ProyectoFinal.Models.Repositories
         #endregion
 
         #region Constructors
-        public ClientRepository(GymContext context)
+        public AssistanceRepository(GymContext context)
         {
-            this.context = context; 
+            this.context = context;
         }
         #endregion
 
         #region Interface Implementation
-        public IEnumerable<Client> GetClients()
+        public IEnumerable<Assistance> GetAssistances()
         {
-            return context.Clients.ToList();
+            return context.Assistances.ToList();
         }
 
-        public Client GetClientByID(int id)
+        public Assistance GetAssistanceByID(int id)
         {
-            return context.Clients.Find(id);
+            return context.Assistances.Find(id);
         }
 
-        public void InsertClient(Client client)
+        public void InsertAssistance(Assistance assistance)
         {
-            context.Clients.Add(client);
+            context.Assistances.Add(assistance);
         }
 
-        public void DeleteClient(int id)
+        public void DeleteAssistance(int id)
         {
-            Client client = context.Clients.Find(id);
-            context.Clients.Remove(client);
+            Assistance assistance = context.Assistances.Find(id);
+            context.Assistances.Remove(assistance);
         }
 
         public void Save()
@@ -48,15 +47,9 @@ namespace ProyectoFinal.Models.Repositories
             context.SaveChanges();
         }
 
-        public void UpdateClient(Client client)
+        public void UpdateAssistance(Assistance assistance)
         {
-            context.Entry(client).State = EntityState.Modified;
-        }
-
-        public void HashPassword(Client client)
-        {
-            client.PasswordSalt = PasswordUtilities.CreateSalt(16);
-            client.Password = PasswordUtilities.GenerateSHA256Hash(client.Password, client.PasswordSalt);
+            context.Entry(assistance).State = EntityState.Modified;
         }
 
         public void Dispose()
@@ -77,6 +70,7 @@ namespace ProyectoFinal.Models.Repositories
             }
             this.disposed = true;
         }
+
 
     }
 }

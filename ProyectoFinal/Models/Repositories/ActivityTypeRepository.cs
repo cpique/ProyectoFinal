@@ -1,5 +1,4 @@
-﻿using ProyectoFinal.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Web;
 
 namespace ProyectoFinal.Models.Repositories
 {
-    public class ClientRepository : IClientRepository, IDisposable
+    public class ActivityTypeRepository : IActivityTypeRepository, IDisposable
     {
         #region Properties
         public GymContext context;
@@ -15,32 +14,32 @@ namespace ProyectoFinal.Models.Repositories
         #endregion
 
         #region Constructors
-        public ClientRepository(GymContext context)
+        public ActivityTypeRepository(GymContext context)
         {
-            this.context = context; 
+            this.context = context;
         }
         #endregion
 
         #region Interface Implementation
-        public IEnumerable<Client> GetClients()
+        public IEnumerable<ActivityType> GetActivityTypes()
         {
-            return context.Clients.ToList();
+            return context.ActivityTypes.ToList();
         }
 
-        public Client GetClientByID(int id)
+        public ActivityType GetActivityTypeByID(int id)
         {
-            return context.Clients.Find(id);
+            return context.ActivityTypes.Find(id);
         }
 
-        public void InsertClient(Client client)
+        public void InsertActivityType(ActivityType activityType)
         {
-            context.Clients.Add(client);
+            context.ActivityTypes.Add(activityType);
         }
 
-        public void DeleteClient(int id)
+        public void DeleteActivityType(int id)
         {
-            Client client = context.Clients.Find(id);
-            context.Clients.Remove(client);
+            ActivityType activityType = context.ActivityTypes.Find(id);
+            context.ActivityTypes.Remove(activityType);
         }
 
         public void Save()
@@ -48,15 +47,9 @@ namespace ProyectoFinal.Models.Repositories
             context.SaveChanges();
         }
 
-        public void UpdateClient(Client client)
+        public void UpdateActivityType(ActivityType activityType)
         {
-            context.Entry(client).State = EntityState.Modified;
-        }
-
-        public void HashPassword(Client client)
-        {
-            client.PasswordSalt = PasswordUtilities.CreateSalt(16);
-            client.Password = PasswordUtilities.GenerateSHA256Hash(client.Password, client.PasswordSalt);
+            context.Entry(activityType).State = EntityState.Modified;
         }
 
         public void Dispose()
@@ -77,6 +70,5 @@ namespace ProyectoFinal.Models.Repositories
             }
             this.disposed = true;
         }
-
     }
 }
