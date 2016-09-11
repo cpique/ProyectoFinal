@@ -11,6 +11,7 @@ namespace ProyectoFinal.Utils
         public enum Status { Active = 1, Inactive }
         public enum Roles { Admin = 1, Instructor, Client }
         public enum ItemStatus { Ok = 1, Deteriorated, Broken }
+        public enum LevelRoutine { Begginer = 1, Medium, Advanced, Expert}
 
     }
 }

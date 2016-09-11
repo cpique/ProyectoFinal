@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -38,6 +39,8 @@ namespace ProyectoFinal.Models
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
 
-        public virtual ICollection<Activity> Activities { get; set; }
+        [ForeignKey("ActivityID")]
+        public Activity Activity { get; set; }
+        public int ActivityID { get; set; }
     }
 }

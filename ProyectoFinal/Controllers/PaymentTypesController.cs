@@ -15,25 +15,28 @@ namespace ProyectoFinal.Controllers
     {
         #region Properties
         private IPaymentTypeRepository paymentTypeRepository;
+        private IActivityRepository activityRepository;
         #endregion
 
         #region Constructors
         public PaymentTypesController()
         {
             this.paymentTypeRepository = new PaymentTypeRepository(new GymContext());
+            this.activityRepository = new ActivityRepository(new GymContext());
         }
 
-        public PaymentTypesController(IPaymentTypeRepository paymentTypeRepository)
+        public PaymentTypesController(IPaymentTypeRepository paymentTypeRepository, IActivityRepository activityRepository)
         {
             this.paymentTypeRepository = paymentTypeRepository;
+            this.activityRepository = activityRepository;
         }
         #endregion
-
 
         // GET: PaymentTypes
         public ActionResult Index()
         {
-            return View(paymentTypeRepository.GetPaymentTypes());
+            var paymentTypes = paymentTypeRepository.GetPaymentTypes();
+            return View(paymentTypes.ToList());
         }
 
         // GET: PaymentTypes/Details/5
@@ -54,6 +57,7 @@ namespace ProyectoFinal.Controllers
         // GET: PaymentTypes/Create
         public ActionResult Create()
         {
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name");
             return View();
         }
 
@@ -62,7 +66,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "PaymentTypeID,Description,Status")] PaymentType paymentType)
+        public ActionResult Create([Bind(Include = "PaymentTypeID,Description,DurationInMonths,Status,ActivityID")] PaymentType paymentType)
         {
             if (ModelState.IsValid)
             {
@@ -71,6 +75,7 @@ namespace ProyectoFinal.Controllers
                 return RedirectToAction("Index");
             }
 
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", paymentType.ActivityID);
             return View(paymentType);
         }
 
@@ -86,6 +91,7 @@ namespace ProyectoFinal.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", paymentType.ActivityID);
             return View(paymentType);
         }
 
@@ -94,7 +100,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PaymentTypeID,Description,Status")] PaymentType paymentType)
+        public ActionResult Edit([Bind(Include = "PaymentTypeID,Description,DurationInMonths,Status,ActivityID")] PaymentType paymentType)
         {
             if (ModelState.IsValid)
             {
@@ -102,6 +108,7 @@ namespace ProyectoFinal.Controllers
                 paymentTypeRepository.Save();
                 return RedirectToAction("Index");
             }
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", paymentType.ActivityID);
             return View(paymentType);
         }
 

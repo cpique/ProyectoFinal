@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProyectoFinal.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,16 +14,12 @@ namespace ProyectoFinal.Models
 
         [Required]
         public string NameFile { get; set; }
-        public string DisplayName { get; set; }
-        [Required]
-        public string Extension { get; set; }
-        [Required]
-        public string ContentType { get; set; }
-        [Required]
-        public byte[] FileData { get; set; }
-        [Required]
-        public long FileSize { get; set; }
-        [Required]
+
+
+        public string ExerciseName { get; set; }
+        public string Peso { get; set; }
+        public string Repetitions { get; set; }
+
         public DateTime CreationDate { get; set; }
 
         [ForeignKey("RoutineID")]

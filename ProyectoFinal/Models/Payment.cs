@@ -19,6 +19,5 @@ namespace ProyectoFinal.Models
         [ForeignKey("PaymentTypeID")]
         public PaymentType PaymentType { get; set; }
         public int PaymentTypeID { get; set; }
-
     }
 }

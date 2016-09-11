@@ -15,24 +15,28 @@ namespace ProyectoFinal.Controllers
     {
         #region Properties
         private IInstructorRepository instructorRepository;
+        private IActivityRepository activityRepository;
         #endregion
 
         #region Constructors
         public InstructorsController()
         {
             this.instructorRepository = new InstructorRepository(new GymContext());
+            this.activityRepository = new ActivityRepository(new GymContext());
         }
 
-        public InstructorsController(IInstructorRepository instructorRepository)
+        public InstructorsController(IInstructorRepository instructorRepository, IActivityRepository activityRepository)
         {
             this.instructorRepository = instructorRepository;
+            this.activityRepository = activityRepository;
         }
         #endregion
 
         // GET: Instructors
         public ActionResult Index()
         {
-            return View(instructorRepository.GetInstructors());
+            var instructors = instructorRepository.GetInstructors();
+            return View(instructors.ToList());
         }
 
         // GET: Instructors/Details/5
@@ -53,6 +57,7 @@ namespace ProyectoFinal.Controllers
         // GET: Instructors/Create
         public ActionResult Create()
         {
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name");
             return View();
         }
 
@@ -61,7 +66,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "InstructorID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password,PasswordSalt")] Instructor instructor)
+        public ActionResult Create([Bind(Include = "InstructorID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password,PasswordSalt,ActivityID")] Instructor instructor)
         {
             if (ModelState.IsValid)
             {
@@ -70,6 +75,7 @@ namespace ProyectoFinal.Controllers
                 return RedirectToAction("Index");
             }
 
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", instructor.ActivityID);
             return View(instructor);
         }
 
@@ -85,6 +91,7 @@ namespace ProyectoFinal.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", instructor.ActivityID);
             return View(instructor);
         }
 
@@ -93,7 +100,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "InstructorID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password,PasswordSalt")] Instructor instructor)
+        public ActionResult Edit([Bind(Include = "InstructorID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password,PasswordSalt,ActivityID")] Instructor instructor)
         {
             if (ModelState.IsValid)
             {
@@ -101,6 +108,7 @@ namespace ProyectoFinal.Controllers
                 instructorRepository.Save();
                 return RedirectToAction("Index");
             }
+            ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name", instructor.ActivityID);
             return View(instructor);
         }
 

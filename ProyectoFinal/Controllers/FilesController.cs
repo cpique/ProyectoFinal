@@ -35,8 +35,7 @@ namespace ProyectoFinal.Controllers
         // GET: Files
         public ActionResult Index()
         {
-            var files = fileRepository.GetFiles();
-            return View(files.ToList());
+            return View(fileRepository.GetFiles());
         }
 
         // GET: Files/Details/5
@@ -66,7 +65,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "FileID,NameFile,DisplayName,Extension,ContentType,FileData,FileSize,CreationDate,RoutineID")] File file)
+        public ActionResult Create(File file)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +99,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "FileID,NameFile,DisplayName,Extension,ContentType,FileData,FileSize,CreationDate,RoutineID")] File file)
+        public ActionResult Edit(File file)
         {
             if (ModelState.IsValid)
             {

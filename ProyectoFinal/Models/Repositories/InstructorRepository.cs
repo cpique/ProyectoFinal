@@ -23,7 +23,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface implementation
         public IEnumerable<Instructor> GetInstructors()
         {
-            return context.Instructors.ToList();
+            return context.Instructors.Include(i => i.Activity).ToList();
         }
 
         public Instructor GetInstructorByID(int id)

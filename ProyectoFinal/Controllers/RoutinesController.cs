@@ -66,7 +66,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "RoutineID,Description,ClientID")] Routine routine)
+        public ActionResult Create(Routine routine)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "RoutineID,Description,ClientID")] Routine routine)
+        public ActionResult Edit(Routine routine)
         {
             if (ModelState.IsValid)
             {

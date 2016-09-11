@@ -23,8 +23,6 @@ namespace ProyectoFinal.Models
 
         public DbSet<ActivitySchedule> ActivitySchedules { get; set; }
 
-        public DbSet<ActivityType> ActivityTypes { get; set; }
-
         public DbSet<Admin> Admins { get; set; }
 
         public DbSet<Article> Articles { get; set; }
@@ -68,11 +66,11 @@ namespace ProyectoFinal.Models
             var clients = new List<Client>
             {
                 new Client { FirstName = "John", LastName = "Doe", DocType = "DNI", DocNumber = 34578800, BirthDate = new DateTime(1990, 12, 31),
-                DateFrom = new DateTime(2016, 09, 01), DateTo = new DateTime(2016, 12, 31), IdentityCard = "34578644", Email = "john.doe@hotmail.com",
+                DateFrom = new DateTime(2016, 09, 01), Email = "john.doe@hotmail.com",
                 Password = password1, PasswordSalt = passwordSalt1 },
 
                 new Client { FirstName = "Cristian", LastName = "Piqué", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1989, 12, 31),
-                DateFrom = new DateTime(2016, 09, 01), DateTo = new DateTime(2016, 12, 31), IdentityCard = "34578644", Email = "cristian.pique@hotmail.com",
+                DateFrom = new DateTime(2016, 09, 01), Email = "cristian.pique@hotmail.com",
                 Password = password2, PasswordSalt = passwordSalt2 }
             };
 
@@ -114,25 +112,23 @@ namespace ProyectoFinal.Models
                 new Activity { Name = "Boxeo", Description = "Deporte de combate"}
             };
 
-            activities[0].Clients.Add(clientsForActivities[0]);
-            activities[1].Clients.Add(clientsForActivities[1]);
             activities.ForEach(a => context.Activities.Add(a));
             context.SaveChanges();
             #endregion
 
 
-            #region Payment
+            #region PaymentType
             var paymentType = new List<PaymentType>
             {
-                new PaymentType { Description = "Pago mensual", Status = Catalog.Status.Active },
-                new PaymentType { Description = "Pago anual", Status = Catalog.Status.Active }
+                new PaymentType { Description = "Pago mensual", Status = Catalog.Status.Active, ActivityID = 1 },
+                new PaymentType { Description = "Pago anual", Status = Catalog.Status.Active, ActivityID = 1 }
             };
 
             paymentType.ForEach(p => context.PaymentTypes.Add(p));
             context.SaveChanges();
             #endregion
 
-            #region PaymentType
+            #region Payment
             var payments = new List<Payment>
             {
                 new Payment { ClientID = 1, PaymentTypeID = 1, Status = Catalog.Status.Active },

@@ -15,10 +15,12 @@ namespace ProyectoFinal.Tests
     public class ClientControllerTest
     {
         List<Client> clients;
+        Client newClient;
 
         [TestInitialize]
         public void Init()
         {
+            #region ClientsList
             var passwordSalt1 = PasswordUtilities.CreateSalt(16);
             var password1 = PasswordUtilities.GenerateSHA256Hash("12345", passwordSalt1);
             var passwordSalt2 = PasswordUtilities.CreateSalt(16);
@@ -27,17 +29,35 @@ namespace ProyectoFinal.Tests
             clients = new List<Client>
             {
                 new Client { ClientID=1, FirstName = "John", LastName = "Doe", DocType = "DNI", DocNumber = 34578800, BirthDate = new DateTime(1990, 12, 31),
-                DateFrom = new DateTime(2016, 09, 01), DateTo = new DateTime(2016, 12, 31), IdentityCard = "34578644", Email = "john.doe@hotmail.com",
+                DateFrom = new DateTime(2016, 09, 01), Email = "john.doe@hotmail.com",
                 Password = password1, PasswordSalt = passwordSalt1 },
 
                 new Client { ClientID=2, FirstName = "Cristian", LastName = "Piqué", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1989, 12, 31),
-                DateFrom = new DateTime(2016, 09, 01), DateTo = new DateTime(2016, 12, 31), IdentityCard = "34578644", Email = "cristian.pique@hotmail.com",
+                DateFrom = new DateTime(2016, 09, 01), Email = "cristian.pique@hotmail.com",
                 Password = password2, PasswordSalt = passwordSalt2 },
 
                 new Client { ClientID=3, FirstName = "Ted", LastName = "Mosby", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1985, 12, 31),
-                DateFrom = new DateTime(2016, 09, 01), DateTo = new DateTime(2017, 12, 31), IdentityCard = "30000000", Email = "ted.mosby@gmail.com",
+                DateFrom = new DateTime(2016, 09, 01), Email = "ted.mosby@gmail.com",
                 Password = password2, PasswordSalt = passwordSalt2 }
             };
+            #endregion
+
+            #region IsolatedClient
+            var passwordSalt = PasswordUtilities.CreateSalt(16);
+            newClient = new Client
+            {
+                ClientID = 50,
+                FirstName = "John",
+                LastName = "Doe",
+                DocType = "DNI",
+                DocNumber = 34578800,
+                BirthDate = new DateTime(1990, 12, 31),
+                DateFrom = new DateTime(2016, 09, 01),
+                Email = "john.doe@hotmail.com",
+                Password = PasswordUtilities.GenerateSHA256Hash("test", passwordSalt),
+                PasswordSalt = passwordSalt
+            };
+            #endregion
         }
 
         [TestMethod]
@@ -82,6 +102,28 @@ namespace ProyectoFinal.Tests
         [TestMethod]
         public void Create()
         {
+            //Arrange 
+            var clientRepository = Mock.Create<IClientRepository>();
+            Mock.Arrange(() => clientRepository.GetClients())
+                .Returns(clients)
+                .MustBeCalled();
+            Mock.Arrange(() => clientRepository.InsertClient(newClient))
+                .DoInstead(() => clients.Add(newClient))
+                .MustBeCalled();
+            Mock.Arrange(() => clientRepository.Save()).DoNothing();
+
+            ClientsController controller = new ClientsController(clientRepository);
+            //Act
+            int totalClientsBefore = clients.Count;
+
+            controller.Create(newClient);
+
+            ActionResult actionResultAfter = controller.Index();
+            ViewResult viewResultAfter = actionResultAfter as ViewResult;
+            var modelAfter = viewResultAfter.Model as IEnumerable<Client>;
+
+            //Assert
+            Assert.IsTrue(totalClientsBefore + 1 == modelAfter.Count());
         }
 
         [TestMethod]

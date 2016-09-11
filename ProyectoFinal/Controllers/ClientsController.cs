@@ -90,7 +90,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ClientID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password")] Client client)
+        public ActionResult Edit([Bind(Include = "ClientID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,IdentityCard,Email,Password")] Client client)
         {
             if (ModelState.IsValid)
             {
@@ -135,6 +135,32 @@ namespace ProyectoFinal.Controllers
                 clientRepository.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult GetSamples()
+        {
+            List<Client> samples = new List<Client>();
+            var passwordSalt1 = PasswordUtilities.CreateSalt(16);
+            var password1 = PasswordUtilities.GenerateSHA256Hash("12345", passwordSalt1);
+            var passwordSalt2 = PasswordUtilities.CreateSalt(16);
+            var password2 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt2);
+
+            var clients = new List<Client>
+            {
+                new Client { FirstName = "John", LastName = "Doe", DocType = "DNI", DocNumber = 34578800, BirthDate = new DateTime(1990, 12, 31),
+                DateFrom = new DateTime(2016, 09, 01), Email = "john.doe@hotmail.com",
+                Password = password1, PasswordSalt = passwordSalt1 },
+
+                new Client { FirstName = "Cristian", LastName = "Piqué", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1989, 12, 31),
+                DateFrom = new DateTime(2016, 09, 01), Email = "cristian.pique@hotmail.com",
+                Password = password2, PasswordSalt = passwordSalt2 }
+            };
+            return View(clients);
+        }
+
+        public ActionResult GeneratePDF()
+        {
+            return new Rotativa.ActionAsPdf("GetSamples");
         }
     }
 }

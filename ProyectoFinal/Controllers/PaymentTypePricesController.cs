@@ -36,8 +36,7 @@ namespace ProyectoFinal.Controllers
         // GET: PaymentTypePrices
         public ActionResult Index()
         {
-            var paymentTypePrices = paymentTypeRepository.GetPaymentTypes();
-            return View(paymentTypePrices.ToList());
+            return View(paymentTypePriceRepository.GetPaymentTypePrices());
         }
 
         // GET: PaymentTypePrices/Details/5
