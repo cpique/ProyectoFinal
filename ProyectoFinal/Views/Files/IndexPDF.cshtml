@@ -2,14 +2,15 @@
 
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPDF.cshtml";
 }
 
 
 
-<h2>Index</h2>
-<p>
-    @Html.ActionLink("Create New", "Create", new { id = Model.FirstOrDefault().RoutineID })
-</p>
+<h3>Nombre: @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.Client.FirstName) @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.Client.LastName)</h3>
+<h3>Rutina: @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.NameFile)</h3>
+<h3>Nivel: @Enum.GetName(typeof(ProyectoFinal.Utils.Catalog.LevelRoutine), Model.FirstOrDefault().Routine.Level)</h3>
+
 <table class="table">
     <tr>
         <th>
@@ -30,7 +31,6 @@
         <th>
             @Html.DisplayNameFor(model => model.Day)
         </th>
-        <th></th>
     </tr>
 
 @foreach (var item in Model) {
@@ -53,13 +53,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.Day)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.FileID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.FileID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.FileID })
-        </td>
     </tr>
 }
 
 </table>
-@Html.ActionLink("Generar PDF", "GeneratePDF", new { id = Model.FirstOrDefault().RoutineID }, new { target = "_blank" })

@@ -15,6 +15,9 @@
             @Html.DisplayNameFor(model => model.Client.FirstName)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.NameFile)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Description)
         </th>
         <th>
@@ -23,6 +26,12 @@
         <th>
             @Html.DisplayNameFor(model => model.Status)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DaysInWeek)
+        </th>
         <th></th>
     </tr>
 
@@ -30,6 +39,9 @@
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Client.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NameFile)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Description)
@@ -41,9 +53,16 @@
             @Html.DisplayFor(modelItem => item.Status)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.CreationDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DaysInWeek)
+        </td>
+        <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.RoutineID }) |
             @Html.ActionLink("Details", "Details", new { id=item.RoutineID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.RoutineID })
+            @Html.ActionLink("Delete", "Delete", new { id=item.RoutineID }) | 
+            @Html.ActionLink("Ejercicios", "Index", "Files", new { id= item.RoutineID }, null)
         </td>
     </tr>
 }

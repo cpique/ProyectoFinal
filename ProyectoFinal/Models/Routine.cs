@@ -11,9 +11,13 @@ namespace ProyectoFinal.Models
     public class Routine
     {
         public int RoutineID { get; set; }
+        [Required]
+        public string NameFile { get; set; }
         public string Description { get; set; }
         public Catalog.LevelRoutine Level { get; set; }
         public Catalog.Status Status { get; set; }
+        public DateTime CreationDate { get; set; }
+        public int DaysInWeek { get; set; }
 
         [ForeignKey("ClientID")]
         public virtual Client Client { get; set; }

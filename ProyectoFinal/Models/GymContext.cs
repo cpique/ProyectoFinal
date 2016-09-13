@@ -81,8 +81,8 @@ namespace ProyectoFinal.Models
             #region Routines
             var routines = new List<Routine>
             {
-                new Routine { ClientID = 1, Description = "Rutina personalizada", Files = new List<File>() },
-                new Routine { ClientID = 2, Description = "Rutina gimnasio 5 días a la semana", Files = new List<File>() }
+                new Routine { ClientID = 1, NameFile="CristianPique v1.0", Description = "Rutina personalizada", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=5 },
+                new Routine { ClientID = 2, NameFile="CristianPique v1.0", Description = "Rutina gimnasio 5 días a la semana", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=4 }
             };
 
             routines.ForEach(r => context.Routines.Add(r));
@@ -116,6 +116,16 @@ namespace ProyectoFinal.Models
             context.SaveChanges();
             #endregion
 
+            #region Files
+            var files = new List<File>
+            {
+                new File { RoutineID=1, ExerciseName="Pecho inclinado", MuscleName="Pecho", Peso="20", Repetitions="10x3" },
+                new File { RoutineID=1, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="8", Repetitions="12x3" },
+            };
+
+            files.ForEach(f => context.Files.Add(f));
+            context.SaveChanges();
+            #endregion
 
             #region PaymentType
             var paymentType = new List<PaymentType>

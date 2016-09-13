@@ -20,6 +20,14 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.NameFile)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NameFile)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
 
@@ -43,6 +51,21 @@
             @Html.DisplayFor(model => model.Status)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DaysInWeek)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DaysInWeek)
+        </dd>
     </dl>
 
     @using (Html.BeginForm()) {

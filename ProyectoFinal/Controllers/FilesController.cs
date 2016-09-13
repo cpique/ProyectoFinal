@@ -33,9 +33,17 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Files
-        public ActionResult Index()
+        public ActionResult Index(int? id)
         {
-            return View(fileRepository.GetFiles());
+            if(id!=null)
+            {
+                return View(fileRepository.GetFiles().Where(f => f.RoutineID == id));
+            }
+            else
+            {
+                return View(fileRepository.GetFiles());
+            }
+
         }
 
         // GET: Files/Details/5
@@ -54,10 +62,25 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: Files/Create
-        public ActionResult Create()
+        public ActionResult Create(int? id)
         {
-            ViewBag.RoutineID = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description");
-            return View();
+            SelectList selectList;
+            string viewName = string.Empty;
+            if (id != null)
+            {
+                var routine = routineRepository.GetRoutineByID((int)id);
+                var model = new File { Routine = routine, RoutineID = (int)id };
+                selectList = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description", id.ToString());
+                ViewBag.RoutineID = selectList;
+                return View("CreateFromRoutine", model);
+            }
+            else
+            {
+                selectList = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description");
+                ViewBag.RoutineID = selectList;
+                return View();
+            }
+
         }
 
         // POST: Files/Create
@@ -71,7 +94,7 @@ namespace ProyectoFinal.Controllers
             {
                 fileRepository.InsertFile(file);
                 fileRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { id = file.RoutineID });
             }
 
             ViewBag.RoutineID = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description", file.RoutineID);
@@ -135,6 +158,16 @@ namespace ProyectoFinal.Controllers
             fileRepository.DeleteFile((int)id);
             fileRepository.Save();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult IndexPDF(int id)
+        {
+            return View(fileRepository.GetFiles().Where(f => f.RoutineID == id));
+        }
+
+        public ActionResult GeneratePDF(int id)
+        {
+            return new Rotativa.ActionAsPdf("IndexPDF", new { id = id});
         }
 
         protected override void Dispose(bool disposing)
