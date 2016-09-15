@@ -11,15 +11,18 @@ namespace ProyectoFinal.Controllers
     public class HomeController : Controller
     {
         private IClientRepository clientRepository;
+        private IAssistanceRepository assistanceRepository;
 
         public HomeController()
         {
             this.clientRepository = new ClientRepository(new GymContext());
+            this.assistanceRepository = new AssistanceRepository(new GymContext());
         }
 
-        public HomeController(IClientRepository clientRepository)
+        public HomeController(IClientRepository clientRepository, IAssistanceRepository assistanceRepository)
         {
             this.clientRepository = clientRepository;
+            this.assistanceRepository = assistanceRepository;
         }
 
         public ActionResult Index()
@@ -48,6 +51,11 @@ namespace ProyectoFinal.Controllers
 
             if(client != null && clientRepository.HasActivePayment(client))
             {
+                //Guardar nueva asistencia
+                Assistance assistance = new Assistance { assistanceDate = DateTime.Now, ClientID = client.ClientID };
+                assistanceRepository.InsertAssistance(assistance);
+                assistanceRepository.Save();
+
                 return View("About");
             }
             else
