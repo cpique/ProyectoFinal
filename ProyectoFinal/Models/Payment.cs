@@ -12,6 +12,8 @@ namespace ProyectoFinal.Models
         public int PaymentID { get; set; }
         public Catalog.Status Status { get; set; }
 
+        public DateTime ExpirationDate { get; set; }
+
         [ForeignKey("ClientID")]
         public Client Client { get; set; }
         public int ClientID { get; set; }

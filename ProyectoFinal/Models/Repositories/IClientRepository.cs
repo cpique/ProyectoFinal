@@ -10,10 +10,12 @@ namespace ProyectoFinal.Models.Repositories
     {
         IEnumerable<Client> GetClients();
         Client GetClientByID(int clientID);
+        Client GetClientByDocNumber(int docNumber);
         void InsertClient(Client client);
         void DeleteClient(int clientID);
         void UpdateClient(Client client);
         void Save();
         void HashPassword(Client client);
+        bool HasActivePayment(Client client);
     }
 }

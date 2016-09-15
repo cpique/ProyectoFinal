@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
+using System.Web.Mvc;
 
 namespace ProyectoFinal.Models.Repositories
 {
@@ -59,6 +61,28 @@ namespace ProyectoFinal.Models.Repositories
             client.Password = PasswordUtilities.GenerateSHA256Hash(client.Password, client.PasswordSalt);
         }
 
+        public Client GetClientByDocNumber(int docNumber)
+        {
+            return context.Clients.Where(c => c.DocNumber == docNumber).First();
+        }
+
+        public bool HasActivePayment(Client client)
+        {
+            List<Payment> payments = context.Clients
+                                            .Include(c => c.Payments)
+                                            .ToList()
+                                            .Where(c => c.ClientID == client.ClientID).FirstOrDefault()
+                                            .Payments.ToList();
+            foreach (var payment in payments)
+            {
+                if (payment.Status == Catalog.Status.Active && payment.ExpirationDate.Date >= DateTime.Now.Date)
+                {
+                    return true;
+                } 
+            }
+            return false;
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -77,6 +101,7 @@ namespace ProyectoFinal.Models.Repositories
             }
             this.disposed = true;
         }
+
 
     }
 }

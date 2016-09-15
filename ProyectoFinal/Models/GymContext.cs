@@ -141,8 +141,8 @@ namespace ProyectoFinal.Models
             #region Payment
             var payments = new List<Payment>
             {
-                new Payment { ClientID = 1, PaymentTypeID = 1, Status = Catalog.Status.Active },
-                new Payment { ClientID = 2, PaymentTypeID = 2, Status = Catalog.Status.Active }
+                new Payment { ClientID = 1, PaymentTypeID = 1, Status = Catalog.Status.Active, ExpirationDate = new DateTime(2016,12,12) },
+                new Payment { ClientID = 2, PaymentTypeID = 2, Status = Catalog.Status.Active, ExpirationDate = new DateTime(2016,12,12) }
             };
 
             payments.ForEach(p => context.Payments.Add(p));
