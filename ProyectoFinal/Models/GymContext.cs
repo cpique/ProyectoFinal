@@ -149,6 +149,18 @@ namespace ProyectoFinal.Models
             context.SaveChanges();
             #endregion
 
+            #region
+            var paymentTypePrices = new List<PaymentTypePrice>
+            {
+                new PaymentTypePrice { DateFrom = new DateTime(2016,01,01), PaymentTypeID = 1, Price = 200 },
+                new PaymentTypePrice { DateFrom = new DateTime(2016,05,01), PaymentTypeID = 1, Price = 300 },
+                new PaymentTypePrice { DateFrom = new DateTime(2016,01,01), PaymentTypeID = 1, Price = 2000 }
+            };
+
+            paymentTypePrices.ForEach(ptp => context.PaymentTypePrices.Add(ptp));
+            context.SaveChanges();
+            #endregion
+
         }
 
     }
