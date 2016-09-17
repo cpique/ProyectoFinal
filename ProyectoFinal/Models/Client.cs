@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProyectoFinal.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -34,6 +35,9 @@ namespace ProyectoFinal.Models
         public string Password { get; set; }
         [Editable(false)]
         public string PasswordSalt { get; set; }
+
+        [Required]
+        public Catalog.Roles Role { get; set; }
 
         public ICollection<MedicalRecord> MedicalRecords { get; set; }
         public ICollection<Routine> Routines { get; set; }

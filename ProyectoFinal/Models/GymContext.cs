@@ -67,11 +67,11 @@ namespace ProyectoFinal.Models
             {
                 new Client { FirstName = "John", LastName = "Doe", DocType = "DNI", DocNumber = 34578800, BirthDate = new DateTime(1990, 12, 31),
                 DateFrom = new DateTime(2016, 09, 01), Email = "john.doe@hotmail.com",
-                Password = password1, PasswordSalt = passwordSalt1 },
+                Password = password1, PasswordSalt = passwordSalt1, Role = Catalog.Roles.Client },
 
                 new Client { FirstName = "Cristian", LastName = "Piqué", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1989, 12, 31),
                 DateFrom = new DateTime(2016, 09, 01), Email = "cristian.pique@hotmail.com",
-                Password = password2, PasswordSalt = passwordSalt2 }
+                Password = password2, PasswordSalt = passwordSalt2, Role = Catalog.Roles.Admin }
             };
 
             clients.ForEach(c => context.Clients.Add(c));

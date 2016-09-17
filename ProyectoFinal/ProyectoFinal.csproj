@@ -148,6 +148,7 @@
     <Compile Include="Controllers\PaymentTypesController.cs" />
     <Compile Include="Controllers\RoutinesController.cs" />
     <Compile Include="Controllers\StocksController.cs" />
+    <Compile Include="Filters\AuthorizationPrivilege.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -200,6 +201,7 @@
     <Compile Include="Models\Routine.cs" />
     <Compile Include="Models\Stock.cs" />
     <Compile Include="Models\Supplier.cs" />
+    <Compile Include="Models\ViewModels\ViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -320,6 +322,9 @@
     <Content Include="Views\Files\Index.cshtml" />
     <Content Include="Views\Files\IndexPDF.cshtml" />
     <Content Include="Views\Shared\_LayoutPDF.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Home\Access.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
