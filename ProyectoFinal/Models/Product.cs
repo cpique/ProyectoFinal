@@ -7,13 +7,17 @@ using static ProyectoFinal.Utils.Catalog;
 
 namespace ProyectoFinal.Models
 {
-    public class Article
+    public class Product
     {
-        public int ArticleID { get; set; }
-        public string Type { get; set; }
-        public float Price { get; set; }
-        public ItemStatus Status { get; set; }
+        public int ProductID { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public ProductType Type { get; set; }
+        public double Price { get; set; }
+        public ProductStatus Status { get; set; }
         public DateTime PurchaseDate { get; set; }
+        public int UnitsInStock { get; set; }
+        public int UnitsInOrder { get; set; }
 
         [ForeignKey("SupplierID")]
         public Supplier Supplier { get; set; }

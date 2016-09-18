@@ -5,3 +5,4 @@
 3 - En vistas, las properties int renderizan en textbox tipo number. Quitar las flechas de los textboxs.
 4 - Campos tipo float como por ej height en Medical Records, no me permiten ingresar '.' ni ','.
 5 - Cambiar model/controller/views de File. La entidad debe llamarse Exercise, o algun nombre similar que represente un ejercicio, no un archivo/file
+6 - Agregar Orders para manejar pedidos a proveedores

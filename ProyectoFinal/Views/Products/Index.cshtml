@@ -1,4 +1,6 @@
-﻿@model IEnumerable<ProyectoFinal.Models.Article>
+﻿@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination;
+@model IEnumerable<ProyectoFinal.Models.Product>
 
 @{
     ViewBag.Title = "Index";
@@ -12,16 +14,19 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Supplier.BusinessName)
+            @Html.DisplayNameFor(model => model.Type)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Type)
+            @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Price)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Supplier.BusinessName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.PurchaseDate)
@@ -32,10 +37,10 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Supplier.BusinessName)
+            @Html.DisplayFor(modelItem => item.Type)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Type)
+            @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Price)
@@ -44,14 +49,19 @@
             @Html.DisplayFor(modelItem => item.Status)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.Supplier.BusinessName)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.PurchaseDate)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ArticleID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ArticleID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ArticleID })
+            @Html.ActionLink("Edit", "Edit", new { id=item.ProductID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ProductID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ProductID })
         </td>
     </tr>
 }
 
 </table>
+<br />
+@Html.Raw( @Html.Pager((IPagination)Model) )

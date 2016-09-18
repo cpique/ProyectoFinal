@@ -8,133 +8,135 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using MvcContrib.Pagination;
 
 namespace ProyectoFinal.Controllers
 {
-    public class MachinesController : Controller
+    public class ProductsController : Controller
     {
         #region Properties
-        private IMachineRepository machineRepository;
+        private IProductRepository productRepository;
         private ISupplierRepository supplierRepository;
         #endregion
 
         #region Constructors
-        public MachinesController()
+        public ProductsController()
         {
-            this.machineRepository = new MachineRepository(new GymContext());
+            this.productRepository = new ProductRepository(new GymContext());
             this.supplierRepository = new SupplierRepository(new GymContext());
         }
 
-        public MachinesController(IMachineRepository machineRepository, ISupplierRepository supplierRepository)
+        public ProductsController(IProductRepository ProductRepository, ISupplierRepository supplierRepository)
         {
-            this.machineRepository = machineRepository;
+            this.productRepository = ProductRepository;
             this.supplierRepository = supplierRepository;
         }
         #endregion
 
-        // GET: Machines
-        public ActionResult Index()
+        // GET: Products
+        public ActionResult Index(int? page)
         {
-            var machines = machineRepository.GetMachines();
-            return View(machines.ToList());
+            var products = productRepository.GetProducts()
+                                            .AsPagination(page ?? 1, 10);
+            return View(products);
         }
 
-        // GET: Machines/Details/5
+        // GET: Products/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Machine machine = machineRepository.GetMachineByID((int)id);
-            if (machine == null)
+            Product Product = productRepository.GetProductByID((int)id);
+            if (Product == null)
             {
                 return HttpNotFound();
             }
-            return View(machine);
+            return View(Product);
         }
 
-        // GET: Machines/Create
+        // GET: Products/Create
         public ActionResult Create()
         {
             ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName");
             return View();
         }
 
-        // POST: Machines/Create
+        // POST: Products/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MachineID,Type,Price,Status,PurchaseDate,SupplierID")] Machine machine)
+        public ActionResult Create(Product Product)
         {
             if (ModelState.IsValid)
             {
-                machineRepository.InsertMachine(machine);
-                machineRepository.Save();
+                productRepository.InsertProduct(Product);
+                productRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", machine.SupplierID);
-            return View(machine);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", Product.SupplierID);
+            return View(Product);
         }
 
-        // GET: Machines/Edit/5
+        // GET: Products/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Machine machine = machineRepository.GetMachineByID((int)id);
-            if (machine == null)
+            Product Product = productRepository.GetProductByID((int)id);
+            if (Product == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", machine.SupplierID);
-            return View(machine);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", Product.SupplierID);
+            return View(Product);
         }
 
-        // POST: Machines/Edit/5
+        // POST: Products/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MachineID,Type,Price,Status,PurchaseDate,SupplierID")] Machine machine)
+        public ActionResult Edit([Bind(Include = "ProductID,Type,Price,Status,PurchaseDate,SupplierID")] Product Product)
         {
             if (ModelState.IsValid)
             {
-                machineRepository.UpdateMachine(machine);
-                machineRepository.Save();
+                productRepository.UpdateProduct(Product);
+                productRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", machine.SupplierID);
-            return View(machine);
+            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", Product.SupplierID);
+            return View(Product);
         }
 
-        // GET: Machines/Delete/5
+        // GET: Products/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Machine machine = machineRepository.GetMachineByID((int)id);
-            if (machine == null)
+            Product Product = productRepository.GetProductByID((int)id);
+            if (Product == null)
             {
                 return HttpNotFound();
             }
-            return View(machine);
+            return View(Product);
         }
 
-        // POST: Machines/Delete/5
+        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Machine machine = machineRepository.GetMachineByID((int)id);
-            machineRepository.DeleteMachine((int)id);
-            machineRepository.Save();
+            Product Product = productRepository.GetProductByID((int)id);
+            productRepository.DeleteProduct((int)id);
+            productRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -142,7 +144,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                machineRepository.Dispose();
+                productRepository.Dispose();
             }
             base.Dispose(disposing);
         }

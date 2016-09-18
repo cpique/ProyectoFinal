@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ProyectoFinal.Models.Repositories
 {
-    public class MachineRepository : IMachineRepository, IDisposable
+    public class ProductRepository : IProductRepository, IDisposable
     {
         #region Properties
         public GymContext context;
@@ -14,32 +14,32 @@ namespace ProyectoFinal.Models.Repositories
         #endregion
 
         #region Constructors
-        public MachineRepository(GymContext context)
+        public ProductRepository(GymContext context)
         {
             this.context = context;
         }
         #endregion
 
         #region Interface implementation
-        public IEnumerable<Machine> GetMachines()
+        public IEnumerable<Product> GetProducts()
         {
-            return context.Machines.Include(m => m.Supplier).ToList();
+            return context.Products.Include(m => m.Supplier).OrderByDescending(p => p.Name).ToList();
         }
 
-        public Machine GetMachineByID(int id)
+        public Product GetProductByID(int id)
         {
-            return context.Machines.Find(id);
+            return context.Products.Include(m => m.Supplier).Where(p => p.ProductID == id).FirstOrDefault();
         }
 
-        public void InsertMachine(Machine machine)
+        public void InsertProduct(Product product)
         {
-            context.Machines.Add(machine);
+            context.Products.Add(product);
         }
 
-        public void DeleteMachine(int id)
+        public void DeleteProduct(int id)
         {
-            Machine machine = context.Machines.Find(id);
-            context.Machines.Remove(machine);
+            Product product = context.Products.Find(id);
+            context.Products.Remove(product);
         }
 
         public void Save()
@@ -47,9 +47,9 @@ namespace ProyectoFinal.Models.Repositories
             context.SaveChanges();
         }
 
-        public void UpdateMachine(Machine machine)
+        public void UpdateProduct(Product product)
         {
-            context.Entry(machine).State = EntityState.Modified;
+            context.Entry(product).State = EntityState.Modified;
         }
 
         public void Dispose()

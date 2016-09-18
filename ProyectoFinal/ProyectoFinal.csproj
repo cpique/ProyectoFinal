@@ -57,6 +57,18 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Mvc, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mvc2Futures.2.0.50217.0\lib\Microsoft.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MvcContrib, Version=2.0.95.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcContrib.2.0.95.0\lib\MvcContrib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Rotativa.1.6.4\lib\net40\Rotativa.dll</HintPath>
       <Private>True</Private>
@@ -135,19 +147,19 @@
     <Compile Include="Controllers\ActivitiesController.cs" />
     <Compile Include="Controllers\ActivitySchedulesController.cs" />
     <Compile Include="Controllers\AdminsController.cs" />
-    <Compile Include="Controllers\ArticlesController.cs" />
     <Compile Include="Controllers\AssistancesController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstructorsController.cs" />
-    <Compile Include="Controllers\MachinesController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\MedicalRecordsController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PaymentTypePricesController.cs" />
     <Compile Include="Controllers\PaymentTypesController.cs" />
     <Compile Include="Controllers\RoutinesController.cs" />
     <Compile Include="Controllers\StocksController.cs" />
+    <Compile Include="Controllers\SuppliersController.cs" />
     <Compile Include="Filters\AuthorizationPrivilege.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -155,7 +167,6 @@
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\ActivitySchedule.cs" />
     <Compile Include="Models\Admin.cs" />
-    <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Assistance.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\File.cs" />
@@ -166,11 +177,10 @@
     <Compile Include="Models\Repositories\ActivityScheduleRepository.cs" />
     <Compile Include="Models\Repositories\AdminRepository.cs" />
     <Compile Include="Models\Repositories\AssistanceRepository.cs" />
-    <Compile Include="Models\Repositories\ArticleRepository.cs" />
     <Compile Include="Models\Repositories\FileRepository.cs" />
     <Compile Include="Models\Repositories\IActivityScheduleRepository.cs" />
     <Compile Include="Models\Instructor.cs" />
-    <Compile Include="Models\Machine.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="Models\MedicalRecord.cs" />
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\PaymentType.cs" />
@@ -179,7 +189,6 @@
     <Compile Include="Models\Repositories\ClientRepository.cs" />
     <Compile Include="Models\Repositories\IActivityRepository.cs" />
     <Compile Include="Models\Repositories\IAdminRepository.cs" />
-    <Compile Include="Models\Repositories\IArticleRepository.cs" />
     <Compile Include="Models\Repositories\IAssistanceRepository.cs" />
     <Compile Include="Models\Repositories\IClientRepository.cs" />
     <Compile Include="Models\Repositories\IMedicalRecordRepository.cs" />
@@ -190,10 +199,10 @@
     <Compile Include="Models\Repositories\ISupplierRepository.cs" />
     <Compile Include="Models\Repositories\IPaymentTypeRepository.cs" />
     <Compile Include="Models\Repositories\IPaymentTypePriceRepository.cs" />
-    <Compile Include="Models\Repositories\IMachineRepository.cs" />
+    <Compile Include="Models\Repositories\IProductRepository.cs" />
     <Compile Include="Models\Repositories\IInstructorRepository.cs" />
     <Compile Include="Models\Repositories\IFileRepository.cs" />
-    <Compile Include="Models\Repositories\MachineRepository.cs" />
+    <Compile Include="Models\Repositories\ProductRepository.cs" />
     <Compile Include="Models\Repositories\MedicalRecordRepository.cs" />
     <Compile Include="Models\Repositories\PaymentRepository.cs" />
     <Compile Include="Models\Repositories\PaymentTypePriceRepository.cs" />
@@ -283,11 +292,6 @@
     <Content Include="Views\Admins\Details.cshtml" />
     <Content Include="Views\Admins\Edit.cshtml" />
     <Content Include="Views\Admins\Index.cshtml" />
-    <Content Include="Views\Articles\Create.cshtml" />
-    <Content Include="Views\Articles\Delete.cshtml" />
-    <Content Include="Views\Articles\Details.cshtml" />
-    <Content Include="Views\Articles\Edit.cshtml" />
-    <Content Include="Views\Articles\Index.cshtml" />
     <Content Include="Views\Assistances\Create.cshtml" />
     <Content Include="Views\Assistances\Delete.cshtml" />
     <Content Include="Views\Assistances\Details.cshtml" />
@@ -298,11 +302,6 @@
     <Content Include="Views\Instructors\Details.cshtml" />
     <Content Include="Views\Instructors\Edit.cshtml" />
     <Content Include="Views\Instructors\Index.cshtml" />
-    <Content Include="Views\Machines\Create.cshtml" />
-    <Content Include="Views\Machines\Delete.cshtml" />
-    <Content Include="Views\Machines\Details.cshtml" />
-    <Content Include="Views\Machines\Edit.cshtml" />
-    <Content Include="Views\Machines\Index.cshtml" />
     <Content Include="Views\PaymentTypePrices\Create.cshtml" />
     <Content Include="Views\PaymentTypePrices\Delete.cshtml" />
     <Content Include="Views\PaymentTypePrices\Details.cshtml" />
@@ -325,6 +324,16 @@
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\Access.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\Delete.cshtml" />
+    <Content Include="Views\Products\Details.cshtml" />
+    <Content Include="Views\Products\Edit.cshtml" />
+    <Content Include="Views\Suppliers\Create.cshtml" />
+    <Content Include="Views\Suppliers\Delete.cshtml" />
+    <Content Include="Views\Suppliers\Details.cshtml" />
+    <Content Include="Views\Suppliers\Edit.cshtml" />
+    <Content Include="Views\Suppliers\Index.cshtml" />
+    <Content Include="Views\Products\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

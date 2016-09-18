@@ -11,130 +11,122 @@ using ProyectoFinal.Models.Repositories;
 
 namespace ProyectoFinal.Controllers
 {
-    public class ArticlesController : Controller
+    public class SuppliersController : Controller
     {
         #region Properties
-        private IArticleRepository articleRepository;
         private ISupplierRepository supplierRepository;
         #endregion
 
         #region Constructors
-        public ArticlesController()
+        public SuppliersController(ISupplierRepository supplierRepository)
         {
-            this.articleRepository = new ArticleRepository(new GymContext());
-            this.supplierRepository = new SupplierRepository(new GymContext());
+            this.supplierRepository = supplierRepository;
         }
 
-        public ArticlesController(IArticleRepository articleRepository, ISupplierRepository supplierRepository)
+        public SuppliersController()
         {
-            this.articleRepository = articleRepository;
-            this.supplierRepository = supplierRepository;
+            this.supplierRepository = new SupplierRepository(new GymContext());
         }
         #endregion
 
-        // GET: Articles
+        // GET: Suppliers
         public ActionResult Index()
         {
-            var articles = articleRepository.GetArticles();
-            return View(articles);
+            return View(supplierRepository.GetSuppliers());
         }
 
-        // GET: Articles/Details/5
+        // GET: Suppliers/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = articleRepository.GetArticleByID((int)id);
-            if (article == null)
+            Supplier supplier = supplierRepository.GetSupplierByID((int)id);
+            if (supplier == null)
             {
                 return HttpNotFound();
             }
-            return View(article);
+            return View(supplier);
         }
 
-        // GET: Articles/Create
+        // GET: Suppliers/Create
         public ActionResult Create()
         {
-            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName");
             return View();
         }
 
-        // POST: Articles/Create
+        // POST: Suppliers/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ArticleID,Type,Price,Status,PurchaseDate,SupplierID")] Article article)
+        public ActionResult Create([Bind(Include = "SupplierID,BusinessName,Email,PhoneNumber,Address")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {
-                articleRepository.InsertArticle(article);
-                articleRepository.Save();
+                supplierRepository.InsertSupplier(supplier);
+                supplierRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", article.SupplierID);
-            return View(article);
+            return View(supplier);
         }
 
-        // GET: Articles/Edit/5
+        // GET: Suppliers/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = articleRepository.GetArticleByID((int)id);
-            if (article == null)
+            Supplier supplier = supplierRepository.GetSupplierByID((int)id);
+            if (supplier == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", article.SupplierID);
-            return View(article);
+            return View(supplier);
         }
 
-        // POST: Articles/Edit/5
+        // POST: Suppliers/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ArticleID,Type,Price,Status,PurchaseDate,SupplierID")] Article article)
+        public ActionResult Edit([Bind(Include = "SupplierID,BusinessName,Email,PhoneNumber,Address")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {
-                articleRepository.UpdateArticle(article);
-                articleRepository.Save();
+                supplierRepository.UpdateSupplier(supplier);
+                supplierRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.SupplierID = new SelectList(supplierRepository.GetSuppliers(), "SupplierID", "BusinessName", article.SupplierID);
-            return View(article);
+            return View(supplier);
         }
 
-        // GET: Articles/Delete/5
+        // GET: Suppliers/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = articleRepository.GetArticleByID((int)id);
-            if (article == null)
+            Supplier supplier = supplierRepository.GetSupplierByID((int)id);
+            if (supplier == null)
             {
                 return HttpNotFound();
             }
-            return View(article);
+            return View(supplier);
         }
 
-        // POST: Articles/Delete/5
+        // POST: Suppliers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Article article = articleRepository.GetArticleByID((int)id);
-            articleRepository.DeleteArticle((int)id);
-            articleRepository.Save();
+            Supplier supplier = supplierRepository.GetSupplierByID((int)id);
+            supplierRepository.DeleteSupplier((int)id);
+            supplierRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -142,7 +134,7 @@ namespace ProyectoFinal.Controllers
         {
             if (disposing)
             {
-                articleRepository.Dispose();
+                supplierRepository.Dispose();
             }
             base.Dispose(disposing);
         }
