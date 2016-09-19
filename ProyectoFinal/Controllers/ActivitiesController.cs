@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using System.Configuration;
+using MvcContrib.Pagination;
 
 namespace ProyectoFinal.Controllers
 {
@@ -30,9 +32,12 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Activities
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            return View(activityRepository.GetActivities());
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
+            var activities = activityRepository.GetActivities()
+                                               .AsPagination(page ?? 1, pageSize);
+            return View(activities);
         }
 
         // GET: Activities/Details/5

@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<ProyectoFinal.Models.File>
-
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination;
 @{
     ViewBag.Title = "Index";
 }
@@ -10,6 +11,13 @@
 <p>
     @Html.ActionLink("Create New", "Create", new { id = Model.FirstOrDefault().RoutineID })
 </p>
+@Html.Raw(@Html.Pager((IPagination)Model)
+                .Format("Mostrando {0}-{1} de {2} | ")
+                .First("Primero")
+                .Previous("Anterior")
+                .Next("Siguiente")
+                .Last("Último")
+         )
 <table class="table">
     <tr>
         <th>
@@ -56,10 +64,19 @@
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.FileID }) |
             @Html.ActionLink("Details", "Details", new { id=item.FileID }) |
+            @Html.ActionLink("Ver más", "IndexPDF", new { id = item.RoutineID }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.FileID })
         </td>
     </tr>
 }
 
 </table>
-@Html.ActionLink("Generar PDF", "GeneratePDF", new { id = Model.FirstOrDefault().RoutineID }, new { target = "_blank" })
+@Html.Raw(@Html.Pager((IPagination)Model)
+                .Format("Mostrando {0}-{1} de {2} | ")
+                .First("Primero")
+                .Previous("Anterior")
+                .Next("Siguiente")
+                .Last("Último")
+         )
+<br />
+@Html.ActionLink("Preview", "IndexPDF", new { id = Model.FirstOrDefault().RoutineID })

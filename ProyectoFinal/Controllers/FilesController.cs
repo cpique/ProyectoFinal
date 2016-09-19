@@ -8,6 +8,10 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using MvcContrib.Pagination;
+using System.Configuration;
+using System.Collections.Specialized;
+using System.IO;
 
 namespace ProyectoFinal.Controllers
 {
@@ -33,15 +37,17 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Files
-        public ActionResult Index(int? id)
+        public ActionResult Index(int? id, int? page)
         {
-            if(id!=null)
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
+
+            if (id!=null)
             {
-                return View(fileRepository.GetFiles().Where(f => f.RoutineID == id));
+                return View(fileRepository.GetFiles().Where(f => f.RoutineID == id).AsPagination(page??1, pageSize));
             }
             else
             {
-                return View(fileRepository.GetFiles());
+                return View(fileRepository.GetFiles().AsPagination(page ?? 1, pageSize));
             }
 
         }
@@ -53,7 +59,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            File file = fileRepository.GetFileByID((int)id);
+            ProyectoFinal.Models.File file = fileRepository.GetFileByID((int)id);
             if (file == null)
             {
                 return HttpNotFound();
@@ -69,7 +75,7 @@ namespace ProyectoFinal.Controllers
             if (id != null)
             {
                 var routine = routineRepository.GetRoutineByID((int)id);
-                var model = new File { Routine = routine, RoutineID = (int)id };
+                var model = new ProyectoFinal.Models.File { Routine = routine, RoutineID = (int)id };
                 selectList = new SelectList(routineRepository.GetRoutines(), "RoutineID", "Description", id.ToString());
                 ViewBag.RoutineID = selectList;
                 return View("CreateFromRoutine", model);
@@ -88,7 +94,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(File file)
+        public ActionResult Create(ProyectoFinal.Models.File file)
         {
             if (ModelState.IsValid)
             {
@@ -108,7 +114,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            File file = fileRepository.GetFileByID((int)id);
+            ProyectoFinal.Models.File file = fileRepository.GetFileByID((int)id);
             if (file == null)
             {
                 return HttpNotFound();
@@ -122,7 +128,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(File file)
+        public ActionResult Edit(ProyectoFinal.Models.File file)
         {
             if (ModelState.IsValid)
             {
@@ -141,7 +147,7 @@ namespace ProyectoFinal.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            File file = fileRepository.GetFileByID((int)id);
+            ProyectoFinal.Models.File file = fileRepository.GetFileByID((int)id);
             if (file == null)
             {
                 return HttpNotFound();
@@ -154,7 +160,7 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            File file = fileRepository.GetFileByID((int)id);
+            ProyectoFinal.Models.File file = fileRepository.GetFileByID((int)id);
             fileRepository.DeleteFile((int)id);
             fileRepository.Save();
             return RedirectToAction("Index");
@@ -165,9 +171,24 @@ namespace ProyectoFinal.Controllers
             return View(fileRepository.GetFiles().Where(f => f.RoutineID == id));
         }
 
-        public ActionResult GeneratePDF(int id)
+        public FileResult GeneratePDF(int id)
         {
-            return new Rotativa.ActionAsPdf("IndexPDF", new { id = id});
+            string apiKey = ConfigurationManager.AppSettings["API_KEY"];
+            string value = string.Format("http://amosgym.azurewebsites.net/Files/IndexPDF/{0}", id.ToString());
+
+            using (var client = new WebClient())
+            {
+                NameValueCollection options = new NameValueCollection();
+                options.Add("apikey", apiKey);
+                options.Add("value", value);
+
+                // Call the API convert to a PDF
+                byte[] result = client.UploadValues("http://api.html2pdfrocket.com/pdf", options);
+
+                // Download to the client
+                return File(result, System.Net.Mime.MediaTypeNames.Application.Pdf, "MiRutina.pdf");
+
+            }
         }
 
         protected override void Dispose(bool disposing)

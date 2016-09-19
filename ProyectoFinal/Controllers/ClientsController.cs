@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Utils;
 using ProyectoFinal.Models.Repositories;
+using System.Configuration;
+using MvcContrib.Pagination;
 
 namespace ProyectoFinal.Controllers
 {
@@ -27,9 +29,12 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: Clients
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            return View(clientRepository.GetClients());
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
+            var clients = clientRepository.GetClients()
+                                          .AsPagination(page ?? 1, pageSize);
+            return View(clients);
         }
 
         // GET: Clients/Details/5
@@ -156,11 +161,6 @@ namespace ProyectoFinal.Controllers
                 Password = password2, PasswordSalt = passwordSalt2 }
             };
             return View(clients);
-        }
-
-        public ActionResult GeneratePDF()
-        {
-            return new Rotativa.ActionAsPdf("GetSamples");
         }
     }
 }

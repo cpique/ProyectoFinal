@@ -11,6 +11,13 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+@Html.Raw(@Html.Pager((IPagination)Model)
+                .Format("Mostrando {0}-{1} de {2} | ")
+                .First("Primero")
+                .Previous("Anterior")
+                .Next("Siguiente")
+                .Last("Último")
+         )
 <table class="table">
     <tr>
         <th>
@@ -61,7 +68,11 @@
         </td>
     </tr>
 }
-
 </table>
-<br />
-@Html.Raw( @Html.Pager((IPagination)Model) )
+@Html.Raw( @Html.Pager((IPagination)Model)
+                .Format("Mostrando {0}-{1} de {2} | ")
+                .First("Primero")
+                .Previous("Anterior")
+                .Next("Siguiente")
+                .Last("Último")
+         )

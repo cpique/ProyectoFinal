@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using MvcContrib.Pagination;
+using System.Configuration;
 
 namespace ProyectoFinal.Controllers
 {
@@ -28,6 +29,7 @@ namespace ProyectoFinal.Controllers
 
         public ProductsController(IProductRepository ProductRepository, ISupplierRepository supplierRepository)
         {
+            
             this.productRepository = ProductRepository;
             this.supplierRepository = supplierRepository;
         }
@@ -36,8 +38,9 @@ namespace ProyectoFinal.Controllers
         // GET: Products
         public ActionResult Index(int? page)
         {
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
             var products = productRepository.GetProducts()
-                                            .AsPagination(page ?? 1, 10);
+                                            .AsPagination(page ?? 1, pageSize);
             return View(products);
         }
 

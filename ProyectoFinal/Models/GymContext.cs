@@ -79,8 +79,10 @@ namespace ProyectoFinal.Models
             #region Routines
             var routines = new List<Routine>
             {
-                new Routine { ClientID = 1, NameFile="CristianPique v1.0", Description = "Rutina personalizada", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=5 },
-                new Routine { ClientID = 2, NameFile="CristianPique v1.0", Description = "Rutina gimnasio 5 días a la semana", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=4 }
+                new Routine { ClientID = 1, NameFile="CristianPique v1.0", Description = "Rutina personalizada", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=5,
+                              Level =Catalog.LevelRoutine.Medium, Status= Catalog.Status.Active },
+                new Routine { ClientID = 2, NameFile="CristianPique v1.0", Description = "Rutina gimnasio 5 días a la semana", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=4,
+                              Level=Catalog.LevelRoutine.Begginer, Status= Catalog.Status.Inactive}
             };
 
             routines.ForEach(r => context.Routines.Add(r));
@@ -114,11 +116,25 @@ namespace ProyectoFinal.Models
             context.SaveChanges();
             #endregion
 
+            #region ActivitySchedules
+            var activitySchedules = new List<ActivitySchedule>
+            {
+                new ActivitySchedule { ActivityID = 2, Day = "Lunes", HourFrom = 11, HourTo = 12},
+                new ActivitySchedule { ActivityID = 2, Day = "Lunes", HourFrom = 16, HourTo = 17},
+                new ActivitySchedule { ActivityID = 2, Day = "Miércoles", HourFrom = 19, HourTo = 21},
+                new ActivitySchedule { ActivityID = 3, Day = "Miércoles", HourFrom = 9, HourTo = 10},
+                new ActivitySchedule { ActivityID = 3, Day = "Miércoles", HourFrom = 20, HourTo = 21},
+            };
+
+            activitySchedules.ForEach(actS => context.ActivitySchedules.Add(actS));
+            context.SaveChanges();
+            #endregion
+
             #region Files
             var files = new List<File>
             {
-                new File { RoutineID=1, ExerciseName="Pecho inclinado", MuscleName="Pecho", Peso="20", Repetitions="10x3" },
-                new File { RoutineID=1, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="8", Repetitions="12x3" },
+                new File { RoutineID=1, ExerciseName="Pecho inclinado", MuscleName="Pecho", Peso="20", Repetitions="10x3", Day="Lunes" },
+                new File { RoutineID=1, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="8", Repetitions="12x3", Day="Martes" },
             };
 
             files.ForEach(f => context.Files.Add(f));
