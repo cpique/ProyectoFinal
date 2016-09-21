@@ -22,3 +22,8 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/*Aligns in center the text of the last header cell in tables*/
+table th.actions {
+    text-align: center;
+}

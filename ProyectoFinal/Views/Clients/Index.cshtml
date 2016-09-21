@@ -15,13 +15,11 @@
     @using (Html.BeginForm("Index", "Clients", FormMethod.Get, new { @class = "form-horizontal" }))
     {
         <div class="form-group">
-            <label class="control-label col-sm-2" for="email">Buscar por nombre:</label>
-            <div class="col-sm-10">
+            <label class="control-label col-xs-12 col-sm-3 col-md-4 col-lg-2" for="email">Buscar por nombre:</label>
+            <div class="col-xs-6 col-sm-3 col-md-4 col-lg-3">
                 @Html.TextBox("SearchString", null, new { @class = "form-control text-box single-line" })
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
+            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
                 <input type="submit" class="btn btn-default" value="Buscar" />
             </div>
         </div>
@@ -36,71 +34,85 @@
                 .Next("Siguiente")
                 .Last("Último")
          )
-<table class="table table-striped">
-    <tr class="success">
-        <th>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </th>
-        <th>
-            @Html.ActionLink(@Html.DisplayNameFor(model => model.LastName).ToString(), "Index", new { sortOrder = ViewBag.SurnameSortParm })
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DocType)
-        </th>
-        <th>
-            @Html.ActionLink(@Html.DisplayNameFor(model => model.DocNumber).ToHtmlString(), "Index", new { sortOrder = ViewBag.DocNumberSortParm })
-        </th>
-        <th>
-            @Html.ActionLink(@Html.DisplayNameFor(model => model.BirthDate).ToString(), "Index", new { sortOrder = ViewBag.BirthDateSortParm })
-        </th>
-        <th>
-            @Html.ActionLink(@Html.DisplayNameFor(model => model.Email).ToString(), "Index", new { sortOrder = ViewBag.EmailSortParm })
-        </th>
-        <th>
-            @Html.ActionLink(@Html.DisplayNameFor(model => model.Role).ToString(), "Index", new { sortOrder = ViewBag.RolSortParm })
-        </th>
-        <th>Acciones</th>
-    </tr>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr class="success">
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.LastName).ToString(), "Index", new { sortOrder = ViewBag.SurnameSortParm })
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DocType)
+            </th>
+            <th>
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.DocNumber).ToHtmlString(), "Index", new { sortOrder = ViewBag.DocNumberSortParm })
+            </th>
+            <th>
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.BirthDate).ToString(), "Index", new { sortOrder = ViewBag.BirthDateSortParm })
+            </th>
+            <th>
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.Email).ToString(), "Index", new { sortOrder = ViewBag.EmailSortParm })
+            </th>
+            <th>
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.Role).ToString(), "Index", new { sortOrder = ViewBag.RolSortParm })
+            </th>
+            <th class="actions">Acciones</th>
+        </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DocType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DocNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BirthDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Role)
-        </td>
-        <td>
-            @Html.ActionLink("Detalles", "Details", new { id = item.ClientID }) |
-            @Html.ActionLink("Editar", "Edit", new { id=item.ClientID }) |
-            @Html.ActionLink("Borrar", "Delete", new { id=item.ClientID })
-            @if((Catalog.Roles)item.Role == Catalog.Roles.Client)
-            {
-                @:| 
-                @Html.ActionLink("Historial médico", "Details" , "MedicalRecords", new { id = item.ClientID }, null) 
-                @:| 
-                @Html.ActionLink("Rutina", "Details", "Routines", new { id = item.ClientID }, null)
-            }
-        </td>
-    </tr>
-}
-</table>
-@Html.Raw(@Html.Pager((IPagination)Model)
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BirthDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role)
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", "Clients", new { id = item.ClientID })" class="btn btn-primary btn-sm" title="Detalles"> 
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    </a>  
+                    <a href="@Url.Action("Edit", "Clients", new { id = item.ClientID })" class="btn btn-warning btn-sm" title="Editar">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </a>
+                    <a href="@Url.Action("Delete", "Clients", new { id = item.ClientID })" class="btn btn-danger btn-sm" title="Borrar">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </a>
+                    <a class="btn btn-link btn-sm">
+                        <span class="" aria-hidden="true"></span>
+                    </a>
+                    @if ((Catalog.Roles)item.Role == Catalog.Roles.Client)
+                    {
+                        <a href="@Url.Action("Details", "MedicalRecords", new { id = item.ClientID })" class="btn btn-success btn-sm" title="Historial médico">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                        </a>
+                        <a href="@Url.Action("Details", "Routines", new { id = item.ClientID })" class="btn btn-success btn-sm" title="Rutina">
+                            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+    @Html.Raw(@Html.Pager((IPagination)Model)
                 .Format("Mostrando {0}-{1} de {2} | ")
                 .First("Primero")
                 .Previous("Anterior")
