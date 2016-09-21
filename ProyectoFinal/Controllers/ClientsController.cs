@@ -15,7 +15,7 @@ using ProyectoFinal.Filters;
 
 namespace ProyectoFinal.Controllers
 {
-    [AuthorizationPrivilege(Role = "Admin")]
+    //[AuthorizationPrivilege(Role = "Admin")]
     public class ClientsController : Controller
     {
         private IClientRepository clientRepository;
@@ -31,11 +31,63 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: Clients
-        public ActionResult Index(int? page)
+        public ActionResult Index(string sortOrder, string searchString, int? page)
         {
+            var clients = clientRepository.GetClients();
+
+            #region search
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                clients = clients.Where(c => c.FirstName.ToLower().Contains(searchString) || c.LastName.ToLower().Contains(searchString.ToLower()));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.SurnameSortParm = String.IsNullOrEmpty(sortOrder) ? "surname_desc" : "";
+            ViewBag.DocNumberSortParm = sortOrder == "doc_asc" ? "doc_desc" : "doc_asc";
+            ViewBag.BirthDateSortParm = sortOrder == "birth_asc" ? "birth_desc" : "birth_asc";
+            ViewBag.EmailSortParm = sortOrder == "email_asc" ? "email_desc" : "email_asc";
+            ViewBag.RolSortParm = sortOrder == "rol_asc" ? "rol_desc" : "rol_asc";
+
+            switch(sortOrder)
+            {
+                case "surname_desc":
+                    clients = clients.OrderByDescending(c => c.LastName);
+                    break;
+                case "birth_desc":
+                    clients = clients.OrderByDescending(c => c.BirthDate);
+                    break;
+                case "birth_asc":
+                    clients = clients.OrderBy(c => c.BirthDate);
+                    break;
+                case "doc_desc":
+                    clients = clients.OrderByDescending(c => c.DocNumber);
+                    break;
+                case "doc_asc":
+                    clients = clients.OrderBy(c => c.DocNumber);
+                    break;
+                case "email_desc":
+                    clients = clients.OrderByDescending(c => c.Email);
+                    break;
+                case "email_asc":
+                    clients = clients.OrderBy(c => c.Email);
+                    break;
+                case "rol_desc":
+                    clients = clients.OrderByDescending(c => c.Role);
+                    break;
+                case "rol_asc":
+                    clients = clients.OrderBy(c => c.Role);
+                    break;
+                default:
+                    clients = clients.OrderBy(c => c.LastName);
+                    break;
+            }
+            #endregion
+
             int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
-            var clients = clientRepository.GetClients()
-                                          .AsPagination(page ?? 1, pageSize);
+
+            clients = clients.AsPagination(page ?? 1, pageSize);
+
             return View(clients);
         }
 

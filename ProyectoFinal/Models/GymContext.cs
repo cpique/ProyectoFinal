@@ -47,7 +47,7 @@ namespace ProyectoFinal.Models
         #endregion
     }
 
-    public class GymInitializer : DropCreateDatabaseIfModelChanges<GymContext>/*DropCreateDatabaseAlways<GymContext>*/
+    public class GymInitializer : /*DropCreateDatabaseIfModelChanges<GymContext>*/DropCreateDatabaseAlways<GymContext>
     {
         protected override void Seed(GymContext context)
         {
@@ -56,6 +56,22 @@ namespace ProyectoFinal.Models
             var password1 = PasswordUtilities.GenerateSHA256Hash("12345", passwordSalt1);
             var passwordSalt2 = PasswordUtilities.CreateSalt(16);
             var password2 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt2);
+            var passwordSalt3 = PasswordUtilities.CreateSalt(16);
+            var password3 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt3);
+            var passwordSalt4 = PasswordUtilities.CreateSalt(16);
+            var password4 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt4);
+            var passwordSalt5 = PasswordUtilities.CreateSalt(16);
+            var password5 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt5);
+            var passwordSalt6 = PasswordUtilities.CreateSalt(16);
+            var password6 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt6);
+            var passwordSalt7 = PasswordUtilities.CreateSalt(16);
+            var password7 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt7);
+            var passwordSalt8 = PasswordUtilities.CreateSalt(16);
+            var password8 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt8);
+            var passwordSalt9 = PasswordUtilities.CreateSalt(16);
+            var password9 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt9);
+            var passwordSalt10 = PasswordUtilities.CreateSalt(16);
+            var password10 = PasswordUtilities.GenerateSHA256Hash("335588", passwordSalt10);
 
             var clients = new List<Client>
             {
@@ -65,7 +81,39 @@ namespace ProyectoFinal.Models
 
                 new Client { FirstName = "Cristian", LastName = "Piqué", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1989, 12, 31),
                 DateFrom = new DateTime(2016, 09, 01), Email = "cristian.pique@hotmail.com",
-                Password = password2, PasswordSalt = passwordSalt2, Role = Catalog.Roles.Admin }
+                Password = password2, PasswordSalt = passwordSalt2, Role = Catalog.Roles.Admin },
+
+                new Client { FirstName = "José", LastName = "Pérez", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1982, 12, 31),
+                DateFrom = new DateTime(2016, 09, 01), Email = "jose.perez@hotmail.com",
+                Password = password3, PasswordSalt = passwordSalt3, Role = Catalog.Roles.Instructor },
+
+                new Client { FirstName = "Ray", LastName = "Allen", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1992, 12, 31),
+                DateFrom = new DateTime(2016, 09, 01), Email = "ray.allan@hotmail.com",
+                Password = password4, PasswordSalt = passwordSalt4, Role = Catalog.Roles.Client },
+
+                new Client { FirstName = "Enzo", LastName = "Gutiérrez", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1991, 12, 31),
+                DateFrom = new DateTime(2016, 09, 01), Email = "enzog@gmail.com",
+                Password = password5, PasswordSalt = passwordSalt5, Role = Catalog.Roles.Client },
+
+                new Client { FirstName = "Juana", LastName = "Pérez", DocType = "DNI", DocNumber = 33123654, BirthDate = new DateTime(1991, 08, 11),
+                DateFrom = new DateTime(2016, 09, 01), Email = "juana.perez@hotmail.com",
+                Password = password6, PasswordSalt = passwordSalt6, Role = Catalog.Roles.Client },
+
+                new Client { FirstName = "Carolina", LastName = "García", DocType = "DNI", DocNumber = 123456789, BirthDate = new DateTime(1991, 11, 15),
+                DateFrom = new DateTime(2016, 09, 01), Email = "caro.garcia@hotmail.com",
+                Password = password7, PasswordSalt = passwordSalt7, Role = Catalog.Roles.Instructor },
+
+                new Client { FirstName = "Martina", LastName = "Núñez", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1981, 02, 01),
+                DateFrom = new DateTime(2016, 09, 01), Email = "martinanunez@yahoo.com",
+                Password = password8, PasswordSalt = passwordSalt8, Role = Catalog.Roles.Client },
+
+                new Client { FirstName = "Sol", LastName = "Rodríguez", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1991, 12, 31),
+                DateFrom = new DateTime(2016, 09, 01), Email = "sol.rodriguez@outlook.com",
+                Password = password9, PasswordSalt = passwordSalt9, Role = Catalog.Roles.Client },
+
+                new Client { FirstName = "José", LastName = "García", DocType = "DNI", DocNumber = 34578644, BirthDate = new DateTime(1986, 12, 31),
+                DateFrom = new DateTime(2016, 09, 01), Email = "joseg@hotmail.com",
+                Password = password10, PasswordSalt = passwordSalt10, Role = Catalog.Roles.Client }
             };
 
             clients.ForEach(c => context.Clients.Add(c));

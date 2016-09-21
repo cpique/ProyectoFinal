@@ -9,3 +9,5 @@
 7 - Agregar Paginado a todas los controllers/actions necesarios
 8 - Refinar validaciones con required, maxlength, minlength, expresiones regulares... Y agregar ErrorMessage a los atributos, para mostrar mensajes en español y claros al usuario
 9 - Tablas: primer fila color verde, stripped a la tabla, div para responsive, agregar "Acciones" como nombre a la columna de crear, editar...
+10 - Vistas parciales del menú para admins/clientes/profesores/no logueados
+11 - Controller que maneje paginas principales de instructor/admin/cliente

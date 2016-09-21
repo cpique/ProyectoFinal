@@ -21,11 +21,11 @@ namespace ProyectoFinal.Models
         public string LastName { get; set; }
 
         [Required]
-        [DisplayName("Tipo Doc")]
+        [DisplayName("Tipo Doc.")]
         public string DocType { get; set; }
 
         [Required]
-        [DisplayName("Número Doc")]
+        [DisplayName("Nro. Doc.")]
         public int DocNumber { get; set; }
 
         [DisplayName("Fecha nacimiento")]
@@ -33,7 +33,7 @@ namespace ProyectoFinal.Models
         public DateTime BirthDate { get; set; }
 
         [Required]
-        [DisplayName("Día inicio")]
+        [DisplayName("Dia inicio")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateFrom { get; set; }
 

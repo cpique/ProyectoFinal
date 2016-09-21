@@ -70,7 +70,7 @@ namespace ProyectoFinal.Tests
                 .MustBeCalled();
 
             ClientsController controller = new ClientsController(clientRepository);
-            ActionResult actionResult = controller.Index(1);
+            ActionResult actionResult = controller.Index(string.Empty, string.Empty, 1);
             ViewResult viewResult = actionResult as ViewResult;
             var model = viewResult.Model as IEnumerable<Client>;
 
@@ -118,7 +118,7 @@ namespace ProyectoFinal.Tests
 
             controller.Create(newClient);
 
-            ActionResult actionResultAfter = controller.Index(1);
+            ActionResult actionResultAfter = controller.Index(string.Empty, string.Empty, 1);
             ViewResult viewResultAfter = actionResultAfter as ViewResult;
             var modelAfter = viewResultAfter.Model as IEnumerable<Client>;
 

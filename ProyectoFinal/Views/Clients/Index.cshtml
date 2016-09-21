@@ -1,15 +1,34 @@
 ﻿@model IEnumerable<ProyectoFinal.Models.Client>
 @using MvcContrib.UI.Pager
-@using MvcContrib.Pagination;
+@using MvcContrib.Pagination
+@using ProyectoFinal.Utils
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
+<h2>Usuarios</h2>
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Crea un nuevo usuario", "Create")
 </p>
+<hr />
+<div class="container">
+    @using (Html.BeginForm("Index", "Clients", FormMethod.Get, new { @class = "form-horizontal" }))
+    {
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="email">Buscar por nombre:</label>
+            <div class="col-sm-10">
+                @Html.TextBox("SearchString", null, new { @class = "form-control text-box single-line" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input type="submit" class="btn btn-default" value="Buscar" />
+            </div>
+        </div>
+    }
+</div>
+
+
 @Html.Raw(@Html.Pager((IPagination)Model)
                 .Format("Mostrando {0}-{1} de {2} | ")
                 .First("Primero")
@@ -17,31 +36,28 @@
                 .Next("Siguiente")
                 .Last("Último")
          )
-<table class="table">
-    <tr>
+<table class="table table-striped">
+    <tr class="success">
         <th>
             @Html.DisplayNameFor(model => model.FirstName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.LastName).ToString(), "Index", new { sortOrder = ViewBag.SurnameSortParm })
         </th>
         <th>
             @Html.DisplayNameFor(model => model.DocType)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DocNumber)
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.DocNumber).ToHtmlString(), "Index", new { sortOrder = ViewBag.DocNumberSortParm })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BirthDate)
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.BirthDate).ToString(), "Index", new { sortOrder = ViewBag.BirthDateSortParm })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DateFrom)
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.Email).ToString(), "Index", new { sortOrder = ViewBag.EmailSortParm })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Role)
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.Role).ToString(), "Index", new { sortOrder = ViewBag.RolSortParm })
         </th>
         <th>Acciones</th>
     </tr>
@@ -64,20 +80,22 @@
             @Html.DisplayFor(modelItem => item.BirthDate)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.DateFrom)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.Email)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Role)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ClientID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ClientID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ClientID }) |
-            @Html.ActionLink("Historial médico", "Details" , "MedicalRecords", new { id = item.ClientID }, null) |
-            @Html.ActionLink("Rutina", "Details", "Routines", new { id = item.ClientID }, null)
+            @Html.ActionLink("Detalles", "Details", new { id = item.ClientID }) |
+            @Html.ActionLink("Editar", "Edit", new { id=item.ClientID }) |
+            @Html.ActionLink("Borrar", "Delete", new { id=item.ClientID })
+            @if((Catalog.Roles)item.Role == Catalog.Roles.Client)
+            {
+                @:| 
+                @Html.ActionLink("Historial médico", "Details" , "MedicalRecords", new { id = item.ClientID }, null) 
+                @:| 
+                @Html.ActionLink("Rutina", "Details", "Routines", new { id = item.ClientID }, null)
+            }
         </td>
     </tr>
 }
