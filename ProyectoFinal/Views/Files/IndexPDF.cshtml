@@ -6,15 +6,15 @@
 }
 
 
-
-<h3>Nombre: @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.Client.FirstName) @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.Client.LastName)</h3>
-<h3>Rutina: @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.NameFile)</h3>
-<h3>Nivel: @Enum.GetName(typeof(ProyectoFinal.Utils.Catalog.LevelRoutine), Model.FirstOrDefault().Routine.Level)</h3>
-
-<table class="table">
-    <tr>
+<br />
+<h4>Nombre: @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.Client.FirstName) @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.Client.LastName)</h4>
+<h4>Rutina: @Html.DisplayFor(modelItem => Model.FirstOrDefault().Routine.NameFile)</h4>
+<h4>Nivel: @Enum.GetName(typeof(ProyectoFinal.Utils.Catalog.LevelRoutine), Model.FirstOrDefault().Routine.Level)</h4>
+<br />
+<table class="table table-bordered">
+    <tr class="success">
         <th>
-            @Html.DisplayNameFor(model => model.Routine.NameFile)
+            @Html.DisplayNameFor(model => model.Day)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.MuscleName)
@@ -28,15 +28,12 @@
         <th>
             @Html.DisplayNameFor(model => model.Repetitions)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Day)
-        </th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Routine.NameFile)
+            @Html.DisplayFor(modelItem => item.Day)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.MuscleName)
@@ -45,16 +42,11 @@
             @Html.DisplayFor(modelItem => item.ExerciseName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Peso)
+            @Html.DisplayFor(modelItem => item.Peso) kg
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Repetitions)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Day)
-        </td>
     </tr>
 }
-
 </table>
-@Html.ActionLink("Generar PDF", "GeneratePDF", new { id = Model.FirstOrDefault().RoutineID }, new { target = "_blank" })

@@ -8,9 +8,11 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using ProyectoFinal.Filters;
 
 namespace ProyectoFinal.Controllers
 {
+    [AuthorizationPrivilege(Role = "Admin")]
     public class MedicalRecordsController : Controller
     {
         #region Properties

@@ -18,8 +18,8 @@
                 .Next("Siguiente")
                 .Last("Último")
          )
-<table class="table">
-    <tr>
+<table class="table table-striped">
+    <tr class="success">
         <th>
             @Html.DisplayNameFor(model => model.Routine.NameFile)
         </th>
@@ -79,4 +79,5 @@
                 .Last("Último")
          )
 <br />
-@Html.ActionLink("Preview", "IndexPDF", new { id = Model.FirstOrDefault().RoutineID })
+@*@Html.ActionLink("Preview", "IndexPDF", new { id = Model.FirstOrDefault().RoutineID })*@
+@Html.ActionLink("Generar PDF", "GeneratePDF", new { id = Model.FirstOrDefault().RoutineID }, new { target = "_blank" })

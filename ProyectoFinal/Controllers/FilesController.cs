@@ -12,6 +12,7 @@ using MvcContrib.Pagination;
 using System.Configuration;
 using System.Collections.Specialized;
 using System.IO;
+using ProyectoFinal.Filters;
 
 namespace ProyectoFinal.Controllers
 {

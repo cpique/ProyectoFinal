@@ -10,9 +10,11 @@ using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using MvcContrib.Pagination;
 using System.Configuration;
+using ProyectoFinal.Filters;
 
 namespace ProyectoFinal.Controllers
 {
+    [AuthorizationPrivilege(Role = "Admin")]
     public class ProductsController : Controller
     {
         #region Properties

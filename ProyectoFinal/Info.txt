@@ -7,3 +7,5 @@
 5 - Cambiar model/controller/views de File. La entidad debe llamarse Exercise, o algun nombre similar que represente un ejercicio, no un archivo/file
 6 - Agregar Orders para manejar pedidos a proveedores
 7 - Agregar Paginado a todas los controllers/actions necesarios
+8 - Refinar validaciones con required, maxlength, minlength, expresiones regulares... Y agregar ErrorMessage a los atributos, para mostrar mensajes en español y claros al usuario
+9 - Tablas: primer fila color verde, stripped a la tabla, div para responsive, agregar "Acciones" como nombre a la columna de crear, editar...

@@ -18,11 +18,16 @@ namespace ProyectoFinal.Filters
         {
             string userName = GetValue(context, USER);
             string userRole = GetValue(context, ROLE);
-            RouteValueDictionary routeValueDictionary = new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } };
+            RouteValueDictionary routeValueDictionaryForLogin = new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } };
+            RouteValueDictionary routeValueDictionaryForIndex = new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } };
 
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userRole) || string.IsNullOrEmpty(this.Role) || userRole != this.Role)
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userRole) || string.IsNullOrEmpty(this.Role))
             {
-                context.Result = new RedirectToRouteResult(routeValueDictionary);
+                context.Result = new RedirectToRouteResult(routeValueDictionaryForLogin);
+            }
+            else if (userRole != this.Role)
+            {
+                context.Result = new RedirectToRouteResult(routeValueDictionaryForIndex);
             }
             
             base.OnActionExecuting(context);

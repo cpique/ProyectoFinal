@@ -138,12 +138,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ActivitiesController.cs" />
     <Compile Include="Controllers\ActivitySchedulesController.cs" />
-    <Compile Include="Controllers\AdminsController.cs" />
     <Compile Include="Controllers\AssistancesController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\InstructorsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\MedicalRecordsController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
@@ -158,7 +156,6 @@
     </Compile>
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\ActivitySchedule.cs" />
-    <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Assistance.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\File.cs" />
@@ -167,11 +164,9 @@
     <Compile Include="Models\Repositories\SupplierRepository.cs" />
     <Compile Include="Models\Repositories\StockRepository.cs" />
     <Compile Include="Models\Repositories\ActivityScheduleRepository.cs" />
-    <Compile Include="Models\Repositories\AdminRepository.cs" />
     <Compile Include="Models\Repositories\AssistanceRepository.cs" />
     <Compile Include="Models\Repositories\FileRepository.cs" />
     <Compile Include="Models\Repositories\IActivityScheduleRepository.cs" />
-    <Compile Include="Models\Instructor.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\MedicalRecord.cs" />
     <Compile Include="Models\Payment.cs" />
@@ -180,11 +175,9 @@
     <Compile Include="Models\Repositories\ActivityRepository.cs" />
     <Compile Include="Models\Repositories\ClientRepository.cs" />
     <Compile Include="Models\Repositories\IActivityRepository.cs" />
-    <Compile Include="Models\Repositories\IAdminRepository.cs" />
     <Compile Include="Models\Repositories\IAssistanceRepository.cs" />
     <Compile Include="Models\Repositories\IClientRepository.cs" />
     <Compile Include="Models\Repositories\IMedicalRecordRepository.cs" />
-    <Compile Include="Models\Repositories\InstructorRepository.cs" />
     <Compile Include="Models\Repositories\IPaymentRepository.cs" />
     <Compile Include="Models\Repositories\IRoutineRepository.cs" />
     <Compile Include="Models\Repositories\IStockRepository.cs" />
@@ -192,7 +185,6 @@
     <Compile Include="Models\Repositories\IPaymentTypeRepository.cs" />
     <Compile Include="Models\Repositories\IPaymentTypePriceRepository.cs" />
     <Compile Include="Models\Repositories\IProductRepository.cs" />
-    <Compile Include="Models\Repositories\IInstructorRepository.cs" />
     <Compile Include="Models\Repositories\IFileRepository.cs" />
     <Compile Include="Models\Repositories\ProductRepository.cs" />
     <Compile Include="Models\Repositories\MedicalRecordRepository.cs" />
@@ -242,10 +234,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Clients\Create.cshtml" />
-    <Content Include="Views\Clients\Delete.cshtml" />
-    <Content Include="Views\Clients\Details.cshtml" />
-    <Content Include="Views\Clients\Edit.cshtml" />
     <Content Include="Views\Clients\Index.cshtml" />
     <Content Include="Views\MedicalRecords\Create.cshtml" />
     <Content Include="Views\MedicalRecords\Delete.cshtml" />
@@ -277,21 +265,11 @@
     <Content Include="Views\ActivitySchedules\Details.cshtml" />
     <Content Include="Views\ActivitySchedules\Edit.cshtml" />
     <Content Include="Views\ActivitySchedules\Index.cshtml" />
-    <Content Include="Views\Admins\Create.cshtml" />
-    <Content Include="Views\Admins\Delete.cshtml" />
-    <Content Include="Views\Admins\Details.cshtml" />
-    <Content Include="Views\Admins\Edit.cshtml" />
-    <Content Include="Views\Admins\Index.cshtml" />
     <Content Include="Views\Assistances\Create.cshtml" />
     <Content Include="Views\Assistances\Delete.cshtml" />
     <Content Include="Views\Assistances\Details.cshtml" />
     <Content Include="Views\Assistances\Edit.cshtml" />
     <Content Include="Views\Assistances\Index.cshtml" />
-    <Content Include="Views\Instructors\Create.cshtml" />
-    <Content Include="Views\Instructors\Delete.cshtml" />
-    <Content Include="Views\Instructors\Details.cshtml" />
-    <Content Include="Views\Instructors\Edit.cshtml" />
-    <Content Include="Views\Instructors\Index.cshtml" />
     <Content Include="Views\PaymentTypePrices\Create.cshtml" />
     <Content Include="Views\PaymentTypePrices\Delete.cshtml" />
     <Content Include="Views\PaymentTypePrices\Details.cshtml" />
@@ -302,7 +280,6 @@
     <Content Include="Views\Stocks\Details.cshtml" />
     <Content Include="Views\Stocks\Edit.cshtml" />
     <Content Include="Views\Stocks\Index.cshtml" />
-    <Content Include="Views\Clients\GetSamples.cshtml" />
     <Content Include="Views\Files\CreateFromRoutine.cshtml" />
     <Content Include="Views\Files\Create.cshtml" />
     <Content Include="Views\Files\Details.cshtml" />
@@ -324,6 +301,10 @@
     <Content Include="Views\Suppliers\Edit.cshtml" />
     <Content Include="Views\Suppliers\Index.cshtml" />
     <Content Include="Views\Products\Create.cshtml" />
+    <Content Include="Views\Clients\Create.cshtml" />
+    <Content Include="Views\Clients\Edit.cshtml" />
+    <Content Include="Views\Clients\Details.cshtml" />
+    <Content Include="Views\Clients\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

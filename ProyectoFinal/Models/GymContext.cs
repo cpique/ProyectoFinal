@@ -23,15 +23,11 @@ namespace ProyectoFinal.Models
 
         public DbSet<ActivitySchedule> ActivitySchedules { get; set; }
 
-        public DbSet<Admin> Admins { get; set; }
-
         public DbSet<Assistance> Assistances { get; set; }
 
         public DbSet<Client> Clients { get; set; }
 
         public DbSet<File> Files { get; set; }
-
-        public DbSet<Instructor> Instructors { get; set; }
 
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
 
@@ -51,7 +47,7 @@ namespace ProyectoFinal.Models
         #endregion
     }
 
-    public class GymInitializer : DropCreateDatabaseAlways<GymContext>
+    public class GymInitializer : DropCreateDatabaseIfModelChanges<GymContext>/*DropCreateDatabaseAlways<GymContext>*/
     {
         protected override void Seed(GymContext context)
         {
@@ -81,8 +77,12 @@ namespace ProyectoFinal.Models
             {
                 new Routine { ClientID = 1, NameFile="CristianPique v1.0", Description = "Rutina personalizada", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=5,
                               Level =Catalog.LevelRoutine.Medium, Status= Catalog.Status.Active },
-                new Routine { ClientID = 2, NameFile="CristianPique v1.0", Description = "Rutina gimnasio 5 días a la semana", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=4,
-                              Level=Catalog.LevelRoutine.Begginer, Status= Catalog.Status.Inactive}
+                new Routine { ClientID = 1, NameFile="RutinaBegginers", Description = "Rutina nivel princiante", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=3,
+                              Level=Catalog.LevelRoutine.Begginer, Status= Catalog.Status.Active},
+                new Routine { ClientID = 1, NameFile="Cardio rutina", Description = "Rutina intensiva cardio", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=4,
+                              Level=Catalog.LevelRoutine.Medium, Status= Catalog.Status.Active},
+                new Routine { ClientID = 1, NameFile="AbdominalesRutina", Description = "Rutina abdominales", Files = new List<File>(), CreationDate = DateTime.Now, DaysInWeek=4,
+                              Level=Catalog.LevelRoutine.Expert, Status= Catalog.Status.Active}
             };
 
             routines.ForEach(r => context.Routines.Add(r));
@@ -92,8 +92,7 @@ namespace ProyectoFinal.Models
             #region MedicalRecords
             var medicalRecords = new List<MedicalRecord>
             {
-                new MedicalRecord { ClientID = 1, Age = 26, Gender = 'M', Heigth = (float)1.80, Weight = 72 },
-                new MedicalRecord { ClientID = 2, Age = 26, Gender = 'M', Heigth = (float)1.81, Weight = 75 },
+                new MedicalRecord { ClientID = 1, Age = 26, Gender = 'M', Heigth = 1.81, Weight = 75 },
             };
 
             medicalRecords.ForEach(m => context.MedicalRecords.Add(m));
@@ -133,8 +132,32 @@ namespace ProyectoFinal.Models
             #region Files
             var files = new List<File>
             {
-                new File { RoutineID=1, ExerciseName="Pecho inclinado", MuscleName="Pecho", Peso="20", Repetitions="10x3", Day="Lunes" },
-                new File { RoutineID=1, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="8", Repetitions="12x3", Day="Martes" },
+                new File { RoutineID=1, ExerciseName="Pecho inclinado", MuscleName="Pecho", Peso="20", Repetitions="3x10", Day="Lunes" },
+                new File { RoutineID=1, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="15", Repetitions="3x12", Day="Martes" },
+                new File { RoutineID=1, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="20", Repetitions="3x8", Day="Martes" },
+                new File { RoutineID=1, ExerciseName="Bíceps con mancuernas", MuscleName="Bíceps", Peso="8", Repetitions="3x12", Day="Miércoles" },
+                new File { RoutineID=1, ExerciseName="Bíceps con mancuernas", MuscleName="Bíceps", Peso="10", Repetitions="3x12", Day="Jueves" },
+                new File { RoutineID=1, ExerciseName="Francés", MuscleName="Tríceps", Peso="8", Repetitions="3x12", Day="Jueves" },
+                new File { RoutineID=1, ExerciseName="Tríceps con mancuernas", MuscleName="Tríceps", Peso="8", Repetitions="3x12", Day="Viernes" },
+                new File { RoutineID=1, ExerciseName="Press militar", MuscleName="Hombros", Peso="8", Repetitions="3x12", Day="Viernes" },
+                new File { RoutineID=2, ExerciseName="Pecho inclinado", MuscleName="Pecho", Peso="20", Repetitions="3x10", Day="Lunes" },
+                new File { RoutineID=2, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="15", Repetitions="3x12", Day="Martes" },
+                new File { RoutineID=2, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="20", Repetitions="3x8", Day="Martes" },
+                new File { RoutineID=2, ExerciseName="Bíceps con mancuernas", MuscleName="Bíceps", Peso="8", Repetitions="3x12", Day="Miércoles" },
+                new File { RoutineID=2, ExerciseName="Bíceps con mancuernas", MuscleName="Bíceps", Peso="10", Repetitions="3x12", Day="Jueves" },
+                new File { RoutineID=2, ExerciseName="Francés", MuscleName="Tríceps", Peso="8", Repetitions="3x12", Day="Jueves" },
+                new File { RoutineID=2, ExerciseName="Tríceps con mancuernas", MuscleName="Tríceps", Peso="8", Repetitions="3x12", Day="Viernes" },
+                new File { RoutineID=2, ExerciseName="Press militar", MuscleName="Hombros", Peso="8", Repetitions="3x12", Day="Viernes" },
+                new File { RoutineID=3, ExerciseName="Biclicleta", MuscleName="Piernas", Peso="-", Repetitions="20 min", Day="Lunes" },
+                new File { RoutineID=3, ExerciseName="Cinta", MuscleName="Piernas", Peso="15", Repetitions="3x12", Day="Lunes" },
+                new File { RoutineID=3, ExerciseName="Pecho con mancuernas", MuscleName="Pecho", Peso="20", Repetitions="3x8", Day="Martes" },
+                new File { RoutineID=3, ExerciseName="Abdominales oblicuos", MuscleName="Abdominales", Peso="-", Repetitions="3x20", Day="Martes" },
+                new File { RoutineID=3, ExerciseName="Abdominales bajos", MuscleName="Abdominales", Peso="-", Repetitions="3x30", Day="Míércoles" },
+                new File { RoutineID=3, ExerciseName="Saltar soga", MuscleName="Piernas", Peso="-", Repetitions="15 min", Day="Míércoles" },
+                new File { RoutineID=3, ExerciseName="Tríceps con mancuernas", MuscleName="Tríceps", Peso="8", Repetitions="3x12", Day="Jueves" },
+                new File { RoutineID=3, ExerciseName="Biclicleta", MuscleName="Pecho", Peso="-", Repetitions="20 min", Day="Lunes" },
+                new File { RoutineID=3, ExerciseName="Biclicleta", MuscleName="Piernas", Peso="-", Repetitions="20 min", Day="Lunes" },
+                new File { RoutineID=3, ExerciseName="Cinta", MuscleName="Piernas", Peso="15", Repetitions="3x12", Day="Lunes" },
             };
 
             files.ForEach(f => context.Files.Add(f));

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -10,13 +11,21 @@ namespace ProyectoFinal.Models
     public class MedicalRecord
     {
         public int MedicalRecordID { get; set; }
+
         [Required]
+        [DisplayName("Sexo")]
         public char Gender { get; set; }
+
         [Required]
-        public float Weight { get; set; }
+        [DisplayName("Altura")]
+        public double Weight { get; set; }
+
         [Required]
-        public float Heigth { get; set; }
+        [DisplayName("Peso")]
+        public double Heigth { get; set; }
+
         [Required]
+        [DisplayName("Edad")]
         public int Age { get; set; }
 
         [ForeignKey("ClientID")]

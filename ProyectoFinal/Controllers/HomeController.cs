@@ -66,7 +66,9 @@ namespace ProyectoFinal.Controllers
                     Session["User"] = client;
                     Session["UserName"] = client.Email;
                     Session["Role"] = client.Role; 
-                    return Redirect(Url.Action("Index", "Admins"));
+
+                    //TODO Pagina personal del cliente logueado
+                    return Redirect(Url.Action("Index", "Clients"));
                 }
                 else
                 {
@@ -96,21 +98,29 @@ namespace ProyectoFinal.Controllers
         public ActionResult Access(string docNumber)
         {
             int documentNumber = Convert.ToInt32(docNumber);
-            Client client = clientRepository.GetClients().Where(c => c.DocNumber == documentNumber).FirstOrDefault();
+            Client client = clientRepository.GetClients().Where(c => c.DocNumber == documentNumber && c.Role==Catalog.Roles.Client).FirstOrDefault();
 
-            if (client != null && clientRepository.HasActivePayment(client))
+            if (client == null)
             {
-                //Guardar nueva asistencia
+                //No se encontró un cliente con los datos ingresados
+            }
+            else if (client.Role != Catalog.Roles.Client)
+            {
+                //No es cliente. Es admin o profesor
+            }
+            else if(clientRepository.HasActivePayment(client))
+            {
+                //OK
                 Assistance assistance = new Assistance { assistanceDate = DateTime.Now, ClientID = client.ClientID };
                 assistanceRepository.InsertAssistance(assistance);
                 assistanceRepository.Save();
-
                 return View("About");
             }
             else
             {
-                return View("Contact");
+                //No tiene abono activo
             }
+            return View("Contact");
         }
 
         private Client Authenticate(string username, string password)
