@@ -10,9 +10,9 @@ using ProyectoFinal.Models;
 using ProyectoFinal.Utils;
 using ProyectoFinal.Models.Repositories;
 using System.Configuration;
-using MvcContrib.Pagination;
 using ProyectoFinal.Filters;
 using System.Diagnostics;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -37,11 +37,24 @@ namespace ProyectoFinal.Controllers
 
         #region ActionMethods
         // GET: Clients
-        public ActionResult Index(string sortOrder, string searchString, int? page)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var clients = clientRepository.GetClients();
 
             #region search
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 clients = clients.Where(c => c.FirstName.ToLower().Contains(searchString) || c.LastName.ToLower().Contains(searchString.ToLower()));
@@ -90,11 +103,9 @@ namespace ProyectoFinal.Controllers
             }
             #endregion
 
-            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
-
-            clients = clients.AsPagination(page ?? 1, pageSize);
-
-            return View(clients);
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(clients.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Clients/Details/5

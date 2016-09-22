@@ -1,6 +1,5 @@
-﻿@model IEnumerable<ProyectoFinal.Models.Client>
-@using MvcContrib.UI.Pager
-@using MvcContrib.Pagination
+﻿@model PagedList.IPagedList<ProyectoFinal.Models.Client>
+@using PagedList.Mvc;
 @using ProyectoFinal.Utils
 @{
     ViewBag.Title = "Index";
@@ -17,7 +16,7 @@
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-4 col-lg-2" for="email">Buscar por nombre:</label>
             <div class="col-xs-6 col-sm-3 col-md-4 col-lg-3">
-                @Html.TextBox("SearchString", null, new { @class = "form-control text-box single-line" })
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control text-box single-line" })
             </div>
             <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
                 <input type="submit" class="btn btn-default" value="Buscar" />
@@ -27,36 +26,40 @@
 </div>
 
 
-@Html.Raw(@Html.Pager((IPagination)Model)
-                .Format("Mostrando {0}-{1} de {2} | ")
-                .First("Primero")
-                .Previous("Anterior")
-                .Next("Siguiente")
-                .Last("Último")
-         )
 <div class="table-responsive">
     <table class="table table-striped">
         <tr class="success">
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().FirstName).ToHtmlString()
             </th>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.LastName).ToString(), "Index", new { sortOrder = ViewBag.SurnameSortParm })
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().LastName).ToHtmlString(), 
+                                                      "Index", 
+                                                      new { sortOrder = ViewBag.SurnameSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
+                    
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DocType)
+               @Html.DisplayNameFor(model => model.FirstOrDefault().DocType).ToHtmlString()
             </th>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.DocNumber).ToHtmlString(), "Index", new { sortOrder = ViewBag.DocNumberSortParm })
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().DocNumber).ToHtmlString(), 
+                                                               "Index", 
+                                                               new { sortOrder = ViewBag.DocNumberSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.BirthDate).ToString(), "Index", new { sortOrder = ViewBag.BirthDateSortParm })
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().BirthDate).ToString(), 
+                                                               "Index", 
+                                                               new { sortOrder = ViewBag.BirthDateSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.Email).ToString(), "Index", new { sortOrder = ViewBag.EmailSortParm })
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().Email).ToString(), 
+                                                               "Index", 
+                                                               new { sortOrder = ViewBag.EmailSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.Role).ToString(), "Index", new { sortOrder = ViewBag.RolSortParm })
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().Role).ToString(), 
+                                                               "Index", 
+                                                               new { sortOrder = ViewBag.RolSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th class="actions">Acciones</th>
         </tr>
@@ -112,10 +115,7 @@
         }
     </table>
 </div>
-    @Html.Raw(@Html.Pager((IPagination)Model)
-                .Format("Mostrando {0}-{1} de {2} | ")
-                .First("Primero")
-                .Previous("Anterior")
-                .Next("Siguiente")
-                .Last("Último")
-         )
+Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

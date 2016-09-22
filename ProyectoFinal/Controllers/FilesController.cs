@@ -8,7 +8,6 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
-using MvcContrib.Pagination;
 using System.Configuration;
 using System.Collections.Specialized;
 using System.IO;
@@ -44,11 +43,13 @@ namespace ProyectoFinal.Controllers
 
             if (id!=null)
             {
-                return View(fileRepository.GetFiles().Where(f => f.RoutineID == id).AsPagination(page??1, pageSize));
+                //return View(fileRepository.GetFiles().Where(f => f.RoutineID == id).AsPagination(page??1, pageSize));
+                return View(fileRepository.GetFiles().Where(f => f.RoutineID == id));
             }
             else
             {
-                return View(fileRepository.GetFiles().AsPagination(page ?? 1, pageSize));
+                //return View(fileRepository.GetFiles().AsPagination(page ?? 1, pageSize));
+                return View(fileRepository.GetFiles());
             }
 
         }
