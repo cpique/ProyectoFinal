@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Helpers;
@@ -81,6 +82,24 @@ namespace ProyectoFinal.Models.Repositories
                 } 
             }
             return false;
+        }
+
+        public bool IsEmailAlreadyInUse(Client client)
+        {
+            StackTrace stackTrace = new StackTrace();
+            bool isEditTheCaller = stackTrace.GetFrame(1).GetMethod().Name.Equals("Edit");
+
+            if (isEditTheCaller) //Si viene de Edit, debo permitirle guardar el email que ya tenía anteriormente
+            {
+                return context.Clients
+                                      .Where(c => c.ClientID != client.ClientID)
+                                      .Any(c => c.Email.ToLower() == client.Email.ToLower());
+            }
+            else
+            {
+                return context.Clients
+                                       .Any(c => c.Email.ToLower() == client.Email.ToLower());
+            }
         }
 
         public void Dispose()

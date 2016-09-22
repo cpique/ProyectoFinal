@@ -12,14 +12,18 @@ using ProyectoFinal.Models.Repositories;
 using System.Configuration;
 using MvcContrib.Pagination;
 using ProyectoFinal.Filters;
+using System.Diagnostics;
 
 namespace ProyectoFinal.Controllers
 {
     //[AuthorizationPrivilege(Role = "Admin")]
     public class ClientsController : Controller
     {
+        #region Properties
         private IClientRepository clientRepository;
+        #endregion
 
+        #region Constructors
         public ClientsController()
         {
             this.clientRepository = new ClientRepository(new GymContext());
@@ -29,7 +33,9 @@ namespace ProyectoFinal.Controllers
         {
             this.clientRepository = clientRepository;
         }
+        #endregion
 
+        #region ActionMethods
         // GET: Clients
         public ActionResult Index(string sortOrder, string searchString, int? page)
         {
@@ -115,15 +121,18 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "ClientID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,DateTo,IdentityCard,Email,Password,PasswordSalt")] Client client)
         public ActionResult Create(Client client)
         {
-            if (ModelState.IsValid)
+            if (clientRepository.IsEmailAlreadyInUse(client))
+            {
+                ModelState.AddModelError("Email", "El email ya está en uso");
+            }
+            else if (ModelState.IsValid)
             {
                 clientRepository.HashPassword(client);
                 clientRepository.InsertClient(client);
                 clientRepository.Save();
-                return RedirectToAction("Create", "MedicalRecords", new { ClientID = client.ClientID  });
+                return RedirectToAction("Index", new { sortOrder = string.Empty, searchString = string.Empty });
             }
 
             return View(client);
@@ -149,14 +158,17 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ClientID,FirstName,LastName,DocType,DocNumber,BirthDate,DateFrom,IdentityCard,Email,Password")] Client client)
+        public ActionResult Edit(Client client)
         {
-            if (ModelState.IsValid)
+            if(clientRepository.IsEmailAlreadyInUse(client))
             {
-                clientRepository.HashPassword(client);
+                ModelState.AddModelError("Email", "El email ya está en uso");
+            }
+            else if (ModelState.IsValid)
+            {
                 clientRepository.UpdateClient(client);
                 clientRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { sortOrder = string.Empty, searchString = string.Empty });
             }
             return View(client);
         }
@@ -184,8 +196,9 @@ namespace ProyectoFinal.Controllers
             Client client = clientRepository.GetClientByID(id);
             clientRepository.DeleteClient(id);
             clientRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { sortOrder = string.Empty, searchString = string.Empty });
         }
+        #endregion
 
         protected override void Dispose(bool disposing)
         {

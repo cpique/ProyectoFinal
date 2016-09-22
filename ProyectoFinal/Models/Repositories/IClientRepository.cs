@@ -17,5 +17,6 @@ namespace ProyectoFinal.Models.Repositories
         void Save();
         void HashPassword(Client client);
         bool HasActivePayment(Client client);
+        bool IsEmailAlreadyInUse(Client client);
     }
 }

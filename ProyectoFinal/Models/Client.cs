@@ -51,6 +51,7 @@ namespace ProyectoFinal.Models
 
         [Required]
         [DisplayName("Rol")]
+        [Range(1, 3, ErrorMessage = "Elija uno de los roles disponibles")]
         public Catalog.Roles Role { get; set; }
 
         public ICollection<MedicalRecord> MedicalRecords { get; set; }
