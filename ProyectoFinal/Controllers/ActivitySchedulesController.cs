@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using System.Configuration;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -34,12 +35,68 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: ActivitySchedules
-        public ActionResult Index(int? page)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var activitySchedules = activityScheduleRepository.GetActivitySchedules();
-                                                              //.AsPagination(page ?? 1, pageSize);
-            return View(activitySchedules);
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                activitySchedules = activitySchedules.Where(c => c.Activity.Name.ToLower().Contains(searchString));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.ActivityNameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DaySortParm = sortOrder == "day_asc" ? "day_desc" : "day_asc";
+            ViewBag.HourFromSortParm = sortOrder == "hourFrom_asc" ? "hourFrom_desc" : "hourFrom_asc";
+            ViewBag.HourToSortParm = sortOrder == "hourTo_asc" ? "hourTo_desc" : "hourTo_asc";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    activitySchedules = activitySchedules.OrderByDescending(a => a.Activity.Name);
+                    break;
+                case "day_desc":
+                    activitySchedules = activitySchedules.OrderByDescending(a => a.Day);
+                    break;
+                case "day_asc":
+                    activitySchedules = activitySchedules.OrderBy(a => a.Day);
+                    break;
+                case "hourFrom_desc":
+                    activitySchedules = activitySchedules.OrderByDescending(a => a.HourFrom);
+                    break;
+                case "hourFrom_asc":
+                    activitySchedules = activitySchedules.OrderBy(a => a.HourFrom);
+                    break;
+                case "hourTo_desc":
+                    activitySchedules = activitySchedules.OrderByDescending(a => a.HourTo);
+                    break;
+                case "hourTo_asc":
+                    activitySchedules = activitySchedules.OrderBy(a => a.HourTo);
+                    break;
+                default:
+                    activitySchedules = activitySchedules.OrderBy(a => a.Activity.Name);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(activitySchedules.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: ActivitySchedules/Details/5

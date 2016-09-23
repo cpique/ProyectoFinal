@@ -10,6 +10,7 @@ using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using System.Configuration;
 using ProyectoFinal.Filters;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -33,12 +34,54 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Activities
-        public ActionResult Index(int? page)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var activities = activityRepository.GetActivities();
-                                              // .AsPagination(page ?? 1, pageSize);
-            return View(activities);
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                activities = activities.Where(c => c.Name.ToLower().Contains(searchString));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DescSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    activities = activities.OrderByDescending(a => a.Name);
+                    break;
+                case "description_desc":
+                    activities = activities.OrderByDescending(a => a.Description);
+                    break;
+                case "description_asc":
+                    activities = activities.OrderBy(a => a.Description);
+                    break;
+                default:
+                    activities = activities.OrderBy(a => a.Name);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(activities.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Activities/Details/5

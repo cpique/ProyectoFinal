@@ -18,8 +18,10 @@ namespace ProyectoFinal.Filters
         {
             string userName = GetValue(context, USER);
             string userRole = GetValue(context, ROLE);
-            RouteValueDictionary routeValueDictionaryForLogin = new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } };
-            RouteValueDictionary routeValueDictionaryForIndex = new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } };
+            var controllerRequested = context.RouteData.Values["controller"].ToString();
+            RouteValueDictionary routeValueDictionaryForLogin = new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } }; //User not logged in
+            RouteValueDictionary routeValueDictionaryForIndex = new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } }; //Logged user but different role. No permission
+
 
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userRole) || string.IsNullOrEmpty(this.Role))
             {

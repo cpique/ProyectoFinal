@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Collections.Specialized;
 using System.IO;
 using ProyectoFinal.Filters;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -37,21 +38,87 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Files
-        public ActionResult Index(int? id, int? page)
+        public ActionResult Index(int? id, string sortOrder, string currentFilter, string searchString, int? page)
         {
-            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 10;
-
-            if (id!=null)
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
             {
-                //return View(fileRepository.GetFiles().Where(f => f.RoutineID == id).AsPagination(page??1, pageSize));
-                return View(fileRepository.GetFiles().Where(f => f.RoutineID == id));
+                page = 1;
             }
             else
             {
-                //return View(fileRepository.GetFiles().AsPagination(page ?? 1, pageSize));
-                return View(fileRepository.GetFiles());
+                searchString = currentFilter;
             }
 
+            ViewBag.CurrentFilter = searchString;
+
+            IEnumerable<Models.File> files;
+            if(id!=null)
+                files = fileRepository.GetFiles().Where(f => f.RoutineID == id);
+            else
+                files = fileRepository.GetFiles();
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                files = files.Where(c => c.ExerciseName.ToLower().Contains(searchString));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.MuscleSortParm = String.IsNullOrEmpty(sortOrder) ? "muscle_desc" : "";
+            ViewBag.RoutineNameSortParm = sortOrder == "routine_asc" ? "routine_desc" : "routine_asc";
+            ViewBag.ExerciseSortParm = sortOrder == "exer_asc" ? "exer_desc" : "exer_asc";
+            ViewBag.PesoSortParm = sortOrder == "peso_asc" ? "peso_desc" : "peso_asc";
+            ViewBag.Repetitions = sortOrder == "rep_asc" ? "rep_desc" : "rep_asc";
+            ViewBag.DayParm = sortOrder == "day_asc" ? "day_desc" : "day_asc";
+
+            switch (sortOrder)
+            {
+                case "muscle_desc":
+                    files = files.OrderByDescending(c => c.MuscleName);
+                    break;
+                case "routine_desc":
+                    files = files.OrderByDescending(c => c.Routine.NameFile);
+                    break;
+                case "routine_asc":
+                    files = files.OrderBy(c => c.Routine.NameFile);
+                    break;
+                case "exer_desc":
+                    files = files.OrderByDescending(c => c.ExerciseName);
+                    break;
+                case "exer_asc":
+                    files = files.OrderBy(c => c.ExerciseName);
+                    break;
+                case "peso_desc":
+                    files = files.OrderByDescending(c => c.Peso);
+                    break;
+                case "peso_asc":
+                    files = files.OrderBy(c => c.Peso);
+                    break;
+                case "rep_desc":
+                    files = files.OrderByDescending(c => c.Repetitions);
+                    break;
+                case "rep_asc":
+                    files = files.OrderBy(c => c.Repetitions);
+                    break;
+                case "day_desc":
+                    files = files.OrderByDescending(c => c.Day);
+                    break;
+                case "day_asc":
+                    files = files.OrderBy(c => c.Day);
+                    break;
+                default:
+                    files = files.OrderBy(c => c.MuscleName);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+
+            return View(files.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Files/Details/5

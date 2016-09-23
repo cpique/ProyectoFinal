@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using ProyectoFinal.Filters;
+using System.Configuration;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -35,10 +37,68 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: MedicalRecords
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var medicalRecords = medicalRepository.GetMedicalRecords();
-            return View(medicalRecords.ToList());
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                medicalRecords = medicalRecords.Where(c => c.Client.FirstName.ToLower().Contains(searchString) || c.Client.LastName.ToLower().Contains(searchString.ToLower()));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.WeigthSortParm = sortOrder == "weight_asc" ? "weight_desc" : "weight_asc";
+            ViewBag.HeigthSortParm = sortOrder == "heigth_asc" ? "heigth_desc" : "heigth_asc";
+            ViewBag.AgeSortParm = sortOrder == "age_asc" ? "age_desc" : "age_asc";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    medicalRecords = medicalRecords.OrderByDescending(c => c.Client.FirstName).ThenBy(c => c.Client.LastName);
+                    break;
+                case "weight_desc":
+                    medicalRecords = medicalRecords.OrderByDescending(c => c.Weight);
+                    break;
+                case "weight_asc":
+                    medicalRecords = medicalRecords.OrderBy(c => c.Weight);
+                    break;
+                case "heigth_desc":
+                    medicalRecords = medicalRecords.OrderByDescending(c => c.Heigth);
+                    break;
+                case "heigth_asc":
+                    medicalRecords = medicalRecords.OrderBy(c => c.Heigth);
+                    break;
+                case "age_desc":
+                    medicalRecords = medicalRecords.OrderByDescending(c => c.Age);
+                    break;
+                case "age_asc":
+                    medicalRecords = medicalRecords.OrderBy(c => c.Age);
+                    break;
+                default:
+                    medicalRecords = medicalRecords.OrderBy(c => c.Client.FirstName).ThenBy(c => c.Client.LastName);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(medicalRecords.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: MedicalRecords/Details/5

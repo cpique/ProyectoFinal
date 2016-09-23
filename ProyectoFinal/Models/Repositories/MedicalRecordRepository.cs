@@ -28,7 +28,7 @@ namespace ProyectoFinal.Models.Repositories
 
         public MedicalRecord GetMedicalRecordByID(int id)
         {
-            return context.MedicalRecords.Find(id);
+            return context.MedicalRecords.Include(m => m.Client).Where(m => m.MedicalRecordID == id).FirstOrDefault();
         }
 
         public void InsertMedicalRecord(MedicalRecord medicalRecord)

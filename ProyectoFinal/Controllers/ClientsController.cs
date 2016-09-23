@@ -16,7 +16,7 @@ using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
-    //[AuthorizationPrivilege(Role = "Admin")]
+    [AuthorizationPrivilege(Role = "Admin")]
     public class ClientsController : Controller
     {
         #region Properties

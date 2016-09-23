@@ -28,7 +28,7 @@ namespace ProyectoFinal.Models.Repositories
 
         public File GetFileByID(int id)
         {
-            return context.Files.Find(id);
+            return context.Files.Include(f => f.Routine).Where(f => f.FileID == id).FirstOrDefault();
         }
 
         public void InsertFile(File file)

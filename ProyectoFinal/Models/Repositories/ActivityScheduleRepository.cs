@@ -28,7 +28,7 @@ namespace ProyectoFinal.Models.Repositories
 
         public ActivitySchedule GetActivityScheduleByID(int id)
         {
-            return context.ActivitySchedules.Find(id);
+            return context.ActivitySchedules.Include(a => a.Activity).Where(a => a.ActivityScheduleID == id).FirstOrDefault();
         }
 
         public void InsertActivitySchedule(ActivitySchedule activitySchedule)
