@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.IO;
 using ProyectoFinal.Filters;
 using PagedList;
+using System.Web.Helpers;
 
 namespace ProyectoFinal.Controllers
 {
@@ -268,5 +269,117 @@ namespace ProyectoFinal.Controllers
             }
             base.Dispose(disposing);
         }
+
+        #region New
+        public ActionResult Test(int? id, string sortOrder, string currentFilter, string searchString, int? page)
+        {
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            IEnumerable<Models.File> files;
+            if (id != null)
+                files = fileRepository.GetFiles().Where(f => f.RoutineID == id);
+            else
+                files = fileRepository.GetFiles();
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                files = files.Where(c => c.ExerciseName.ToLower().Contains(searchString));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.MuscleSortParm = String.IsNullOrEmpty(sortOrder) ? "muscle_desc" : "";
+            ViewBag.RoutineNameSortParm = sortOrder == "routine_asc" ? "routine_desc" : "routine_asc";
+            ViewBag.ExerciseSortParm = sortOrder == "exer_asc" ? "exer_desc" : "exer_asc";
+            ViewBag.PesoSortParm = sortOrder == "peso_asc" ? "peso_desc" : "peso_asc";
+            ViewBag.Repetitions = sortOrder == "rep_asc" ? "rep_desc" : "rep_asc";
+            ViewBag.DayParm = sortOrder == "day_asc" ? "day_desc" : "day_asc";
+
+            switch (sortOrder)
+            {
+                case "muscle_desc":
+                    files = files.OrderByDescending(c => c.MuscleName);
+                    break;
+                case "routine_desc":
+                    files = files.OrderByDescending(c => c.Routine.NameFile);
+                    break;
+                case "routine_asc":
+                    files = files.OrderBy(c => c.Routine.NameFile);
+                    break;
+                case "exer_desc":
+                    files = files.OrderByDescending(c => c.ExerciseName);
+                    break;
+                case "exer_asc":
+                    files = files.OrderBy(c => c.ExerciseName);
+                    break;
+                case "peso_desc":
+                    files = files.OrderByDescending(c => c.Peso);
+                    break;
+                case "peso_asc":
+                    files = files.OrderBy(c => c.Peso);
+                    break;
+                case "rep_desc":
+                    files = files.OrderByDescending(c => c.Repetitions);
+                    break;
+                case "rep_asc":
+                    files = files.OrderBy(c => c.Repetitions);
+                    break;
+                case "day_desc":
+                    files = files.OrderByDescending(c => c.Day);
+                    break;
+                case "day_asc":
+                    files = files.OrderBy(c => c.Day);
+                    break;
+                default:
+                    files = files.OrderBy(c => c.MuscleName);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+
+            return View(files.ToPagedList(pageNumber, pageSize));
+        }
+
+        [HttpGet]
+        public JsonResult GetExercises(int? routineID)
+        {
+            var files = fileRepository.GetFiles();
+
+            routineID = 1;
+            var query =
+                     fileRepository.GetFiles()
+                      .Where(p => p.RoutineID == routineID)
+                      .Select(p => new
+                      {
+                          NameFile = p.Routine.NameFile,
+                          ExerciseName = p.ExerciseName,
+                          MuscleName = p.MuscleName,
+                          Peso = p.Peso,
+                          Repetitions = p.Repetitions,
+                          Day = p.Day
+                      })
+                      .ToList();
+
+            return Json(new { Result = "OK", Data = query } , JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+
+
     }
 }

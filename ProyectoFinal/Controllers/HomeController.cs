@@ -34,7 +34,6 @@ namespace ProyectoFinal.Controllers
             return View();
         }
 
-        [AuthorizationPrivilege(Role = "Client")]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -105,16 +104,24 @@ namespace ProyectoFinal.Controllers
         [HttpPost]
         public ActionResult Access(string docNumber)
         {
-            int documentNumber = Convert.ToInt32(docNumber);
+            #region Validations
+            int documentNumber;
+            bool parseResult = Int32.TryParse(docNumber, out documentNumber);
+
+            if (!parseResult || docNumber.Length != 8)
+            {
+                ModelState.AddModelError("Format", "Debes ingresar un número de documento");
+                return View();
+            }
+            #endregion
+
             Client client = clientRepository.GetClients().Where(c => c.DocNumber == documentNumber && c.Role==Catalog.Roles.Client).FirstOrDefault();
 
-            if (client == null)
+            if (client == null || (client.Role != Catalog.Roles.Client))
             {
-                //No se encontró un cliente con los datos ingresados
-            }
-            else if (client.Role != Catalog.Roles.Client)
-            {
-                //No es cliente. Es admin o profesor
+                //No se encontró un cliente con los datos ingresados o bien no es cliente, es admin o profesor
+                ModelState.AddModelError("Format", "No se encontró ningún socio con el nro de documento ingresado");
+                return View();
             }
             else if(clientRepository.HasActivePayment(client))
             {
@@ -122,13 +129,14 @@ namespace ProyectoFinal.Controllers
                 Assistance assistance = new Assistance { assistanceDate = DateTime.Now, ClientID = client.ClientID };
                 assistanceRepository.InsertAssistance(assistance);
                 assistanceRepository.Save();
-                return View("About");
+                ViewBag.IsEnabled = true;
             }
             else
             {
+                ViewBag.IsEnabled = false;
                 //No tiene abono activo
             }
-            return View("Contact");
+            return View();
         }
 
         private Client Authenticate(string username, string password)

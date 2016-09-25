@@ -21,11 +21,54 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Clientes", "Index", "Clients")</li>
-                    <li>@Html.ActionLink("Actividades", "Index", "Activities")</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Nosotros<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
+                            <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
+                        </ul>
+                    </li>
+                    @if (Session["Role"] != null && Session["User"] != null && Session["Role"].ToString() == "Admin")
+                    {
+                        
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clientes<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Lista de clientes", "Index", "Clients")</li>
+                                <li>@Html.ActionLink("Rutinas", "Index", "Routines")</li>
+                                <li>@Html.ActionLink("Planillas", "Index", "MedicalRecords")</li>
+                            </ul>
+                        </li>
+
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Actividades<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Lista de actividades", "Index", "Activities")</li>
+                                <li>@Html.ActionLink("Horarios", "Index", "ActivitySchedules")</li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Abonos<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Lista de abonos", "Index", "Payments")</li>
+                                <li>@Html.ActionLink("Tipos de abono", "Index", "PaymentTypes")</li>
+                                <li>@Html.ActionLink("Precios", "Index", "PaymentTypePrices")</li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Productos<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Productos", "Index", "Products")</li>
+                                <li>@Html.ActionLink("Proveedores", "Index", "Suppliers")</li>
+                                <li>@Html.ActionLink("Stocks", "Index", "Stocks")</li>
+                            </ul>
+                        </li>
+                        
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

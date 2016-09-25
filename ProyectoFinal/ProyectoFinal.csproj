@@ -310,6 +310,8 @@
     <Content Include="Views\Clients\Edit.cshtml" />
     <Content Include="Views\Clients\Details.cshtml" />
     <Content Include="Views\Clients\Delete.cshtml" />
+    <Content Include="Views\Files\Test.cshtml" />
+    <Content Include="Views\Home\AccessPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
