@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using System.Configuration;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -30,9 +32,61 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Stocks
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View(stockRepository.GetStocks());
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var stocks = stockRepository.GetStocks();
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                stocks = stocks.Where(r => r.ArticleID.ToString().ToLower().Contains(searchString.ToLower()));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.ArticleSortParm = sortOrder == "article_asc" ? "article_desc" : "article_asc";
+            ViewBag.StockSortParm = String.IsNullOrEmpty(sortOrder) ? "stock_desc" : "";
+            ViewBag.DesiredStockSortParm = sortOrder == "desired_asc" ? "desired_desc" : "desired_asc";
+
+            switch (sortOrder)
+            {
+                case "stock_desc":
+                    stocks = stocks.OrderByDescending(s => s.CantInStock);
+                    break;
+                case "article_desc":
+                    stocks = stocks.OrderBy(s => s.ArticleID);
+                    break;
+                case "article_asc":
+                    stocks = stocks.OrderByDescending(s => s.ArticleID);
+                    break;
+                case "desired_desc":
+                    stocks = stocks.OrderByDescending(s => s.DesiredStock);
+                    break;
+                case "desired_asc":
+                    stocks = stocks.OrderBy(s => s.DesiredStock);
+                    break;
+                default:
+                    stocks = stocks.OrderBy(s => s.CantInStock);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(stocks.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Stocks/Details/5

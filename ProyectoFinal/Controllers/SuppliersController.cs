@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using System.Configuration;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -30,9 +32,82 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Suppliers
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View(supplierRepository.GetSuppliers());
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var suppliers = supplierRepository.GetSuppliers();
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                suppliers = suppliers.Where(r => r.BusinessName.ToLower().Contains(searchString.ToString()));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.EmailSortParm = sortOrder == "email_asc" ? "email_desc" : "email_asc";
+            ViewBag.TelSortParm = sortOrder == "tel_asc" ? "tel_desc" : "tel_asc";
+            ViewBag.AddressSortParm = sortOrder == "address_asc" ? "address_desc" : "address_asc";
+            ViewBag.CitySortParm = sortOrder == "city_asc" ? "city_desc" : "city_asc";
+            ViewBag.WebSortParm = sortOrder == "web_asc" ? "web_desc" : "web_asc";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    suppliers = suppliers.OrderByDescending(s => s.BusinessName);
+                    break;
+                case "email_desc":
+                    suppliers = suppliers.OrderBy(s => s.Email);
+                    break;
+                case "email_asc":
+                    suppliers = suppliers.OrderByDescending(s => s.Email);
+                    break;
+                case "tel_desc":
+                    suppliers = suppliers.OrderByDescending(s => s.PhoneNumber);
+                    break;
+                case "tel_asc":
+                    suppliers = suppliers.OrderBy(s => s.PhoneNumber);
+                    break;
+                case "address_desc":
+                    suppliers = suppliers.OrderByDescending(s => s.Address);
+                    break;
+                case "address_asc":
+                    suppliers = suppliers.OrderBy(s => s.Address);
+                    break;
+                case "city_desc":
+                    suppliers = suppliers.OrderByDescending(s => s.City);
+                    break;
+                case "city_asc":
+                    suppliers = suppliers.OrderBy(s => s.City);
+                    break;
+                case "web_desc":
+                    suppliers = suppliers.OrderByDescending(s => s.WebSite);
+                    break;
+                case "web_asc":
+                    suppliers = suppliers.OrderBy(s => s.WebSite);
+                    break;
+                default:
+                    suppliers = suppliers.OrderBy(s => s.BusinessName);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(suppliers.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Suppliers/Details/5
@@ -61,7 +136,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SupplierID,BusinessName,Email,PhoneNumber,Address")] Supplier supplier)
+        public ActionResult Create(Supplier supplier)
         {
             if (ModelState.IsValid)
             {
@@ -93,7 +168,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "SupplierID,BusinessName,Email,PhoneNumber,Address")] Supplier supplier)
+        public ActionResult Edit(Supplier supplier)
         {
             if (ModelState.IsValid)
             {

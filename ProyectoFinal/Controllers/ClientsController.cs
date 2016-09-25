@@ -57,7 +57,9 @@ namespace ProyectoFinal.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                clients = clients.Where(c => c.FirstName.ToLower().Contains(searchString.ToLower()) || c.LastName.ToLower().Contains(searchString.ToLower()));
+                clients = clients.Where(r => string.Concat(r.FirstName, " ", r.LastName)
+                                                   .ToLower()
+                                                   .Contains(searchString.ToLower()));
             }
             #endregion
 

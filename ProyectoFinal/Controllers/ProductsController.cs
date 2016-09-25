@@ -73,7 +73,7 @@ namespace ProyectoFinal.Controllers
             switch (sortOrder)
             {
                 case "type_desc":
-                    products = products.OrderByDescending(p => p.Type);
+                    products = products.OrderByDescending(p => p.Type.ToString());
                     break;
                 case "name_desc":
                     products = products.OrderByDescending(p => p.Name);
@@ -88,10 +88,10 @@ namespace ProyectoFinal.Controllers
                     products = products.OrderBy(p => p.Price);
                     break;
                 case "status_desc":
-                    products = products.OrderByDescending(p => p.Status);
+                    products = products.OrderByDescending(p => p.Status.ToString());
                     break;
                 case "status_asc":
-                    products = products.OrderBy(p => p.Status);
+                    products = products.OrderBy(p => p.Status.ToString());
                     break;
                 case "supplier_desc":
                     products = products.OrderByDescending(p => p.Supplier.BusinessName);
@@ -106,7 +106,7 @@ namespace ProyectoFinal.Controllers
                     products = products.OrderBy(p => p.PurchaseDate);
                     break;
                 default:
-                    products = products.OrderBy(p => p.Type);
+                    products = products.OrderBy(p => p.Type.ToString());
                     break;
             }
             #endregion

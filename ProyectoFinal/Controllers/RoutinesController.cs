@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using ProyectoFinal.Filters;
+using System.Configuration;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -35,10 +37,91 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Routines
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var routines = routineRepository.GetRoutines();
-            return View(routines);
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                routines = routines.Where(r => string.Concat(r.Client.FirstName, " ", r.Client.LastName)
+                                                     .ToLower()
+                                                     .Contains(searchString.ToLower()));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.RoutineSortParm = sortOrder == "routine_asc" ? "routine_desc" : "routine_asc";
+            ViewBag.DescSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+            ViewBag.LevelSortParm = sortOrder == "level_asc" ? "level_desc" : "level_asc";
+            ViewBag.StatusSortParm = sortOrder == "status_asc" ? "status_desc" : "status_asc";
+            ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
+            ViewBag.DaysSortParm = sortOrder == "day_asc" ? "day_desc" : "day_asc";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    routines = routines.OrderByDescending(r => r.Client.FirstName).ThenBy(r => r.Client.LastName);
+                    break;
+                case "routine_desc":
+                    routines = routines.OrderByDescending(r => r.NameFile);
+                    break;
+                case "routine_asc":
+                    routines = routines.OrderBy(r => r.NameFile);
+                    break;
+                case "description_desc":
+                    routines = routines.OrderByDescending(r => r.Description);
+                    break;
+                case "description_asc":
+                    routines = routines.OrderBy(r => r.Description);
+                    break;
+                case "level_desc":
+                    routines = routines.OrderByDescending(r => r.Level.ToString());
+                    break;
+                case "level_asc":
+                    routines = routines.OrderBy(r => r.Level.ToString());
+                    break;
+                case "status_desc":
+                    routines = routines.OrderByDescending(r => r.Status.ToString());
+                    break;
+                case "status_asc":
+                    routines = routines.OrderBy(r => r.Status.ToString());
+                    break;
+                case "date_desc":
+                    routines = routines.OrderByDescending(r => r.CreationDate);
+                    break;
+                case "date_asc":
+                    routines = routines.OrderBy(r => r.CreationDate);
+                    break;
+                case "day_desc":
+                    routines = routines.OrderByDescending(r => r.DaysInWeek);
+                    break;
+                case "day_asc":
+                    routines = routines.OrderBy(r => r.DaysInWeek);
+                    break;
+                default:
+                    routines = routines.OrderBy(r => r.Client.FirstName).ThenBy(r => r.Client.LastName);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(routines.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Routines/Details/5

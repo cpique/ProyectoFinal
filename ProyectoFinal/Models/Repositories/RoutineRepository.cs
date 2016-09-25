@@ -28,7 +28,7 @@ namespace ProyectoFinal.Models.Repositories
 
         public Routine GetRoutineByID(int id)
         {
-            return context.Routines.Find(id);
+            return context.Routines.Include(r => r.Client).Where(r => r.RoutineID == id).FirstOrDefault();
         }
 
         public void InsertRoutine(Routine routine)
