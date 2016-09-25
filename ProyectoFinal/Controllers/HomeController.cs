@@ -65,10 +65,18 @@ namespace ProyectoFinal.Controllers
                 {
                     Session["User"] = client;
                     Session["UserName"] = client.Email;
-                    Session["Role"] = client.Role; 
+                    Session["Role"] = client.Role;
 
                     //TODO Pagina personal del cliente logueado
-                    return Redirect(Url.Action("Index", "Clients"));
+                    var returnUrl = Session["ReturnURL"];
+                    if (returnUrl != null && returnUrl.ToString() != string.Empty)
+                    {
+                        return Redirect(Url.Action("Index", returnUrl.ToString()));
+                    }
+                    else
+                    {
+                        return Redirect(Url.Action("Index", "Clients"));
+                    }
                 }
                 else
                 {

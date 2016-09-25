@@ -21,7 +21,7 @@ namespace ProyectoFinal.Filters
             var controllerRequested = context.RouteData.Values["controller"].ToString();
             RouteValueDictionary routeValueDictionaryForLogin = new RouteValueDictionary { { "controller", "Home" }, { "action", "Login" } }; //User not logged in
             RouteValueDictionary routeValueDictionaryForIndex = new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } }; //Logged user but different role. No permission
-
+            context.HttpContext.Session.Add("ReturnURL", controllerRequested);
 
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userRole) || string.IsNullOrEmpty(this.Role))
             {
