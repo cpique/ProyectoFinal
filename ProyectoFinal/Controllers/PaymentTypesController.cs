@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using System.Configuration;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -33,10 +35,68 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: PaymentTypes
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var paymentTypes = paymentTypeRepository.GetPaymentTypes();
-            return View(paymentTypes.ToList());
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                paymentTypes = paymentTypes.Where(p => p.Activity.Name.ToLower().Contains(searchString.ToLower()));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.ActivitySortParm = String.IsNullOrEmpty(sortOrder) ? "activity_desc" : "";
+            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+            ViewBag.StatusSortParm = sortOrder == "status_asc" ? "status_desc" : "status_asc";
+            ViewBag.MonthsSortParm = sortOrder == "months_asc" ? "months_desc" : "months_asc";
+
+            switch (sortOrder)
+            {
+                case "activity_desc":
+                    paymentTypes = paymentTypes.OrderByDescending(p => p.Activity.Name);
+                    break;
+                case "description_desc":
+                    paymentTypes = paymentTypes.OrderByDescending(p => p.Description);
+                    break;
+                case "description_asc":
+                    paymentTypes = paymentTypes.OrderBy(p => p.Description);
+                    break;
+                case "status_desc":
+                    paymentTypes = paymentTypes.OrderByDescending(p => p.Status);
+                    break;
+                case "status_asc":
+                    paymentTypes = paymentTypes.OrderByDescending(p => p.Status);
+                    break;
+                case "months_desc":
+                    paymentTypes = paymentTypes.OrderBy(p => p.DurationInMonths);
+                    break;
+                case "months_asc":
+                    paymentTypes = paymentTypes.OrderByDescending(p => p.DurationInMonths);
+                    break;
+                default:
+                    paymentTypes = paymentTypes.OrderBy(p => p.Activity.Name);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(paymentTypes.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: PaymentTypes/Details/5

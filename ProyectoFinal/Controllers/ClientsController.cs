@@ -57,12 +57,14 @@ namespace ProyectoFinal.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                clients = clients.Where(c => c.FirstName.ToLower().Contains(searchString) || c.LastName.ToLower().Contains(searchString.ToLower()));
+                clients = clients.Where(c => c.FirstName.ToLower().Contains(searchString.ToLower()) || c.LastName.ToLower().Contains(searchString.ToLower()));
             }
             #endregion
 
             #region OrderBy
+            ViewBag.NameSortParm = sortOrder == "name_asc" ? "name_desc" : "name_asc";
             ViewBag.SurnameSortParm = String.IsNullOrEmpty(sortOrder) ? "surname_desc" : "";
+            ViewBag.DocTypeSortParm = sortOrder == "docType_desc" ? "docType_asc" : "docType_desc";
             ViewBag.DocNumberSortParm = sortOrder == "doc_asc" ? "doc_desc" : "doc_asc";
             ViewBag.BirthDateSortParm = sortOrder == "birth_asc" ? "birth_desc" : "birth_asc";
             ViewBag.EmailSortParm = sortOrder == "email_asc" ? "email_desc" : "email_asc";
@@ -70,6 +72,12 @@ namespace ProyectoFinal.Controllers
 
             switch(sortOrder)
             {
+                case "name_desc":
+                    clients = clients.OrderByDescending(c => c.FirstName);
+                    break;
+                case "name_asc":
+                    clients = clients.OrderBy(c => c.FirstName);
+                    break;
                 case "surname_desc":
                     clients = clients.OrderByDescending(c => c.LastName);
                     break;
@@ -78,6 +86,12 @@ namespace ProyectoFinal.Controllers
                     break;
                 case "birth_asc":
                     clients = clients.OrderBy(c => c.BirthDate);
+                    break;
+                case "docType_desc":
+                    clients = clients.OrderByDescending(c => c.DocType);
+                    break;
+                case "docType_asc":
+                    clients = clients.OrderBy(c => c.DocType);
                     break;
                 case "doc_desc":
                     clients = clients.OrderByDescending(c => c.DocNumber);

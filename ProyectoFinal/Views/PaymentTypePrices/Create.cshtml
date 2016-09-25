@@ -12,7 +12,6 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>PaymentTypePrice</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -40,8 +39,9 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="col-md-offset-2 col-md-4">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+                <input type="reset" value="Limpiar" class="btn btn-default" />
             </div>
         </div>
     </div>

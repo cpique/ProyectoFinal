@@ -28,7 +28,7 @@ namespace ProyectoFinal.Models.Repositories
 
         public PaymentTypePrice GetPaymentTypePriceByID(int id)
         {
-            return context.PaymentTypePrices.Find(id);
+            return context.PaymentTypePrices.Include(p => p.PaymentType).Where(p => p.PaymentTypePriceID == id).FirstOrDefault();
         }
 
         public void InsertPaymentTypePrice(PaymentTypePrice paymentTypePrice)

@@ -18,6 +18,7 @@ namespace ProyectoFinal.Models
 
         [Required]
         [DisplayName("Fecha desde")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateFrom { get; set; }
 
         [ForeignKey("PaymentTypeID")]

@@ -17,8 +17,10 @@ namespace ProyectoFinal.Models
         [DisplayName("Estado")]
         public Catalog.Status Status { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligaorio. Formato: dd/mm/aaaa")]
         [DisplayName("Fecha expiración")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [DataType(DataType.DateTime, ErrorMessage = "Formato: dd/mm/aaaa")]
         public DateTime ExpirationDate { get; set; }
 
         [ForeignKey("ClientID")]

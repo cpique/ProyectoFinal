@@ -34,6 +34,7 @@ namespace ProyectoFinal.Models
         public ProductStatus Status { get; set; }
 
         [DisplayName("Fecha compra")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime PurchaseDate { get; set; }
 
         [DisplayName("Stock")]

@@ -28,7 +28,7 @@ namespace ProyectoFinal.Models.Repositories
 
         public Payment GetPaymentByID(int id)
         {
-            return context.Payments.Find(id);
+            return context.Payments.Include(p => p.Client).Include(p => p.PaymentType).Where(p => p.PaymentID == id).FirstOrDefault();
         }
 
         public void InsertPayment(Payment payment)

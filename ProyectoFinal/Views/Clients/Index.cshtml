@@ -30,36 +30,40 @@
     <table class="table table-striped">
         <tr class="success">
             <th>
-                @Html.DisplayNameFor(model => model.FirstOrDefault().FirstName).ToHtmlString()
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().FirstName).ToHtmlString(),
+                                "Index",
+                                new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
                 @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().LastName).ToHtmlString(), 
-                                                      "Index", 
-                                                      new { sortOrder = ViewBag.SurnameSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
+                                "Index", 
+                                new { sortOrder = ViewBag.SurnameSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
                     
             </th>
             <th>
-               @Html.DisplayNameFor(model => model.FirstOrDefault().DocType).ToHtmlString()
+                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().DocType).ToHtmlString(),
+                                "Index",
+                                new { sortOrder = ViewBag.DocTypeSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
                 @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().DocNumber).ToHtmlString(), 
-                                                               "Index", 
-                                                               new { sortOrder = ViewBag.DocNumberSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
+                                "Index", 
+                                new { sortOrder = ViewBag.DocNumberSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
                 @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().BirthDate).ToString(), 
-                                                               "Index", 
-                                                               new { sortOrder = ViewBag.BirthDateSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
+                                "Index", 
+                                new { sortOrder = ViewBag.BirthDateSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
                 @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().Email).ToString(), 
-                                                               "Index", 
-                                                               new { sortOrder = ViewBag.EmailSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
+                                "Index", 
+                                new { sortOrder = ViewBag.EmailSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
                 @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().Role).ToString(), 
-                                                               "Index", 
-                                                               new { sortOrder = ViewBag.RolSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
+                                "Index", 
+                                new { sortOrder = ViewBag.RolSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th class="actions">Acciones</th>
         </tr>

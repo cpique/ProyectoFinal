@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using System.Configuration;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -34,9 +36,61 @@ namespace ProyectoFinal.Controllers
 
 
         // GET: PaymentTypePrices
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View(paymentTypePriceRepository.GetPaymentTypePrices());
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var paymentTypePrices = paymentTypePriceRepository.GetPaymentTypePrices();
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                paymentTypePrices = paymentTypePrices.Where(p => p.PaymentType.Description.ToLower().Contains(searchString.ToLower()));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.DescripionSortParm = String.IsNullOrEmpty(sortOrder) ? "description_desc" : "";
+            ViewBag.PriceSortParm = sortOrder == "price_asc" ? "price_desc" : "price_asc";
+            ViewBag.DateFromSortParm = sortOrder == "dateFrom_asc" ? "dateFrom_desc" : "dateFrom_asc";
+
+            switch (sortOrder)
+            {
+                case "description_desc":
+                    paymentTypePrices = paymentTypePrices.OrderByDescending(p => p.PaymentType.Description);
+                    break;
+                case "price_desc":
+                    paymentTypePrices = paymentTypePrices.OrderByDescending(p => p.Price);
+                    break;
+                case "price_asc":
+                    paymentTypePrices = paymentTypePrices.OrderBy(p => p.Price);
+                    break;
+                case "dateFrom_desc":
+                    paymentTypePrices = paymentTypePrices.OrderByDescending(p => p.DateFrom);
+                    break;
+                case "dateFrom_asc":
+                    paymentTypePrices = paymentTypePrices.OrderBy(p => p.DateFrom);
+                    break;
+                default:
+                    paymentTypePrices = paymentTypePrices.OrderBy(p => p.PaymentType.Description);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(paymentTypePrices.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: PaymentTypePrices/Details/5

@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
+using System.Configuration;
+using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
@@ -37,10 +39,77 @@ namespace ProyectoFinal.Controllers
 
 
         // GET: Payments
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var payments = paymentRepository.GetPayments();
-            return View(payments.ToList());
+
+            #region search
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                payments = payments.Where(p => p.Client.FirstName.ToLower().Contains(searchString.ToLower()) || p.Client.LastName.ToLower().Contains(searchString.ToLower()));
+            }
+            #endregion
+
+            #region OrderBy
+            ViewBag.FirstNameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.LastNameSortParm = sortOrder == "surname_asc" ? "surname_desc" : "surname_asc";
+            ViewBag.DescriptionSortParm = sortOrder == "description_asc" ? "description_desc" : "description_asc";
+            ViewBag.ExpDateSortParm = sortOrder == "expDate_asc" ? "expDate_desc" : "expDate_asc";
+            ViewBag.StatusSortParm = sortOrder == "status_asc" ? "status_desc" : "status_asc";
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    payments = payments.OrderByDescending(p => p.Client.FirstName);
+                    break;
+                case "surname_desc":
+                    payments = payments.OrderByDescending(p => p.Client.LastName);
+                    break;
+                case "surname_asc":
+                    payments = payments.OrderBy(p => p.Client.LastName);
+                    break;
+                case "description_desc":
+                    payments = payments.OrderByDescending(p => p.PaymentType.Description);
+                    break;
+                case "description_asc":
+                    payments = payments.OrderBy(p => p.PaymentType.Description);
+                    break;
+                case "status_desc":
+                    payments = payments.OrderByDescending(p => p.Status);
+                    break;
+                case "status_asc":
+                    payments = payments.OrderBy(p => p.Status);
+                    break;
+                case "expDate_desc":
+                    payments = payments.OrderByDescending(p => p.ExpirationDate);
+                    break;
+                case "expDate_asc":
+                    payments = payments.OrderBy(p => p.ExpirationDate);
+                    break;
+                default:
+                    payments = payments.OrderBy(p => p.Client.FirstName);
+                    break;
+            }
+            #endregion
+
+            int pageNumber = (page ?? 1);
+            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
+            return View(payments.ToPagedList(pageNumber, pageSize));
+
+
         }
 
         // GET: Payments/Details/5
@@ -73,6 +142,12 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "PaymentID,Status,ClientID,PaymentTypeID")] Payment payment)
         {
+            #region Seteo fecha expiracion de abono y Status
+            var paymentType = paymentTypeRepository.GetPaymentTypeByID(payment.PaymentTypeID);
+            payment.ExpirationDate = DateTime.Now.AddMonths(paymentType.DurationInMonths);
+            payment.Status = Utils.Catalog.Status.Active;
+            #endregion
+
             if (ModelState.IsValid)
             {
                 paymentRepository.InsertPayment(payment);
@@ -107,7 +182,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PaymentID,Status,ClientID,PaymentTypeID")] Payment payment)
+        public ActionResult Edit(Payment payment)
         {
             if (ModelState.IsValid)
             {
