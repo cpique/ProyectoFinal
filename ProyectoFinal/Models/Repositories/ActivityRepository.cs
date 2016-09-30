@@ -23,12 +23,18 @@ namespace ProyectoFinal.Models.Repositories
         #region Interface implementation
         public IEnumerable<Activity> GetActivities()
         {
-            return context.Activities.ToList();
+            return context.Activities
+                                    .Include(a => a.ActivitySchedules)
+                                    .Include(a => a.PaymentTypes)
+                                    .ToList();
         }
 
         public Activity GetActivityByID(int id)
         {
-            return context.Activities.Find(id);
+            return context.Activities.Where(a => a.ActivityID == id)
+                                     .Include(a => a.ActivitySchedules)
+                                     .Include(a => a.PaymentTypes)
+                                     .FirstOrDefault();
         }
 
         public void InsertActivity(Activity activity)

@@ -14,7 +14,7 @@ using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
-    [AuthorizationPrivilege(Role = "Admin")]
+
     public class ActivitiesController : Controller
     {
         #region Properties
@@ -34,6 +34,7 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: Activities
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -84,6 +85,7 @@ namespace ProyectoFinal.Controllers
             return View(activities.ToPagedList(pageNumber, pageSize));
         }
 
+        [AuthorizationPrivilege(Role = "Admin")]
         // GET: Activities/Details/5
         public ActionResult Details(int? id)
         {
@@ -99,6 +101,7 @@ namespace ProyectoFinal.Controllers
             return View(activity);
         }
 
+        [AuthorizationPrivilege(Role = "Admin")]
         // GET: Activities/Create
         public ActionResult Create()
         {
@@ -108,6 +111,7 @@ namespace ProyectoFinal.Controllers
         // POST: Activities/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
+        [AuthorizationPrivilege(Role = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ActivityID,Name,Description")] Activity activity)
@@ -123,6 +127,7 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: Activities/Edit/5
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -140,6 +145,7 @@ namespace ProyectoFinal.Controllers
         // POST: Activities/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
+        [AuthorizationPrivilege(Role = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ActivityID,Name,Description")] Activity activity)
@@ -154,6 +160,7 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: Activities/Delete/5
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -169,6 +176,7 @@ namespace ProyectoFinal.Controllers
         }
 
         // POST: Activities/Delete/5
+        [AuthorizationPrivilege(Role = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -177,6 +185,19 @@ namespace ProyectoFinal.Controllers
             activityRepository.DeleteActivity((int)id);
             activityRepository.Save();
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Catálogo de actividades ofrecidas por el gimnasio. Accesible desde la home
+        /// </summary>
+        [HttpGet]
+        public ViewResult Catalog()
+        {
+            var activities = activityRepository.GetActivities();
+
+            //TO DO Recuperar precio mas actual de historico de precios de abonos
+
+            return View(activities);
         }
 
         protected override void Dispose(bool disposing)

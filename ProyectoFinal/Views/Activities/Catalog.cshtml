@@ -1,0 +1,88 @@
+﻿@model IEnumerable<ProyectoFinal.Models.Activity>
+
+@{
+    ViewBag.Title = "Catálogo de actividades";
+    ViewBag.Services = "Servicios que te ofrecemos";
+    int numberActivity = 0;
+}
+
+<!-- Scripts -->
+<link href="~/Content/shop-item.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="~/Scripts/forViews/Activities_Catalog.js"></script>
+<!-- -->
+
+<h2>@ViewBag.Title</h2>
+<hr />
+
+<!-- Page Content -->
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <p class="lead">@ViewBag.Services</p>
+            <div class="list-group">
+                @foreach (var item in Model) {
+                    <a id="@numberActivity" class="list-group-item">@Html.DisplayFor(modelItem => item.Name)</a>
+                    numberActivity = numberActivity + 1;
+                }
+            </div>
+        </div>
+
+
+        <div class="col-md-9">
+            <div class="thumbnail">
+            @foreach (var item in Model)
+            {
+                <div class="caption-full">
+                    <h4 class="pull-right">$24.99</h4>
+                    <h4>
+                        <a>@Html.DisplayFor(modelItem => item.Name)</a>
+                    </h4>
+
+                    @if (!string.IsNullOrEmpty(item.Description)) //Si tiene descripción
+                    {
+                        <p>
+                            <strong><u>Descripción</u></strong><br />
+                            @Html.DisplayFor(modelItem => item.Description).
+                        </p>
+                    }
+
+                    @if(item.ActivitySchedules != null && item.ActivitySchedules.Count > 1) { //Si tiene horarios establecidos
+                    <p>
+                        <strong><u>Horarios disponibles</u></strong><br />
+                        <ul>
+                            @foreach (var schedule in item.ActivitySchedules)
+                            {
+                                <li>@Html.DisplayFor(x => schedule.Day)     @Html.DisplayFor(x => schedule.HourFrom)hs a @Html.DisplayFor(x => schedule.HourTo)hs</li>
+                            }
+                        </ul>
+                    </p>
+                    }
+
+                    @if (item.PaymentTypes != null && item.PaymentTypes.Count > 1) { //Si tiene abonos establecidos
+                        <p>
+                            <strong><u>Abonos</u></strong><br />
+                            <ul>
+                                @foreach (var paymentType in item.PaymentTypes)
+                                {
+                                    <li>@Html.DisplayFor(x => paymentType.Description): 
+                                        @Html.DisplayFor(x => paymentType.DurationInMonths)meses  
+                                    </li>
+                                }
+                            </ul>
+                        </p>
+                    }
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container -->
+
+<br />
+<br />
+<br />
+<br />
