@@ -5,12 +5,11 @@
     ViewBag.Title = "Catálogo de abonos disponibles";
     ViewBag.List = "Listado";
     int numberPaymentType = 0;
-    var activities = ViewBag.Activities;
+    var activities = ViewBag.Activities as HashSet<Activity>;
 }
 
 <!-- Scripts -->
-@*<link href="~/Content/shop-homepage.css" rel="stylesheet" type="text/css" />*@
-<script type="text/javascript" src="~/Scripts/forViews/Activities_Catalog.js"></script>
+<script type="text/javascript" src="~/Scripts/forViews/PaymentTypes_Catalog.js"></script>
 <!-- Scripts -->
 
 <h2>@ViewBag.Title</h2>
@@ -23,11 +22,11 @@
 
         <div class="col-md-3">
             <p class="lead">@ViewBag.List</p>
-            <div class="list-group">
-                @foreach (var item in Model)
+            <div class="list-group activities">
+                <a id="activityAll" class="list-group-item active">Todos</a>
+                @foreach (var item in activities)
                 {
-                    <a id="@numberPaymentType" class="list-group-item">@Html.DisplayFor(modelItem => item.Activity.Name)</a>
-                    numberPaymentType = numberPaymentType + 1;
+                    <a id="activity@(item.ActivityID)" class="list-group-item">@Html.DisplayFor(modelItem => item.Name)</a>
                 }
             </div>
         </div>
@@ -45,18 +44,15 @@
                              .Where(p => p.DateFrom.Date <= DateTime.Now.Date)
                              .FirstOrDefault();
 
-                        <div class="col-sm-6 col-md-4">
+                    if (currentPrice != null)
+                    {
+                        <div class="paymentTypeDetail col-sm-6 col-md-4 activity@(item.ActivityID)">
                             <div class="thumbnail">
                                 <img src="~/Images/icons/@(pic).JPG" alt="">
                                 <div class="caption">
                                     <h3>@Html.DisplayFor(modelItem => item.Description)</h3> 
                                     <p>Actividad: @Html.DisplayFor(modelItem => item.Activity.Name)</p>
-                                    
-                                    @if (currentPrice != null)
-                                    {
-                                        <p>Precio: $@Html.DisplayFor(modelItem => item.PaymentTypePrices.FirstOrDefault().Price) </p>
-                                    }
-
+                                    <p>Precio: $@Html.DisplayFor(modelItem => item.PaymentTypePrices.FirstOrDefault().Price)</p>
                                     <p>
                                         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal@(item.PaymentTypeID)">
                                             Ver más
@@ -65,6 +61,11 @@
                                 </div>
                             </div>
                         </div>
+                    }
+                    else
+                    {
+                            <p> Lo sentimos, por el momento no hay abonos disponibles.Acercate a nuestras instalaciones a consultar.</p>
+                    }
                 }
 
             </div>
@@ -88,10 +89,10 @@
                 <h4 class="modal-title" id="@(item.PaymentTypeID)Label">@Html.DisplayFor(modelItem => item.Description)</h4>
             </div>
             <div class="modal-body">
-                <h4>Detalles del abono</h4>
+                <h4><i>Detalles del abono</i></h4>
                 <p><strong>Duración: </strong> @Html.DisplayFor(modelItem => item.DurationInMonths) mes(es)</p>
                 <hr />
-                <h4>Detalles de la actividad</h4>
+                <h4><i>Detalles de la actividad</i></h4>
                 <p><strong>Actividad: </strong> @Html.DisplayFor(modelItem => item.Activity.Name)</p>
                 <p><strong>Breve descripción: </strong> @Html.DisplayFor(modelItem => item.Activity.Description)</p>
             </div>

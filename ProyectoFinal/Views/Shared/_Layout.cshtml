@@ -37,7 +37,6 @@
                             </ul>
                         </li>
 
-
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Actividades<span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -75,7 +74,14 @@
                             </ul>
                         </li>
 
-                        <li>@Html.ActionLink("Actividades", "Catalog", "Activities")</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catálogos<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Actividades", "Catalog", "Activities")</li>
+                                <li>@Html.ActionLink("Abonos", "Catalog", "PaymentTypes")</li>
+                                <li>@Html.ActionLink("Horarios", "Catalog", "ActivitySchedules")</li>
+                            </ul>
+                        </li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")

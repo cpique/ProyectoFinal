@@ -174,13 +174,13 @@ namespace ProyectoFinal.Controllers
 
         public ViewResult Catalog()
         {
-            var paymentTypes = paymentTypeRepository.GetPaymentTypes();
+            var paymentTypes = paymentTypeRepository.GetPaymentTypes().OrderBy(p => p.PaymentTypeID);
             paymentTypes.ToList().RemoveAll(p => p.Status.Equals(Utils.Catalog.Status.Inactive));
 
-            HashSet<String> activities = new HashSet<string>();
+            HashSet<Activity> activities = new HashSet<Activity>();
             foreach (var item in paymentTypes)
             {
-                activities.Add(item.Activity.Name);
+                activities.Add(item.Activity);
             }
             ViewBag.Activities = activities;
 
