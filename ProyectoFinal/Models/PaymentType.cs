@@ -26,7 +26,7 @@ namespace ProyectoFinal.Models
         public int DurationInMonths { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
-        public ICollection<PaymentTypePrice> PaymentTypePrices { get; set; }
+        public virtual ICollection<PaymentTypePrice> PaymentTypePrices { get; set; }
 
         [ForeignKey("ActivityID")]
         public virtual Activity Activity { get; set; }

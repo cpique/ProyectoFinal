@@ -26,6 +26,6 @@ namespace ProyectoFinal.Models
         
         public virtual ICollection<Client> Clients { get; set; }
         public virtual ICollection<ActivitySchedule> ActivitySchedules { get; set; }
-        public ICollection<PaymentType> PaymentTypes { get; set; }
+        public virtual ICollection<PaymentType> PaymentTypes { get; set; }
     }
 }

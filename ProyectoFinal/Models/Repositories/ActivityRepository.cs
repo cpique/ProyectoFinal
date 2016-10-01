@@ -24,9 +24,9 @@ namespace ProyectoFinal.Models.Repositories
         public IEnumerable<Activity> GetActivities()
         {
             return context.Activities
-                                    .Include(a => a.ActivitySchedules)
-                                    .Include(a => a.PaymentTypes)
-                                    .ToList();
+                                     .Include(a => a.ActivitySchedules)
+                                     .Include(a => a.PaymentTypes)
+                                     .ToList();
         }
 
         public Activity GetActivityByID(int id)
@@ -76,5 +76,7 @@ namespace ProyectoFinal.Models.Repositories
             }
             this.disposed = true;
         }
+
+
     }
 }

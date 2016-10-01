@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<ProyectoFinal.Models.Activity>
+@using ProyectoFinal.Models;
+@using ProyectoFinal.Utils;
 
 @{
     ViewBag.Title = "Catálogo de actividades";
@@ -9,7 +11,7 @@
 <!-- Scripts -->
 <link href="~/Content/shop-item.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="~/Scripts/forViews/Activities_Catalog.js"></script>
-<!-- -->
+<!-- Scripts -->
 
 <h2>@ViewBag.Title</h2>
 <hr />
@@ -60,14 +62,27 @@
                     </p>
                     }
 
-                    @if (item.PaymentTypes != null && item.PaymentTypes.Count > 1) { //Si tiene abonos establecidos
+                    @if (item.PaymentTypes != null &&
+                         item.PaymentTypes.Count > 0 &&
+                         item.PaymentTypes.Where(p => p.Status.Equals(Catalog.Status.Active)).ToList().Count > 0) //Si tiene abonos activos
+                    {
                         <p>
                             <strong><u>Abonos</u></strong><br />
                             <ul>
                                 @foreach (var paymentType in item.PaymentTypes)
                                 {
+                                    var currentPrice = paymentType.PaymentTypePrices
+                                                                 .OrderByDescending(p => p.DateFrom)
+                                                                 .Where(p => p.DateFrom.Date <= DateTime.Now.Date)
+                                                                 .FirstOrDefault();
+
                                     <li>@Html.DisplayFor(x => paymentType.Description): 
-                                        @Html.DisplayFor(x => paymentType.DurationInMonths)meses  
+                                        @Html.DisplayFor(x => paymentType.DurationInMonths) mes(es) 
+                                        
+                                        @if (currentPrice != null)
+                                        {
+                                                @:a sólo $@Html.DisplayFor(x => currentPrice.Price)
+                                        }
                                     </li>
                                 }
                             </ul>

@@ -19,17 +19,20 @@ namespace ProyectoFinal.Controllers
     {
         #region Properties
         private IActivityRepository activityRepository;
+        private IPaymentTypeRepository paymentTypeRepository;
         #endregion
 
         #region Constructors
         public ActivitiesController()
         {
             this.activityRepository = new ActivityRepository(new GymContext());
+            this.paymentTypeRepository = new PaymentTypeRepository(new GymContext());
         }
 
-        public ActivitiesController(IActivityRepository activityRepository)
+        public ActivitiesController(IActivityRepository activityRepository, IPaymentTypeRepository paymentTypeRepository)
         {
             this.activityRepository = activityRepository;
+            this.paymentTypeRepository = paymentTypeRepository;
         }
         #endregion
 
@@ -193,10 +196,7 @@ namespace ProyectoFinal.Controllers
         [HttpGet]
         public ViewResult Catalog()
         {
-            var activities = activityRepository.GetActivities();
-
-            //TO DO Recuperar precio mas actual de historico de precios de abonos
-
+            var activities = activityRepository.GetActivities().ToList();
             return View(activities);
         }
 

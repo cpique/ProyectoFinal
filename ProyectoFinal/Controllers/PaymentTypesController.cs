@@ -172,6 +172,21 @@ namespace ProyectoFinal.Controllers
             return View(paymentType);
         }
 
+        public ViewResult Catalog()
+        {
+            var paymentTypes = paymentTypeRepository.GetPaymentTypes();
+            paymentTypes.ToList().RemoveAll(p => p.Status.Equals(Utils.Catalog.Status.Inactive));
+
+            HashSet<String> activities = new HashSet<string>();
+            foreach (var item in paymentTypes)
+            {
+                activities.Add(item.Activity.Name);
+            }
+            ViewBag.Activities = activities;
+
+            return View(paymentTypes);
+        }
+
         // GET: PaymentTypes/Delete/5
         public ActionResult Delete(int? id)
         {

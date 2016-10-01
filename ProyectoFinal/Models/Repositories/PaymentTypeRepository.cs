@@ -36,6 +36,12 @@ namespace ProyectoFinal.Models.Repositories
                                        .FirstOrDefault();
         }
 
+        public PaymentTypePrice GetCurrentPriceByID(int paymentTypeID)
+        {
+            var prices = context.PaymentTypePrices.Where(p => p.PaymentTypeID == paymentTypeID).ToList();
+            return prices.OrderByDescending(p => p.DateFrom).FirstOrDefault();
+        }
+
         public void InsertPaymentType(PaymentType paymentType)
         {
             context.PaymentTypes.Add(paymentType);

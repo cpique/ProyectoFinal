@@ -16,17 +16,19 @@
         <p>
             Ofrecemos una gran variedad de actividades aeróbicas, anaeróbicas, individuales y grupales para que escojas a tu gusto.
         </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Ver actividades &raquo;</a></p>
+        <p>@Html.ActionLink(HttpUtility.HtmlDecode("Ver actividades &raquo;"), "Catalog", "Activities", null, new { @class = "btn btn-default" })</p>
     </div>
     <div class="col-md-4">
         <h2>Precios <span class="glyphicon glyphicon-usd"></span></h2>
         <p>Contamos con una amplio número de abonos con múltiples promociones y beneficios. Elige el más adecuado para ti.</p>
         <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Ver abonos &raquo;</a></p>
+        <p>@Html.ActionLink(HttpUtility.HtmlDecode("Ver abonos &raquo;"), "Catalog", "Activities", null, new { @class = "btn btn-default" })</p>
     </div>
     <div class="col-md-4">
         <h2>Horarios <span class="glyphicon glyphicon-time"></span></h2>
         <p>Tenemos un extenso catálogo de horarios disponibles para que puedas escoger el momento adecuado para ejercitarte.</p>
         <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Ver horarios &raquo;</a></p>
+        <p>@Html.ActionLink(HttpUtility.HtmlDecode("Ver horarios &raquo;"), "Catalog", "Activities", null, new { @class = "btn btn-default" })</p>
     </div>
 </div>
 <!--Fin Actividades / Precios / Horarios-->
