@@ -12,7 +12,8 @@ using System.Web.Mvc;
 
 namespace ProyectoFinal.Controllers
 {
-    //[AuthorizationPrivilege(Role = "Admin")]
+    [AuthorizationPrivilege(Role = "Admin")]
+    [HandleError()]
     public class StatisticsController : Controller
     {
         #region Properties

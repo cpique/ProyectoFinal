@@ -1,7 +1,7 @@
 ﻿@{
-    ViewBag.Title = "Error del servidor";
+    ViewBag.Title = "Error 404";
     ViewBag.SubTitle = "Error en el procesamiento de la solicitud";
-    ViewBag.Description = "Ups! Lo sentimos, pero ha surgido un error inesperado. Por favor, vuelve a intentarlo más tarde.";
+    ViewBag.Description = "El recurso que intentaste acceder o bien se ha movido, se ha eliminado, o no existe. Por favor, revisa la dirección ingresada y vuelve a intentar";
 }
 
 <hgroup>
@@ -9,4 +9,6 @@
     <h2 class="text-center">@ViewBag.SubTitle</h2>
 </hgroup>
 <p class="text-center">@ViewBag.Description</p>
+<br />
 @Html.ActionLink("Ir a la Home", "Index", "Home", null, new { @class = "btn btn-default" })
+

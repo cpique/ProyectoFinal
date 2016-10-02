@@ -15,6 +15,7 @@ using PagedList;
 namespace ProyectoFinal.Controllers
 {
     [AuthorizationPrivilege(Role = "Admin")]
+    [HandleError()]
     public class ProductsController : Controller
     {
         #region Properties

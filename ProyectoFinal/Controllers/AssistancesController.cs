@@ -9,9 +9,12 @@ using System.Web.Mvc;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using System.Configuration;
+using ProyectoFinal.Filters;
 
 namespace ProyectoFinal.Controllers
 {
+    [AuthorizationPrivilege(Role = "Admin")]
+    [HandleError()]
     public class AssistancesController : Controller
     {
         #region Properties

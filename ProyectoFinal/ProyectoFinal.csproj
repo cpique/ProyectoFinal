@@ -144,6 +144,7 @@
     <Compile Include="Controllers\ActivitySchedulesController.cs" />
     <Compile Include="Controllers\AssistancesController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
@@ -349,6 +350,7 @@
     <Content Include="Views\Activities\Catalog.cshtml" />
     <Content Include="Views\PaymentTypes\Catalog.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
+    <Content Include="Views\Shared\Error404.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

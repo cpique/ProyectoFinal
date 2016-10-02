@@ -12,6 +12,7 @@ using System.Web.Security;
 
 namespace ProyectoFinal.Controllers
 {
+    [HandleError()]
     public class HomeController : Controller
     {
         private IClientRepository clientRepository;
@@ -28,6 +29,7 @@ namespace ProyectoFinal.Controllers
             this.clientRepository = clientRepository;
             this.assistanceRepository = assistanceRepository;
         }
+
 
         public ActionResult Index()
         {

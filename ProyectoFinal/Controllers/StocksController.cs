@@ -10,9 +10,12 @@ using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using System.Configuration;
 using PagedList;
+using ProyectoFinal.Filters;
 
 namespace ProyectoFinal.Controllers
 {
+    [AuthorizationPrivilege(Role = "Admin")]
+    [HandleError()]
     public class StocksController : Controller
     {
         #region Properties
