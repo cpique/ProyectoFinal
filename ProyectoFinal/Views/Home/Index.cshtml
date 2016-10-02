@@ -11,22 +11,17 @@
 
 <!--Init Actividades / Precios / Horarios-->
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-xs-12 col-md-6">
         <h2>Actividades <span class="glyphicon glyphicon-list"></span></h2>
         <p>
             Ofrecemos una gran variedad de actividades aeróbicas, anaeróbicas, individuales y grupales para que escojas a tu gusto.
         </p>
         <p>@Html.ActionLink(HttpUtility.HtmlDecode("Ver actividades &raquo;"), "Catalog", "Activities", null, new { @class = "btn btn-default" })</p>
     </div>
-    <div class="col-md-4">
+    <div class="col-xs-12 col-md-6">
         <h2>Precios <span class="glyphicon glyphicon-usd"></span></h2>
         <p>Contamos con una amplio número de abonos con múltiples promociones y beneficios. Elige el más adecuado para ti.</p>
         <p>@Html.ActionLink(HttpUtility.HtmlDecode("Ver abonos &raquo;"), "Catalog", "PaymentTypes", null, new { @class = "btn btn-default" })</p>
-    </div>
-    <div class="col-md-4">
-        <h2>Horarios <span class="glyphicon glyphicon-time"></span></h2>
-        <p>Tenemos un extenso catálogo de horarios disponibles para que puedas escoger el momento adecuado para ejercitarte.</p>
-        <p>@Html.ActionLink(HttpUtility.HtmlDecode("Ver horarios &raquo;"), "Catalog", "ActivitySchedules", null, new { @class = "btn btn-default" })</p>
     </div>
 </div>
 <!--Fin Actividades / Precios / Horarios-->

@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/forViews/Statistics_Index.js"></script>
+<style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+</style>
+<script src="~/Scripts/Chart.bundle.min.js"></script>
+
+
+<h2>Módulo de estadísticas</h2>
+
+<div class="row">
+    <div class="form-group">
+        <div class="col-lg-12">
+            <label for="selectChart" class="control-label">Gráfico a mostrar: </label>
+            <select id="selectChart" class="form-control">
+                <option value="0">Seleccione un gráfico</option>
+                <option value="all">Todos</option>
+                <option value="barChart">Bar chart</option>
+                <option value="lineChart">Line chart</option>
+                <option value="pieChart">Pie</option>
+                <option value="4">Tooltip</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12" id="gif">
+    <p class="text-center"><img src="~/Images/loading.gif" /></p>
+</div>
+
+<div class="col-lg-12 barChart chart" style="width: 75%; display:none;">
+    <h2>Bar Chart</h2>
+    <canvas id="canvasBar"></canvas>
+</div>
+<br />
+
+<div class="col-lg-12 lineChart chart" style="width: 75%; display:none;">
+    <h2>Line Chart</h2>
+    <canvas id="canvasLine"></canvas>
+    <button class="btn btn-primary" id="addDataToLineChart">Agrega un año</button>
+    <button class="btn btn-default" id="removeDataToLineChart">Remueve un año</button>
+</div>
+<br />
+
+<div class="col-lg-12 pieChart chart" style="width: 75%; display:none;">
+    <h2>Pie Chart</h2>
+    <p>Participación de cada actividad en el total de ventas</p>
+    <br />
+    <canvas id="canvasPie"></canvas>
+</div>
+

@@ -13,6 +13,8 @@ namespace ProyectoFinal.Utils
         public enum LevelRoutine { Begginer = 1, Medium, Advanced, Expert}
         public enum ProductStatus { Ok = 1, Deteriorated, Broken }
         public enum ProductType { Machine = 1, Article }
+        public enum Genre { Mujer = 1, Hombre }
+        public enum AgeClass { YoungAdult = 0, Adult, MiddleAge, Senior  }
 
     }
 }

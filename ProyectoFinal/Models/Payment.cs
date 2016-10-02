@@ -23,6 +23,9 @@ namespace ProyectoFinal.Models
         [DataType(DataType.DateTime, ErrorMessage = "Formato: dd/mm/aaaa")]
         public DateTime ExpirationDate { get; set; }
 
+        [Required]
+        public DateTime CreationDate { get; set; }
+
         [ForeignKey("ClientID")]
         public Client Client { get; set; }
         public int ClientID { get; set; }

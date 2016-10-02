@@ -43,6 +43,11 @@ namespace ProyectoFinal.Models
         public string Email { get; set; }
 
         [Required]
+        [DisplayName("Sexo")]
+        [Range(1, 2, ErrorMessage = "Elija un género")]
+        public Catalog.Genre Sexo { get; set; }
+
+        [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

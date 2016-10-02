@@ -142,8 +142,9 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "PaymentID,Status,ClientID,PaymentTypeID")] Payment payment)
         {
-            #region Seteo fecha expiracion de abono y Status
+            #region Seteo fecha creacion, fecha expiracion de abono y Status
             var paymentType = paymentTypeRepository.GetPaymentTypeByID(payment.PaymentTypeID);
+            payment.CreationDate = DateTime.Now;
             payment.ExpirationDate = DateTime.Now.AddMonths(paymentType.DurationInMonths);
             payment.Status = Utils.Catalog.Status.Active;
             #endregion
