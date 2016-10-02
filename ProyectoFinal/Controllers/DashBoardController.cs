@@ -2,6 +2,7 @@
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using ProyectoFinal.Models.ViewModels;
+using ProyectoFinal.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +17,20 @@ namespace ProyectoFinal.Controllers
     {
         #region Properties
         private IClientRepository clientRepository;
+        private IMedicalRecordRepository medicalRecordRepository;
         #endregion
 
         #region Constructors
         public DashBoardController()
         {
             this.clientRepository = new ClientRepository(new GymContext());
+            this.medicalRecordRepository = new MedicalRecordRepository(new GymContext());
         }
 
-        public DashBoardController(IClientRepository clientRepository)
+        public DashBoardController(IClientRepository clientRepository, IMedicalRecordRepository medicalRecordRepository)
         {
             this.clientRepository = clientRepository;
+            this.medicalRecordRepository = medicalRecordRepository;
         }
         #endregion
 
@@ -35,6 +39,7 @@ namespace ProyectoFinal.Controllers
             try
             {
                 Client currentUser = this.GetLoggedUser();
+                ViewBag.UserRol = currentUser.Role.Equals(Catalog.Roles.Client) ? "Socio" : (currentUser.Role.Equals(Catalog.Roles.Admin) ? "Administrador" : "Profesor");
                 if (currentUser != null)
                 {
                     return View("Index", currentUser);
@@ -55,6 +60,7 @@ namespace ProyectoFinal.Controllers
         public ActionResult Edit()
         {
             Client currentUser = this.GetLoggedUser();
+
             if (currentUser != null)
             {
                 return View(currentUser);
@@ -121,6 +127,23 @@ namespace ProyectoFinal.Controllers
                 return RedirectToAction("Index");
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public JsonResult UserData()
+        {
+            Client currentUser = this.GetLoggedUser();
+            var medicalRecord = this.medicalRecordRepository.GetMedicalRecords().Where(m => m.ClientID == currentUser.ClientID).FirstOrDefault();
+            medicalRecord.Client = null;
+
+            if (currentUser != null && medicalRecord != null)
+            {
+                return Json(new { Result = "OK", Data = medicalRecord }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { Result = "NOOK", Data = string.Empty }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 

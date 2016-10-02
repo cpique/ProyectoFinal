@@ -54,11 +54,23 @@
                                         <td>Sexo:</td>
                                         <td>@Model.Sexo</td>
                                     </tr>
+                                    <tr>
+                                        <td>Rol:</td>
+                                        <td>@ViewBag.UserRol</td>
+                                    </tr>
                                 </tbody>
                             </table>
-
+                            @if (Model.Role.Equals(Catalog.Roles.Client))
+                            {
                             <a class="btn btn-primary">Ver mis rutinas</a>
                             <a class="btn btn-primary">Ver mi planilla</a>
+                            }
+                            else if(Model.Role.Equals(Catalog.Roles.Admin))
+                            { }
+                            else if (Model.Role.Equals(Catalog.Roles.Instructor))
+                            {
+
+                            }
                         </div>
                     </div>
                 </div>
