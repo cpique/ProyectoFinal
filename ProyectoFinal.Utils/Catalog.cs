@@ -15,6 +15,7 @@ namespace ProyectoFinal.Utils
         public enum ProductType { Machine = 1, Article }
         public enum Genre { Mujer = 1, Hombre }
         public enum AgeClass { YoungAdult = 0, Adult, MiddleAge, Senior  }
+        public enum Months { Enero = 1, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre }
 
     }
 }

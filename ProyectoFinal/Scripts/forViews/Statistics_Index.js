@@ -2,15 +2,14 @@
     //TODO setear llamadas en handlers de los botones
 
     
-    Config.call(Config.url.barChart, 'GET', '', BarChart.sucess, BarChart.error);
-    Config.call(Config.url.lineChart, 'GET', '', LineChart.sucess, LineChart.error);
-    Config.call(Config.url.pieChart, 'GET', '', PieChart.sucess, PieChart.error);
+    Config.call(Config.url.barChart, 'GET', '', BarChart.success, BarChart.error);
+    Config.call(Config.url.lineChart, 'GET', '', LineChart.success, LineChart.error);
+    Config.call(Config.url.pieChart, 'GET', '', PieChart.success, PieChart.error);
+    Config.call(Config.url.hooksChart, 'GET', '', HooksChart.success, HooksChart.error);
 
     setTimeout(function () {
         $("#gif").hide();
     }, 2000);
-
-
 
 
     //BUTTON HANDLERS
@@ -54,6 +53,35 @@
         }
     });
 
+    $('#addDataToHookChart').click(function () {
+        var MONTHS = HooksChart.originalMonths;
+        var actualSize = HooksChart.config.data.datasets[0].data.length;
+        if (actualSize > 0 && actualSize < 12) {
+            var monthName = MONTHS[HooksChart.config.data.labels.length % MONTHS.length];
+            HooksChart.config.data.labels.push(monthName);
+
+            $.each(HooksChart.config.data.datasets, function (i, dataset) {
+                var indexNextMonth = dataset.data.length;
+                dataset.data.push(HooksChart.originalAttendance[indexNextMonth]);
+            });
+
+            window.myHooks.update();
+        }
+    });
+
+    $('#removeDataToHookChart').click(function () {
+        var actualSize = HooksChart.config.data.datasets[0].data.length;
+        if (actualSize > 1) {
+            HooksChart.config.data.labels.splice(-1, 1); // remove the label first
+
+            HooksChart.config.data.datasets.forEach(function (dataset, datasetIndex) {
+                dataset.data.pop();
+            });
+
+            window.myHooks.update();
+        }
+    });
+
 });
 
 //Init Global Configuration
@@ -61,7 +89,8 @@ var Config = { //Variable que contiene una llamada AJAX genérica y una propieda
     url: {
         barChart: '/Statistics/BarChart',
         lineChart: '/Statistics/LineChart',
-        pieChart: '/Statistics/PieChart'
+        pieChart: '/Statistics/PieChart',
+        hooksChart: '/Statistics/HooksChart'
     },
 
     call: function (url, type, parameters, successCallBack, errorCallBack) {
@@ -105,7 +134,7 @@ var BarChart = { //Se encarga de manejar la respuesta de la llamada ajax, de pre
 
     },
 
-    sucess: function (data) {
+    success: function (data) {
         if (data.Result == "OK") {
             console.log(data);
             for (i = 0; i < data.Men.length; i++) {
@@ -188,9 +217,8 @@ var LineChart = {
         }
     },
 
-    sucess: function (data) {
+    success: function (data) {
         if (data.Result == "OK") {
-            console.log(data);
             for (var i = 0; i < data.Data.length; i++) {
                 var year = data.Data[i].Year.toString();
                 var abonos = data.Data[i].CantAbonos.toString();
@@ -200,11 +228,10 @@ var LineChart = {
 
                 LineChart.config.data.datasets[0].data.push(abonos);
                 LineChart.originalAbonos.push(abonos);
-
-                LineChart.setColors();
-                var ctxLine = document.getElementById("canvasLine").getContext("2d");
-                window.myLine = new Chart(ctxLine, LineChart.config);
             }
+            LineChart.setColors();
+            var ctxLine = document.getElementById("canvasLine").getContext("2d");
+            window.myLine = new Chart(ctxLine, LineChart.config);
         }
     },
 
@@ -246,7 +273,7 @@ var PieChart = {
         }
     },
 
-    sucess: function (data) {
+    success: function (data) {
         if (data.Result == "OK") {
             console.log(data);
 
@@ -259,16 +286,129 @@ var PieChart = {
                 labels.push(data.Data[i].ActivityName);
             }
             //Set values
-
-            var ctxPie = document.getElementById("canvasPie").getContext("2d");
-            window.myPie = new Chart(ctxPie, PieChart.config);
         }
+        var ctxPie = document.getElementById("canvasPie").getContext("2d");
+        window.myPie = new Chart(ctxPie, PieChart.config);
     },
 
     error: function (xhr, textStatus, errorThrown) {
         console.log('Error');
     }
 }
+
+
+var HooksChart = {
+
+    monthValues: ["0", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+
+    getMonthName: function (number) {
+        return HooksChart.monthValues[number];
+    },
+
+    config: {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: "Asistencia por mes",
+                data: []
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: "Line Chart"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    beforeTitle: function () {
+                        return '';
+                    },
+                    afterTitle: function () {
+                        return '';
+                    },
+                    beforeBody: function () {
+                        return '';
+                    },
+                    afterBody: function () {
+                        return '';
+                    },
+                    beforeLabel: function () {
+                        return '';
+                    },
+                    afterLabel: function () {
+                        return 'alumnos';
+                    },
+                    beforeFooter: function () {
+                        return '';
+                    },
+                    footer: function () {
+                        return '';
+                    },
+                    afterFooter: function () {
+                        return '';
+                    },
+                }
+            },
+            hover: {
+                mode: 'label'
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        show: true,
+                        labelString: 'Value'
+                    }
+                }]
+            }
+        }
+    },
+
+    originalMonths: [],
+    originalAttendance: [],
+
+    setColors: function () {
+        $.each(HooksChart.config.data.datasets, function (i, dataset) {
+            dataset.borderColor = "rgba(75,160,78,0.4)";//randomColor(0.4);
+            dataset.backgroundColor = "rgba(34,244,68,0.5)";//randomColor(0.5);
+            dataset.pointBorderColor = "rgba(104,127,161,0.7)";//randomColor(0.7);
+            dataset.pointBackgroundColor = "rgba(231,162,86,0.5)";//randomColor(0.5);
+            dataset.pointBorderWidth = 1;
+        });
+    },
+
+    success: function (data) {
+        if (data.Result = 'OK') {
+            for (var i = 0; i < data.Data.length; i++) {
+                var month = data.Data[i].Month.toString();
+                var attendance = data.Data[i].Attendance.toString();
+
+                HooksChart.config.data.labels.push(HooksChart.getMonthName(month));
+                HooksChart.originalMonths.push(HooksChart.getMonthName(month));
+
+                HooksChart.config.data.datasets[0].data.push(attendance);
+                HooksChart.originalAttendance.push(attendance);
+            }
+            HooksChart.setColors();
+            var ctxHooks = document.getElementById("canvasHooks").getContext("2d");
+            window.myHooks = new Chart(ctxHooks, HooksChart.config);
+        }
+    },
+
+    error: function (xhr, textStatus, errorThrown) {
+        console.log('Error');
+    }
+};
 
 
 //Init Charts creation
@@ -296,10 +436,6 @@ window.onload = function () { //Carga los charts en los canvas correspondientes
             }
         }
     });
-
-    //LineChart.setColors();
-    //var ctxLine = document.getElementById("canvasLine").getContext("2d");
-    //window.myLine = new Chart(ctxLine, LineChart.config);
 
 };
 //End Charts creation

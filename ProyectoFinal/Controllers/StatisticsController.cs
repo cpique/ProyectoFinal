@@ -5,13 +5,14 @@ using ProyectoFinal.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace ProyectoFinal.Controllers
 {
-    [AuthorizationPrivilege(Role = "Admin")]
+    //[AuthorizationPrivilege(Role = "Admin")]
     public class StatisticsController : Controller
     {
         #region Properties
@@ -188,7 +189,39 @@ namespace ProyectoFinal.Controllers
         }
 
 
+        /// <summary>
+        /// Muestra asistencia HISTORICA clasificadas en meses, para conocer meses con más tráfico y patrones estacionales
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public JsonResult HooksChart()
+        {
+            #region Initialize response
+            List<HooksChartItem> response = new List<HooksChartItem>();
+            for (int month = 1; month <= 12; month++)
+            {
+                response.Add(new HooksChartItem { Attendance = 0, Month = month });
+            }
+            #endregion
 
+            try
+            {
+                var assistances = assistanceRepository.GetAssistances().ToList();
+                foreach (var assist in assistances)
+                {
+                    response.Where(h => h.Month == assist.assistanceDate.Month).FirstOrDefault().Attendance++;
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Result = "NOOK", Error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { Result = "OK", Data = response }, JsonRequestBehavior.AllowGet);
+        }
+    
+
+        #region Classes for Json response
         #region BarChart classes
         private class Men
         {
@@ -222,6 +255,15 @@ namespace ProyectoFinal.Controllers
             public string ActivityName { get; set; }
             public int CantAbonos { get; set; }
         }
+        #endregion
+
+        #region 
+        public class HooksChartItem
+        {
+            public int Month { get; set; }
+            public int Attendance { get; set; }
+        }
+        #endregion
         #endregion
     }
 }

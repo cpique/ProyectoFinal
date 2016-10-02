@@ -26,7 +26,7 @@
                 <option value="barChart">Bar chart</option>
                 <option value="lineChart">Line chart</option>
                 <option value="pieChart">Pie</option>
-                <option value="4">Tooltip</option>
+                <option value="hooksChart">Tooltip</option>
             </select>
         </div>
     </div>
@@ -37,13 +37,15 @@
 </div>
 
 <div class="col-lg-12 barChart chart" style="width: 75%; display:none;">
-    <h2>Bar Chart</h2>
+    <h3>Bar Chart</h3>
+    <p>Quienes acuden a nuestro gimnasio</p>
     <canvas id="canvasBar"></canvas>
 </div>
 <br />
 
 <div class="col-lg-12 lineChart chart" style="width: 75%; display:none;">
-    <h2>Line Chart</h2>
+    <h3>Line Chart</h3>
+    <p>Cantidad de inscripciones por año</p>
     <canvas id="canvasLine"></canvas>
     <button class="btn btn-primary" id="addDataToLineChart">Agrega un año</button>
     <button class="btn btn-default" id="removeDataToLineChart">Remueve un año</button>
@@ -51,9 +53,19 @@
 <br />
 
 <div class="col-lg-12 pieChart chart" style="width: 75%; display:none;">
-    <h2>Pie Chart</h2>
+    <h3>Pie Chart</h3>
     <p>Participación de cada actividad en el total de ventas</p>
     <br />
     <canvas id="canvasPie"></canvas>
+</div>
+<br />
+
+<div class="col-lg-12 hooksChart chart" style="width: 75%; display:none;">
+    <h3>Asistencia histórica por mes</h3>
+    <p>Muestra el tráfico por mes</p>
+    <br />
+    <canvas id="canvasHooks"></canvas>
+    <button class="btn btn-primary" id="addDataToHookChart">Agrega un mes</button>
+    <button class="btn btn-default" id="removeDataToHookChart">Remueve un mes</button>
 </div>
 
