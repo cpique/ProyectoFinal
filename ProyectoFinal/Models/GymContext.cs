@@ -47,7 +47,7 @@ namespace ProyectoFinal.Models
         #endregion
     }
 
-    public class GymInitializer : /*DropCreateDatabaseIfModelChanges<GymContext>*/DropCreateDatabaseAlways<GymContext>
+    public class GymInitializer : DropCreateDatabaseIfModelChanges<GymContext>//DropCreateDatabaseAlways<GymContext>
     {
         protected override void Seed(GymContext context)
         {
