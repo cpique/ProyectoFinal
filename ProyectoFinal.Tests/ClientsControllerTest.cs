@@ -13,16 +13,18 @@ using System.Configuration;
 namespace ProyectoFinal.Tests
 {
     [TestClass]
-    public class ClientControllerTest
+    public class ClientsControllerTest
     {
         List<Client> clients;
         List<Client> massiveClients;
         Client newClient;
+        IClientRepository clientRepository;
+        ClientsController controller;
 
         [TestInitialize]
         public void Init()
         {
-            #region ClientsList
+            #region Dummy Clients List
             var passwordSalt1 = PasswordUtilities.CreateSalt(16);
             var password1 = PasswordUtilities.GenerateSHA256Hash("12345", passwordSalt1);
             var passwordSalt2 = PasswordUtilities.CreateSalt(16);
@@ -44,7 +46,7 @@ namespace ProyectoFinal.Tests
             };
             #endregion
 
-            #region IsolatedClient
+            #region Dummy IsolatedClient
             var passwordSalt = PasswordUtilities.CreateSalt(16);
             newClient = new Client
             {
@@ -61,7 +63,7 @@ namespace ProyectoFinal.Tests
             };
             #endregion
 
-            #region MassiveClientsListForIndexTests
+            #region Dummy MassiveClientsListForIndexTests List
             var passwordSalt0 = PasswordUtilities.CreateSalt(16);
             var password0 = PasswordUtilities.GenerateSHA256Hash("12345", passwordSalt0);
 
@@ -116,20 +118,47 @@ namespace ProyectoFinal.Tests
                 Password = passwordSalt0, PasswordSalt = passwordSalt0 }
             };
             #endregion
+
+            #region Repositories
+            clientRepository = Mock.Create<IClientRepository>();
+            #endregion
+
+            #region Controller creation
+            controller = new ClientsController(clientRepository);
+            #endregion
+
+            #region JustMock Arranges
+            Mock.Arrange(() => clientRepository.GetClients())
+                .Returns(clients)
+                .MustBeCalled();
+
+            Mock.Arrange(() => clientRepository.GetClientByID(1))
+                .Returns(clients.FirstOrDefault())
+                .MustBeCalled();
+
+            Mock.Arrange(() => clientRepository.InsertClient(newClient))
+                .DoInstead(() => clients.Add(newClient))
+                .MustBeCalled();
+
+            Mock.Arrange(() => clientRepository.Save()).DoNothing();
+
+            Mock.Arrange(() => clientRepository.DeleteClient(clients.FirstOrDefault().ClientID))
+                .DoInstead(() => clients.Remove(clients.FirstOrDefault()))
+                .MustBeCalled();
+
+            Mock.Arrange(() => clientRepository.UpdateClient(new Client())).DoNothing();
+
+            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(newClient))
+                .Returns(() => this.IsEmailAlreadyInUse(newClient, false))
+                .MustBeCalled();
+            #endregion
         }
 
         [TestMethod]
         public void GetClients()
         {
             //Arrange //Act
-            var clientRepository = Mock.Create<IClientRepository>();
-            Mock.Arrange(() => clientRepository.GetClients())
-                .Returns(clients)
-                .MustBeCalled();
-
-            ClientsController controller = new ClientsController(clientRepository);
-            ActionResult actionResult = controller.Index(string.Empty,string.Empty, string.Empty, 1);
-            ViewResult viewResult = actionResult as ViewResult;
+            ViewResult viewResult = controller.Index(string.Empty,string.Empty, string.Empty, 1) as ViewResult;
             var model = viewResult.Model as IEnumerable<Client>;
 
             //Assert
@@ -141,15 +170,7 @@ namespace ProyectoFinal.Tests
         [TestMethod]
         public void GetClientByID()
         {
-            //Arrange //Act
-            var clientRepository = Mock.Create<IClientRepository>();
-            Mock.Arrange(() => clientRepository.GetClientByID(1))
-                .Returns(clients.FirstOrDefault())
-                .MustBeCalled();
-
-            ClientsController controller = new ClientsController(clientRepository);
-            ActionResult actionResult = controller.Details(1);
-            ViewResult viewResult = actionResult as ViewResult;
+            ViewResult viewResult = controller.Details(1) as ViewResult;
             var model = viewResult.Model as Client;
 
             //Assert
@@ -160,46 +181,22 @@ namespace ProyectoFinal.Tests
         [TestMethod]
         public void Create()
         {
-            //Arrange 
-            var clientRepository = Mock.Create<IClientRepository>();
-            Mock.Arrange(() => clientRepository.GetClients())
-                .Returns(clients)
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.InsertClient(newClient))
-                .DoInstead(() => clients.Add(newClient))
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.Save()).DoNothing();
-
-            ClientsController controller = new ClientsController(clientRepository);
-            //Act
             int totalClientsBefore = clients.Count;
 
-            controller.Create(newClient);
-
-            ActionResult actionResultAfter = controller.Index(string.Empty,string.Empty, string.Empty, 1);
-            ViewResult viewResultAfter = actionResultAfter as ViewResult;
-            var modelAfter = viewResultAfter.Model as IEnumerable<Client>;
+            ActionResult actionResult = controller.Create(newClient);
 
             //Assert
-            Assert.IsTrue(totalClientsBefore + 1 == modelAfter.Count());
+            Assert.AreNotEqual(totalClientsBefore, clients.Count);
+            Assert.IsInstanceOfType(actionResult, typeof(RedirectToRouteResult));
         }
 
         [TestMethod]
         public void DeleteClient()
         {
             //Arrange 
-            var clientRepository = Mock.Create<IClientRepository>();
             int totalClientsBefore = clients.Count;
             var idToDelete = clients.FirstOrDefault().ClientID;
 
-
-            Mock.Arrange(() => clientRepository.DeleteClient(clients.FirstOrDefault().ClientID))
-                .DoInstead(() => clients.Remove(clients.FirstOrDefault()))
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.Save()).DoNothing();
-
-            ClientsController controller = new ClientsController(clientRepository);
-            //Act
             controller.DeleteConfirmed(clients.FirstOrDefault().ClientID);
 
             //Assert
@@ -211,20 +208,16 @@ namespace ProyectoFinal.Tests
         public void UpdateClient()
         {
             //Arrange 
-            var clientRepository = Mock.Create<IClientRepository>();
             Client clientToUpdate = clients.FirstOrDefault();
             var originalName = clients.FirstOrDefault().FirstName;
             var originalLastName = clients.FirstOrDefault().LastName;
 
-            Mock.Arrange(() => clientRepository.Save())
+            Mock.Arrange(() => clientRepository.Save()) //Override Save arrange in Init()
                 .DoInstead(() => { clientToUpdate.LastName = "Changed"; clientToUpdate.FirstName = "Changed!"; })
                 .MustBeCalled();
-            Mock.Arrange(() => clientRepository.UpdateClient(new Client())).DoNothing();
-
-            ClientsController controller = new ClientsController(clientRepository);
+            
             controller.Edit(clientToUpdate);
             
-
             //Assert
             Assert.IsFalse(clientToUpdate.FirstName == originalName);
             Assert.IsFalse(clientToUpdate.LastName == originalLastName);
@@ -247,19 +240,8 @@ namespace ProyectoFinal.Tests
         public void EmailAlreadyInUseForCreate()
         {
             //Arrange 
-            var clientRepository = Mock.Create<IClientRepository>();
             int totalClientsBefore = clients.Count;
             newClient.Email = clients.FirstOrDefault().Email; //Email already in use
-
-            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(newClient))
-                .Returns(() => this.IsEmailAlreadyInUse(newClient, false))
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.InsertClient(newClient))
-                .DoInstead(() => clients.Add(newClient))
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.Save()).DoNothing();
-
-            ClientsController controller = new ClientsController(clientRepository);
 
             //Act
             controller.Create(newClient);
@@ -272,18 +254,7 @@ namespace ProyectoFinal.Tests
         public void EmailNotInUseForCreate()
         {
             //Arrange 
-            var clientRepository = Mock.Create<IClientRepository>();
             int totalClientsBefore = clients.Count;
-
-            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(newClient))
-                .Returns(() => this.IsEmailAlreadyInUse(newClient, false))
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.InsertClient(newClient))
-                .DoInstead(() => clients.Add(newClient))
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.Save()).DoNothing();
-
-            ClientsController controller = new ClientsController(clientRepository);
 
             //Act
             controller.Create(newClient);
@@ -296,21 +267,17 @@ namespace ProyectoFinal.Tests
         public void EmailAlreadyInUseForEdit()
         {
             //Arrange //Act
-            var clientRepository = Mock.Create<IClientRepository>();
             var client = clients.FirstOrDefault();
             var originalName = clients.FirstOrDefault().FirstName;
             var originalLastName = clients.FirstOrDefault().LastName;
             client.Email = clients.Last().Email; //Email already in use
-
-            Mock.Arrange(() => clientRepository.Save())
+            Mock.Arrange(() => clientRepository.Save()) //Override Save arrange in Init()
                 .DoInstead(() => { client.LastName = "Changed"; client.FirstName = "Changed!"; })
                 .MustBeCalled();
-            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(client))
+            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(client)) //Override
                 .Returns(() => this.IsEmailAlreadyInUse(client, true))
                 .MustBeCalled();
-            Mock.Arrange(() => clientRepository.UpdateClient(client)).DoNothing();
 
-            ClientsController controller = new ClientsController(clientRepository);
             controller.Edit(client);
 
             Assert.IsTrue(client.FirstName == originalName);
@@ -321,21 +288,16 @@ namespace ProyectoFinal.Tests
         public void EmailNotInUseForEdit()
         {
             //Arrange //Act
-            //Arrange //Act
-            var clientRepository = Mock.Create<IClientRepository>();
             var client = clients.FirstOrDefault();
             var originalName = clients.FirstOrDefault().FirstName;
             var originalLastName = clients.FirstOrDefault().LastName;
-
-            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(client))
+            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(client)) //Override
                 .Returns(() => this.IsEmailAlreadyInUse(client, true))
                 .MustBeCalled();
-            Mock.Arrange(() => clientRepository.Save())
+            Mock.Arrange(() => clientRepository.Save()) //Override
                 .DoInstead(() => { client.LastName = "Changed"; client.FirstName = "Changed!"; })
                 .MustBeCalled();
-            Mock.Arrange(() => clientRepository.UpdateClient(client)).DoNothing();
 
-            ClientsController controller = new ClientsController(clientRepository);
             controller.Edit(client);
 
             Assert.IsFalse(client.FirstName == originalName);
@@ -346,23 +308,19 @@ namespace ProyectoFinal.Tests
         [TestMethod]
         public void IndexWithSearch()
         {
-            const string SEARCHSTRING = "Alejandra";
             //Arrange //Act
-            var clientRepository = Mock.Create<IClientRepository>();
-            Mock.Arrange(() => clientRepository.GetClients())
+            const string SEARCHSTRING = "Alejandra";
+            var itemsFound = massiveClients.Where(c => string.Concat(c.FirstName, " ", c.LastName)
+                                                 .ToLower()
+                                                 .Contains(SEARCHSTRING.ToLower()));
+            Mock.Arrange(() => clientRepository.GetClients()) //Override
                 .Returns(massiveClients)
                 .MustBeCalled();
 
-            ClientsController controller = new ClientsController(clientRepository);
-            ActionResult actionResult = controller.Index(string.Empty, string.Empty, SEARCHSTRING, 1);
-            ViewResult viewResult = actionResult as ViewResult;
+            ViewResult viewResult = controller.Index(string.Empty, string.Empty, SEARCHSTRING, 1) as ViewResult;
             var model = viewResult.Model as IEnumerable<Client>;
 
             //Assert
-            var itemsFound = massiveClients.Where(c => string.Concat(c.FirstName, " ", c.LastName)
-                                                             .ToLower()
-                                                             .Contains(SEARCHSTRING.ToLower()));
-
             Assert.AreEqual(itemsFound.Count(), model.Count());
             Assert.IsFalse(model.Any(c => !string.Concat(c.FirstName, " ", c.LastName).Contains(SEARCHSTRING)));
         }
@@ -371,31 +329,24 @@ namespace ProyectoFinal.Tests
         public void IndexWithSortOrder()
         {
             //Arrange //Act
-
             //Estas constantes van de la mano, y si se cambian requieren cambios en linea 389
             const string SORT_ORDER_DESC = "name_desc"; //change for name_asc if necessary
             const string SORT_MODE_DESC = "desc"; //change for asc if necessary
 
-            var clientRepository = Mock.Create<IClientRepository>();
-            Mock.Arrange(() => clientRepository.GetClients())
+            Mock.Arrange(() => clientRepository.GetClients()) //Override
                 .Returns(massiveClients)
                 .MustBeCalled();
 
-            ClientsController controller = new ClientsController(clientRepository);
-            ActionResult actionResult = controller.Index(SORT_ORDER_DESC, string.Empty, string.Empty, 1);
-            ViewResult viewResult = actionResult as ViewResult;
+            ViewResult viewResult = controller.Index(SORT_ORDER_DESC, string.Empty, string.Empty, 1) as ViewResult;
             var model = viewResult.Model as IEnumerable<Client>;
 
-            int pageSize = ConfigurationManager.AppSettings["PageSize"] != null ? Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"]) : 8;
             if (SORT_MODE_DESC == "desc")
-                massiveClients.Take(pageSize).OrderByDescending(c => c.FirstName);
-
-
+                massiveClients = massiveClients.OrderByDescending(c => c.FirstName).ToList();
 
             //Assert
-            Assert.IsTrue(massiveClients.Count.Equals(model.Count()));
+            Assert.IsNotNull(model);
             Assert.IsTrue(massiveClients.FirstOrDefault().Equals(model.FirstOrDefault()));
-            Assert.IsTrue(massiveClients.Last().Equals(model.Last()));
+            Assert.AreEqual(massiveClients.Take(model.Count()).Last().FirstName, model.Last().FirstName);
         }
         #endregion
 
