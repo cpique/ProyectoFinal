@@ -14,7 +14,7 @@ using ProyectoFinal.Filters;
 
 namespace ProyectoFinal.Controllers
 {
-    [AuthorizationPrivilege(Role = "Admin")]
+
     [HandleError()]
     public class PaymentTypesController : Controller
     {
@@ -38,6 +38,7 @@ namespace ProyectoFinal.Controllers
         #endregion
 
         // GET: PaymentTypes
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -103,6 +104,7 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: PaymentTypes/Details/5
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -118,6 +120,7 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: PaymentTypes/Create
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Create()
         {
             ViewBag.ActivityID = new SelectList(activityRepository.GetActivities(), "ActivityID", "Name");
@@ -129,6 +132,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Create([Bind(Include = "PaymentTypeID,Description,DurationInMonths,Status,ActivityID")] PaymentType paymentType)
         {
             if (ModelState.IsValid)
@@ -143,6 +147,7 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: PaymentTypes/Edit/5
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -163,6 +168,7 @@ namespace ProyectoFinal.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Edit([Bind(Include = "PaymentTypeID,Description,DurationInMonths,Status,ActivityID")] PaymentType paymentType)
         {
             if (ModelState.IsValid)
@@ -191,6 +197,7 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: PaymentTypes/Delete/5
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -208,6 +215,7 @@ namespace ProyectoFinal.Controllers
         // POST: PaymentTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [AuthorizationPrivilege(Role = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
             PaymentType paymentType = paymentTypeRepository.GetPaymentTypeByID((int)id);
