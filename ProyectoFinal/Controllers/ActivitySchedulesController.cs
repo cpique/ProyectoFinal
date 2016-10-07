@@ -27,7 +27,7 @@ namespace ProyectoFinal.Controllers
             this.activityRepository = new ActivityRepository(new GymContext());
         }
 
-        public ActivitySchedulesController(IActivityScheduleRepository activityScheduleRepository, ActivityRepository activityRepository)
+        public ActivitySchedulesController(IActivityScheduleRepository activityScheduleRepository, IActivityRepository activityRepository)
         {
             this.activityScheduleRepository = activityScheduleRepository;
             this.activityRepository = activityRepository;

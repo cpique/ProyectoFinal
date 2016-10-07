@@ -20,6 +20,8 @@ namespace ProyectoFinal.Tests
         Client newClient;
         IClientRepository clientRepository;
         ClientsController controller;
+        public const int CLIENT_ID_TO_USE = 1;
+        public const int CLIENT_ID_NOT_FOUND = 33154;
 
         [TestInitialize]
         public void Init()
@@ -132,201 +134,41 @@ namespace ProyectoFinal.Tests
                 .Returns(clients)
                 .MustBeCalled();
 
-            Mock.Arrange(() => clientRepository.GetClientByID(1))
-                .Returns(clients.FirstOrDefault())
+            Mock.Arrange(() => clientRepository.GetClientByID(CLIENT_ID_TO_USE))
+                .Returns(clients.Where(c => c.ClientID == CLIENT_ID_TO_USE).FirstOrDefault())
                 .MustBeCalled();
 
             Mock.Arrange(() => clientRepository.InsertClient(newClient))
-                .DoInstead(() => clients.Add(newClient))
-                .MustBeCalled();
+                                               .DoInstead(() => clients.Add(newClient));
 
             Mock.Arrange(() => clientRepository.Save()).DoNothing();
 
-            Mock.Arrange(() => clientRepository.DeleteClient(clients.FirstOrDefault().ClientID))
-                .DoInstead(() => clients.Remove(clients.FirstOrDefault()))
-                .MustBeCalled();
+            Mock.Arrange(() => clientRepository.DeleteClient(CLIENT_ID_TO_USE))
+                .DoInstead(() => clients.Remove(clients.Where(c => c.ClientID == CLIENT_ID_TO_USE).FirstOrDefault()));
 
             Mock.Arrange(() => clientRepository.UpdateClient(new Client())).DoNothing();
 
             Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(newClient))
-                .Returns(() => this.IsEmailAlreadyInUse(newClient, false))
-                .MustBeCalled();
+                                               .Returns(() => this.IsEmailAlreadyInUse(newClient, false))
+                                               .MustBeCalled();
             #endregion
         }
 
         [TestMethod]
-        public void GetClients()
+        public void Client_Index()
         {
             //Arrange //Act
             ViewResult viewResult = controller.Index(string.Empty,string.Empty, string.Empty, 1) as ViewResult;
             var model = viewResult.Model as IEnumerable<Client>;
 
             //Assert
-            Assert.AreEqual(3, model.Count());
+            Assert.AreEqual(clients.Count, model.Count());
             Assert.AreEqual("John", model.First().FirstName);
             Assert.IsTrue(model.Last().ClientID.GetType() == typeof(int));
         }
 
         [TestMethod]
-        public void GetClientByID()
-        {
-            ViewResult viewResult = controller.Details(1) as ViewResult;
-            var model = viewResult.Model as Client;
-
-            //Assert
-            Assert.AreNotEqual(null, model);
-            Assert.AreEqual("Doe", model.LastName);
-        }
-
-        [TestMethod]
-        public void Create()
-        {
-            int totalClientsBefore = clients.Count;
-
-            ActionResult actionResult = controller.Create(newClient);
-
-            //Assert
-            Assert.AreNotEqual(totalClientsBefore, clients.Count);
-            Assert.IsInstanceOfType(actionResult, typeof(RedirectToRouteResult));
-        }
-
-        [TestMethod]
-        public void DeleteClient()
-        {
-            //Arrange 
-            int totalClientsBefore = clients.Count;
-            var idToDelete = clients.FirstOrDefault().ClientID;
-
-            controller.DeleteConfirmed(clients.FirstOrDefault().ClientID);
-
-            //Assert
-            Assert.IsTrue(totalClientsBefore > clients.Count);
-            Assert.IsFalse(clients.Any(c => c.ClientID == idToDelete));
-        }
-
-        [TestMethod]
-        public void UpdateClient()
-        {
-            //Arrange 
-            Client clientToUpdate = clients.FirstOrDefault();
-            var originalName = clients.FirstOrDefault().FirstName;
-            var originalLastName = clients.FirstOrDefault().LastName;
-
-            Mock.Arrange(() => clientRepository.Save()) //Override Save arrange in Init()
-                .DoInstead(() => { clientToUpdate.LastName = "Changed"; clientToUpdate.FirstName = "Changed!"; })
-                .MustBeCalled();
-            
-            controller.Edit(clientToUpdate);
-            
-            //Assert
-            Assert.IsFalse(clientToUpdate.FirstName == originalName);
-            Assert.IsFalse(clientToUpdate.LastName == originalLastName);
-        }
-
-        [TestMethod]
-        public void HashPasswordAndCompareWithAttemptedPasswords()
-        {
-            var passSaltInDb = PasswordUtilities.CreateSalt(16);
-            var passHashInDb = PasswordUtilities.GenerateSHA256Hash("TestingPassword", passSaltInDb);
-            
-            Assert.IsFalse(PasswordUtilities.Compare("TestingPa$$word", passHashInDb, passSaltInDb));
-            Assert.IsFalse(PasswordUtilities.Compare("Testing Password", passHashInDb, passSaltInDb));
-            Assert.IsFalse(PasswordUtilities.Compare(string.Empty, passHashInDb, passSaltInDb));
-            Assert.IsFalse(PasswordUtilities.Compare(null, passHashInDb, passSaltInDb));
-            Assert.IsTrue(PasswordUtilities.Compare("TestingPassword", passHashInDb, passSaltInDb));
-        }
-
-        [TestMethod]
-        public void EmailAlreadyInUseForCreate()
-        {
-            //Arrange 
-            int totalClientsBefore = clients.Count;
-            newClient.Email = clients.FirstOrDefault().Email; //Email already in use
-
-            //Act
-            controller.Create(newClient);
-
-            //Assert
-            Assert.IsTrue(totalClientsBefore  == clients.Count());
-        }
-
-        [TestMethod]
-        public void EmailNotInUseForCreate()
-        {
-            //Arrange 
-            int totalClientsBefore = clients.Count;
-
-            //Act
-            controller.Create(newClient);
-
-            //Assert
-            Assert.IsTrue(totalClientsBefore < clients.Count());
-        }
-
-        [TestMethod]
-        public void EmailAlreadyInUseForEdit()
-        {
-            //Arrange //Act
-            var client = clients.FirstOrDefault();
-            var originalName = clients.FirstOrDefault().FirstName;
-            var originalLastName = clients.FirstOrDefault().LastName;
-            client.Email = clients.Last().Email; //Email already in use
-            Mock.Arrange(() => clientRepository.Save()) //Override Save arrange in Init()
-                .DoInstead(() => { client.LastName = "Changed"; client.FirstName = "Changed!"; })
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(client)) //Override
-                .Returns(() => this.IsEmailAlreadyInUse(client, true))
-                .MustBeCalled();
-
-            controller.Edit(client);
-
-            Assert.IsTrue(client.FirstName == originalName);
-            Assert.IsTrue(client.LastName == originalLastName);
-        }
-
-        [TestMethod]
-        public void EmailNotInUseForEdit()
-        {
-            //Arrange //Act
-            var client = clients.FirstOrDefault();
-            var originalName = clients.FirstOrDefault().FirstName;
-            var originalLastName = clients.FirstOrDefault().LastName;
-            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(client)) //Override
-                .Returns(() => this.IsEmailAlreadyInUse(client, true))
-                .MustBeCalled();
-            Mock.Arrange(() => clientRepository.Save()) //Override
-                .DoInstead(() => { client.LastName = "Changed"; client.FirstName = "Changed!"; })
-                .MustBeCalled();
-
-            controller.Edit(client);
-
-            Assert.IsFalse(client.FirstName == originalName);
-            Assert.IsFalse(client.LastName == originalLastName);
-        }
-
-        #region Index: searchString & sortOrder
-        [TestMethod]
-        public void IndexWithSearch()
-        {
-            //Arrange //Act
-            const string SEARCHSTRING = "Alejandra";
-            var itemsFound = massiveClients.Where(c => string.Concat(c.FirstName, " ", c.LastName)
-                                                 .ToLower()
-                                                 .Contains(SEARCHSTRING.ToLower()));
-            Mock.Arrange(() => clientRepository.GetClients()) //Override
-                .Returns(massiveClients)
-                .MustBeCalled();
-
-            ViewResult viewResult = controller.Index(string.Empty, string.Empty, SEARCHSTRING, 1) as ViewResult;
-            var model = viewResult.Model as IEnumerable<Client>;
-
-            //Assert
-            Assert.AreEqual(itemsFound.Count(), model.Count());
-            Assert.IsFalse(model.Any(c => !string.Concat(c.FirstName, " ", c.LastName).Contains(SEARCHSTRING)));
-        }
-
-        [TestMethod]
-        public void IndexWithSortOrder()
+        public void Client_IndexWithSort()
         {
             //Arrange //Act
             //Estas constantes van de la mano, y si se cambian requieren cambios en linea 389
@@ -348,7 +190,208 @@ namespace ProyectoFinal.Tests
             Assert.IsTrue(massiveClients.FirstOrDefault().Equals(model.FirstOrDefault()));
             Assert.AreEqual(massiveClients.Take(model.Count()).Last().FirstName, model.Last().FirstName);
         }
-        #endregion
+
+        [TestMethod]
+        public void Client_IndexWithSearch()
+        {
+            //Arrange //Act
+            const string SEARCHSTRING = "Alejandra";
+            var itemsFound = massiveClients.Where(c => string.Concat(c.FirstName, " ", c.LastName)
+                                                 .ToLower()
+                                                 .Contains(SEARCHSTRING.ToLower()));
+            Mock.Arrange(() => clientRepository.GetClients()) //Override
+                .Returns(massiveClients)
+                .MustBeCalled();
+
+            ViewResult viewResult = controller.Index(string.Empty, string.Empty, SEARCHSTRING, 1) as ViewResult;
+            var model = viewResult.Model as IEnumerable<Client>;
+
+            //Assert
+            Assert.IsNotNull(model);
+            Assert.AreEqual(model.Except(model.Where(c => string.Concat(c.FirstName, " ", c.LastName).Contains(SEARCHSTRING))).Count(), 0);
+        }
+
+        [TestMethod]
+        public void Client_Details()
+        {
+            var client = clients.Where(c => c.ClientID == CLIENT_ID_TO_USE).FirstOrDefault();
+
+            ViewResult viewResult = controller.Details(CLIENT_ID_TO_USE) as ViewResult;
+            var model = viewResult.Model as Client;
+
+            Assert.IsNotNull(model);
+            Assert.AreEqual(model.ClientID, CLIENT_ID_TO_USE);
+            Assert.AreEqual(model.ClientID, client.ClientID);
+            Assert.AreEqual(model.LastName, client.LastName);
+        }
+
+        [TestMethod]
+        public void Client_Create()
+        {
+            int totalClientsBefore = clients.Count;
+
+            ActionResult actionResult = controller.Create(newClient);
+
+            //Assert
+            Assert.AreNotEqual(totalClientsBefore, clients.Count);
+            Assert.IsInstanceOfType(actionResult, typeof(RedirectToRouteResult));
+        }
+
+        [TestMethod]
+        public void Client_UpdateClient()
+        {
+            //Arrange 
+            Client clientToUpdate = clients.FirstOrDefault();
+            var originalName = clients.FirstOrDefault().FirstName;
+            var originalLastName = clients.FirstOrDefault().LastName;
+
+            Mock.Arrange(() => clientRepository.Save()) //Override Save arrange in Init()
+                .DoInstead(() => { clientToUpdate.LastName = "Changed"; clientToUpdate.FirstName = "Changed!"; })
+                .MustBeCalled();
+            
+            controller.Edit(clientToUpdate);
+            
+            //Assert
+            Assert.IsFalse(clientToUpdate.FirstName == originalName);
+            Assert.IsFalse(clientToUpdate.LastName == originalLastName);
+        }
+
+        [TestMethod]
+        public void Client_HashPasswordAndCompareWithAttemptedPasswords()
+        {
+            var passSaltInDb = PasswordUtilities.CreateSalt(16);
+            var passHashInDb = PasswordUtilities.GenerateSHA256Hash("TestingPassword", passSaltInDb);
+            
+            Assert.IsFalse(PasswordUtilities.Compare("TestingPa$$word", passHashInDb, passSaltInDb));
+            Assert.IsFalse(PasswordUtilities.Compare("Testing Password", passHashInDb, passSaltInDb));
+            Assert.IsFalse(PasswordUtilities.Compare(string.Empty, passHashInDb, passSaltInDb));
+            Assert.IsFalse(PasswordUtilities.Compare(null, passHashInDb, passSaltInDb));
+            Assert.IsTrue(PasswordUtilities.Compare("TestingPassword", passHashInDb, passSaltInDb));
+        }
+
+        [TestMethod]
+        public void Client_EmailAlreadyInUseForCreate()
+        {
+            //Arrange 
+            int totalClientsBefore = clients.Count;
+            newClient.Email = clients.FirstOrDefault().Email; //Email already in use
+
+            //Act
+            controller.Create(newClient);
+
+            //Assert
+            Assert.IsTrue(totalClientsBefore  == clients.Count());
+        }
+
+        [TestMethod]
+        public void Client_EmailNotInUseForCreate()
+        {
+            //Arrange 
+            int totalClientsBefore = clients.Count;
+
+            //Act
+            controller.Create(newClient);
+
+            //Assert
+            Assert.IsTrue(totalClientsBefore < clients.Count());
+        }
+
+        [TestMethod]
+        public void Client_EmailAlreadyInUseForEdit()
+        {
+            //Arrange //Act
+            var client = clients.FirstOrDefault();
+            var originalName = clients.FirstOrDefault().FirstName;
+            var originalLastName = clients.FirstOrDefault().LastName;
+            client.Email = clients.Last().Email; //Email already in use
+            Mock.Arrange(() => clientRepository.Save()) //Override Save arrange in Init()
+                .DoInstead(() => { client.LastName = "Changed"; client.FirstName = "Changed!"; })
+                .MustBeCalled();
+            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(client)) //Override
+                .Returns(() => this.IsEmailAlreadyInUse(client, true))
+                .MustBeCalled();
+
+            controller.Edit(client);
+
+            Assert.IsTrue(client.FirstName == originalName);
+            Assert.IsTrue(client.LastName == originalLastName);
+        }
+
+        [TestMethod]
+        public void Client_EmailNotInUseForEdit()
+        {
+            //Arrange //Act
+            var client = clients.FirstOrDefault();
+            var originalName = clients.FirstOrDefault().FirstName;
+            var originalLastName = clients.FirstOrDefault().LastName;
+            Mock.Arrange(() => clientRepository.IsEmailAlreadyInUse(client)) //Override
+                .Returns(() => this.IsEmailAlreadyInUse(client, true))
+                .MustBeCalled();
+            Mock.Arrange(() => clientRepository.Save()) //Override
+                .DoInstead(() => { client.LastName = "Changed"; client.FirstName = "Changed!"; })
+                .MustBeCalled();
+
+            controller.Edit(client);
+
+            Assert.IsFalse(client.FirstName == originalName);
+            Assert.IsFalse(client.LastName == originalLastName);
+        }
+
+        [TestMethod]
+        public void Activity_Edit_HttpGet()
+        {
+            ActionResult actionResult = controller.Edit(CLIENT_ID_TO_USE);
+            var model = (actionResult as ViewResult).Model;
+
+            Assert.IsNotNull(model);
+            Assert.IsInstanceOfType(actionResult, typeof(ViewResult));
+        }
+
+        [TestMethod]
+        public void Activity_Edit_HttpPost()
+        {
+            var originalActivity = clients.FirstOrDefault();
+            var originalName = clients.FirstOrDefault().FirstName;
+            var originalDesc = clients.FirstOrDefault().LastName;
+            Mock.Arrange(() => clientRepository.Save()).DoInstead(() => { originalActivity.FirstName = "Changed!"; originalActivity.LastName = "Desc changed!"; });
+
+            ActionResult actionResult = controller.Edit(newClient) as ActionResult;
+
+            Assert.AreNotEqual(originalActivity.FirstName, originalName);
+            Assert.AreNotEqual(originalActivity.LastName, originalDesc);
+            Assert.IsInstanceOfType(actionResult, typeof(RedirectToRouteResult));
+        }
+
+
+        [TestMethod]
+        public void Client_Edit_HttpGet_HttpNotFound()
+        {
+            Mock.Arrange(() => clientRepository.GetClientByID(CLIENT_ID_NOT_FOUND))
+                                                   .Returns(clients.Where(c => c.ClientID == CLIENT_ID_NOT_FOUND).FirstOrDefault());
+
+            ActionResult actionResult = controller.Edit(CLIENT_ID_NOT_FOUND); //A very high AssistanceID
+
+            var result = actionResult as HttpNotFoundResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(actionResult, typeof(HttpNotFoundResult));
+            Assert.IsNotNull(result.GetType().GetProperty("StatusDescription"), null);
+            Assert.AreEqual(result.StatusCode, 404);
+        }
+
+        [TestMethod]
+        public void Client_Delete()
+        {
+            //Arrange 
+            int totalClientsBefore = clients.Count;
+            var idToDelete = clients.FirstOrDefault().ClientID;
+
+            controller.DeleteConfirmed(clients.FirstOrDefault().ClientID);
+
+            //Assert
+            Assert.IsTrue(totalClientsBefore > clients.Count);
+            Assert.IsFalse(clients.Any(c => c.ClientID == idToDelete));
+        }
 
         #region Private Methods
         private bool IsEmailAlreadyInUse(Client client, bool IsEditTheCaller)

@@ -20,6 +20,7 @@ namespace ProyectoFinal.Tests
         IPaymentTypeRepository paymentTypeRepository;
         ActivitiesController controller;
         public const int ACTIVITY_ID_TO_USE = 1;
+        public const int ACTIVITY_ID_NOT_FOUND = 33000;
 
         [TestInitialize]
         public void Init()
@@ -64,6 +65,8 @@ namespace ProyectoFinal.Tests
             Mock.Arrange(() => activityRepository.InsertActivity(newActivity))
                                                  .DoInstead(() => activities.Add(newActivity))
                                                  .MustBeCalled();
+            Mock.Arrange(() => activityRepository.DeleteActivity(ACTIVITY_ID_TO_USE))
+                                                 .DoInstead(() => activities.Remove(activities.Where(a => a.ActivityID == ACTIVITY_ID_TO_USE).FirstOrDefault()));
             Mock.Arrange(() => activityRepository.Save()).DoNothing();
             #endregion
 
@@ -118,7 +121,7 @@ namespace ProyectoFinal.Tests
         {
             var activity = activities.Where(a => a.ActivityID == ACTIVITY_ID_TO_USE).FirstOrDefault();
 
-            ViewResult viewResult = controller.Details(1) as ViewResult;
+            ViewResult viewResult = controller.Details(ACTIVITY_ID_TO_USE) as ViewResult;
             var model = viewResult.Model as Activity;
 
             Assert.IsNotNull(model);
@@ -128,7 +131,7 @@ namespace ProyectoFinal.Tests
         }
 
         [TestMethod]
-        public void Create()
+        public void Activity_Create()
         {
             int countActivitiesBefore = activities.Count;
 
@@ -136,6 +139,60 @@ namespace ProyectoFinal.Tests
 
             Assert.AreNotEqual(countActivitiesBefore, activities.Count);
             Assert.IsInstanceOfType(actionResult, typeof(RedirectToRouteResult));
+        }
+
+        [TestMethod]
+        public void Activity_Edit_HttpGet()
+        {
+            ActionResult actionResult = controller.Edit(ACTIVITY_ID_TO_USE);
+            var model = (actionResult as ViewResult).Model;
+
+            Assert.IsNotNull(model);
+            Assert.IsInstanceOfType(actionResult, typeof(ViewResult));
+
+        }
+
+        [TestMethod]
+        public void Activity_Edit_HttpGet_HttpNotFound()
+        {
+            Mock.Arrange(() => activityRepository.GetActivityByID(ACTIVITY_ID_NOT_FOUND)).Returns(activities.Where(a => a.ActivityID == ACTIVITY_ID_NOT_FOUND).FirstOrDefault());
+
+            ActionResult actionResult = controller.Edit(33000); //A very high ActivityID
+
+            var result = actionResult as HttpNotFoundResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(actionResult, typeof(HttpNotFoundResult));
+            Assert.IsNotNull(result.GetType().GetProperty("StatusDescription"), null);
+            Assert.AreEqual(result.StatusCode, 404);
+        }
+
+        [TestMethod]
+        public void Activity_Edit_HttpPost()
+        {
+            var originalActivity = activities.FirstOrDefault();
+            var originalName = activities.FirstOrDefault().Name;
+            var originalDesc = activities.FirstOrDefault().Description;
+            Mock.Arrange(() => activityRepository.Save()).DoInstead(() => { originalActivity.Name = "Changed!"; originalActivity.Description = "Desc changed!"; });
+
+            ActionResult actionResult = controller.Edit(newActivity) as ActionResult;
+
+            Assert.AreNotEqual(originalActivity.Name, originalName);
+            Assert.AreNotEqual(originalActivity.Description, originalDesc);
+            Assert.IsInstanceOfType(actionResult, typeof(RedirectToRouteResult));
+        }
+
+        [TestMethod]
+        public void Activity_Delete()
+        {
+            int totalActivitiesBefore = activities.Count;
+            var idToDelete = activities.FirstOrDefault().ActivityID;
+
+            controller.DeleteConfirmed(activities.FirstOrDefault().ActivityID);
+
+            //Assert
+            Assert.IsTrue(totalActivitiesBefore > activities.Count);
+            Assert.IsFalse(activities.Any(a => a.ActivityID == idToDelete));
         }
     }
 }
