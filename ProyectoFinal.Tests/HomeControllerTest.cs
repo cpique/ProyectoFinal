@@ -2,6 +2,9 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using API.Services;
+using SendGrid.Helpers.Mail;
+using System.Threading.Tasks;
 
 namespace ProyectoFinal.Tests
 {
@@ -64,6 +67,38 @@ namespace ProyectoFinal.Tests
             //
             // TODO: Agregar aquí la lógica de las pruebas
             //
+        }
+
+        [TestMethod]
+        public void TestSMS()
+        {
+            SMS smsService = new SMS();
+            string result = smsService.Execute("AC354d1ef472b7d6919036b74098df294d", "7bf1070977315b7623a8616c192f4c27", "+1 256-305-4229", "+5492355677581", "Testing via C# !");
+
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        [TestMethod]
+        public void TestEmail()
+        {
+            Mailing mailing = new Mailing();
+            string result = mailing.Execute();
+            Assert.AreEqual(result, string.Empty);
+        }
+
+        [TestMethod]
+        public void ExecuteHTMLBody()
+        {
+            Mailing mailing = new Mailing();
+            string result = mailing.ExecuteHTMLBody(@"C:\Users\Usuario\Desktop\ProyectoFinal\ProyectoFinal\Templates\MailTemplate.html");
+            Assert.AreEqual(result, string.Empty);
+        }
+
+        [TestMethod]
+        public void ExecuteSendGrid()
+        {
+            SendGridMailing sg = new SendGridMailing();
+            sg.Execute();
         }
     }
 }

@@ -39,6 +39,10 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RestSharp, Version=105.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.2\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Web" />
@@ -68,6 +72,10 @@
     </Reference>
     <Reference Include="Telerik.JustMock, Version=2016.2.426.1, Culture=neutral, PublicKeyToken=721b6c5bc0326b3a, processorArchitecture=MSIL">
       <HintPath>..\packages\JustMock.2016.2.426.1\lib\Net35\Telerik.JustMock.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.4.7.2\lib\3.5\Twilio.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -100,6 +108,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Downloads\sendgrid-csharp-master\SendGrid\SendGrid\SendGrid.csproj">
+      <Project>{1c318867-440b-4eb9-99e3-c0cc2c556962}</Project>
+      <Name>SendGrid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\API.Services\API.Services.csproj">
+      <Project>{3517d36f-32ed-488d-80ac-44be5ad62f6a}</Project>
+      <Name>API.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProyectoFinal.Utils\ProyectoFinal.Utils.csproj">
       <Project>{88667bb9-8f37-4d1b-aa59-5b71d4f68052}</Project>
       <Name>ProyectoFinal.Utils</Name>

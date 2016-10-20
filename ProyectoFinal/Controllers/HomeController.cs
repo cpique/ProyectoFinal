@@ -1,4 +1,5 @@
-﻿using ProyectoFinal.Filters;
+﻿using API.Services;
+using ProyectoFinal.Filters;
 using ProyectoFinal.Models;
 using ProyectoFinal.Models.Repositories;
 using ProyectoFinal.Models.ViewModels;
@@ -149,6 +150,21 @@ namespace ProyectoFinal.Controllers
             else
                 return null;
         }
+
+        [HttpGet]
+        [AuthorizationPrivilege(Role = "Admin")]
+        public ActionResult EmailAndSMS()
+        {
+            SMS smsService = new SMS();
+            SendGridMailing sg = new SendGridMailing();
+
+            smsService.Execute("AC354d1ef472b7d6919036b74098df294d", "7bf1070977315b7623a8616c192f4c27", "+1 256-305-4229", "+5492355677581", "Testing via C# !");
+            sg.Execute();
+
+            return View("Index");
+        }
+
+
     }
 
 
