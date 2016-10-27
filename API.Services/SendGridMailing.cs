@@ -13,7 +13,7 @@ namespace API.Services
 
         private static async Task HelloEmail()
         {
-            String apiKey = "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";
+            String apiKey = "someValue";
             dynamic sg = new SendGrid.SendGridAPIClient(apiKey, "https://api.sendgrid.com");
 
             Email from = new Email("cristian.pique@hotmail.com");
