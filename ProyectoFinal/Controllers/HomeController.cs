@@ -40,7 +40,6 @@ namespace ProyectoFinal.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
@@ -156,10 +155,17 @@ namespace ProyectoFinal.Controllers
         public ActionResult EmailAndSMS()
         {
             SMS smsService = new SMS();
+
+            var accountSid = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_ACCOUNT_SID");
+            var authToken = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_AUTH_TOKEN");
+
+            smsService.Execute(accountSid, authToken, "+1 256-305-4229", "+5492355677581", "Testing via C# !");
+
             SendGridMailing sg = new SendGridMailing();
 
-            
-            sg.Execute();
+            //var templatePath = Server.MapPath(@"~/Templates/MailTemplate.html");
+            var templatePath = Server.MapPath(@"~/Templates/EmailBienvenida.html");
+            sg.Execute(templatePath);
 
             return View("Index");
         }

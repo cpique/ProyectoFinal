@@ -1,26 +1,39 @@
 ﻿using SendGrid.Helpers.Mail;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace API.Services
 {
     public class SendGridMailing
     {
-        public void Execute()
+        public void Execute(string template)
         {
-            HelloEmail().Wait();
+            HelloEmail(template).Wait();
         }
 
-        private static async Task HelloEmail()
+        private static async Task HelloEmail(string template)
         {
-            String apiKey = "someValue";
+            String apiKey = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_SENDGRID_KEY");
             dynamic sg = new SendGrid.SendGridAPIClient(apiKey, "https://api.sendgrid.com");
 
-            Email from = new Email("cristian.pique@hotmail.com");
-            String subject = "Hello World from the SendGrid CSharp Library";
-            Email to = new Email("cristianpique33@gmail.com");
-            Content content = new Content("text/plain", "Textual content");
+            Email from = new Email("cristianpique33@gmail.com"); 
+            String subject = "Bienvenido a AmosGym";
+            Email to = new Email("cristian.pique@hotmail.com");
+            Content content;
+            if (string.IsNullOrEmpty(template))
+            {
+                content = new Content("text/plain", "Textual content");
+            }
+            else
+            {
+                var emailTemplate = File.ReadAllText(template);
+                emailTemplate = emailTemplate.Replace("USER_REPLACE_TEXT", "cristian.pique@hotmail.com")
+                                             .Replace("PASS_REPLACE_TEXT", "335588");
+                content = new Content("text/html", emailTemplate);
+            }
             Mail mail = new Mail(from, subject, to, content);
+            
             //Email email = new Email("test2@example.com");
             //mail.Personalization[0].AddTo(email);
 

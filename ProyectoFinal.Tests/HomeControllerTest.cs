@@ -61,22 +61,6 @@ namespace ProyectoFinal.Tests
         //
         #endregion
 
-        [TestMethod]
-        public void TestMethod1()
-        {
-            //
-            // TODO: Agregar aquí la lógica de las pruebas
-            //
-        }
-
-        [TestMethod]
-        public void TestSMS()
-        {
-            SMS smsService = new SMS();
-            
-
-            Assert.AreEqual(string.Empty, string.Empty);
-        }
 
         [TestMethod]
         public void TestEmail()
@@ -98,7 +82,7 @@ namespace ProyectoFinal.Tests
         public void ExecuteSendGrid()
         {
             SendGridMailing sg = new SendGridMailing();
-            sg.Execute();
+            sg.Execute(string.Empty);
         }
     }
 }

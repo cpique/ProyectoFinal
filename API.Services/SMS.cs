@@ -14,8 +14,6 @@ namespace API.Services
             try
             {
                 return string.Empty; //Evito ejecutar metodo para evitar enviar SMS
-                //accountSid Account SID from www.twilio.com/console
-                //authToken Auth Token from www.twilio.com/console
 
                 var twilio = new TwilioRestClient(accountSid, authToken);
                 var message = twilio.SendMessage(
