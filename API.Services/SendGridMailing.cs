@@ -7,12 +7,12 @@ namespace API.Services
 {
     public class SendGridMailing
     {
-        public void Execute(string template, string email, string pass)
+        public void Execute(string templatePath, string email, string pass)
         {
-            HelloEmail(template, email, pass).Wait();
+            HelloEmail(templatePath, email, pass).Wait();
         }
 
-        private static async Task HelloEmail(string template, string email, string pass)
+        private static async Task HelloEmail(string templatePath, string email, string pass)
         {
             String apiKey = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_SENDGRID_KEY");
             dynamic sg = new SendGrid.SendGridAPIClient(apiKey, "https://api.sendgrid.com");
@@ -21,13 +21,13 @@ namespace API.Services
             String subject = "Bienvenido a AmosGym";
             Email to = new Email(email);
             Content content;
-            if (string.IsNullOrEmpty(template))
+            if (string.IsNullOrEmpty(templatePath))
             {
                 content = new Content("text/plain", "Te damos la bienvenida a AMOS Gym. Visita nuestro sitio web http://amosgym.azurewebsites.net/ para enterarte de las últimas novedades y personalizar tu información");
             }
             else
             {
-                var emailTemplate = File.ReadAllText(template);
+                var emailTemplate = File.ReadAllText(templatePath);
                 emailTemplate = emailTemplate.Replace("USER_REPLACE_TEXT", email)
                                              .Replace("PASS_REPLACE_TEXT", pass);
                 content = new Content("text/html", emailTemplate);
