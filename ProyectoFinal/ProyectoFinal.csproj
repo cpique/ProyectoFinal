@@ -272,7 +272,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Templates\EmailBienvenida.html" />
-    <Content Include="Templates\MailTemplate.html" />
+    <Content Include="Templates\EmailTemplate.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

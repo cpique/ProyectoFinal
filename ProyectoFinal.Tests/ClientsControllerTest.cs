@@ -9,6 +9,7 @@ using ProyectoFinal.Controllers;
 using System.Web.Mvc;
 using System.Linq;
 using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace ProyectoFinal.Tests
 {
@@ -391,6 +392,31 @@ namespace ProyectoFinal.Tests
             //Assert
             Assert.IsTrue(totalClientsBefore > clients.Count);
             Assert.IsFalse(clients.Any(c => c.ClientID == idToDelete));
+        }
+
+        [TestMethod]
+        public void TestRandomPassword()
+        {
+            var pass10 = PasswordUtilities.RandomPassword(10);
+            var pass8 = PasswordUtilities.RandomPassword(8);
+            var pass15 = PasswordUtilities.RandomPassword(15);
+            var invalidPassChar = PasswordUtilities.RandomPassword(15); invalidPassChar += "ñ";
+            var invalidPassLength = PasswordUtilities.RandomPassword(15); invalidPassLength += "ñ";
+
+            string pattern = @"^[a-z0-9]+$";
+            Regex r = new Regex(pattern);
+            Assert.IsTrue(r.Match(pass8).Success);
+            Assert.IsTrue(r.Match(pass10).Success);
+            Assert.IsTrue(r.Match(pass15).Success);
+            Assert.AreEqual(pass8.Length, 8);
+            Assert.AreEqual(pass10.Length, 10);
+            Assert.AreEqual(pass15.Length, 15);
+            Assert.IsFalse(pass8.Contains("ñ"));
+            Assert.IsFalse(pass10.Contains("ñ"));
+            Assert.IsFalse(pass15.Contains("ñ"));
+            Assert.AreNotEqual(invalidPassLength.Length, 15);
+            Assert.IsFalse(r.Match(invalidPassChar).Success);
+
         }
 
         #region Private Methods

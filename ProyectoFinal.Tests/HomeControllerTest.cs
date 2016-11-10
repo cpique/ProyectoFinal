@@ -74,15 +74,8 @@ namespace ProyectoFinal.Tests
         public void ExecuteHTMLBody()
         {
             Mailing mailing = new Mailing();
-            string result = mailing.ExecuteHTMLBody(@"C:\Users\Usuario\Desktop\ProyectoFinal\ProyectoFinal\Templates\MailTemplate.html");
+            string result = mailing.ExecuteHTMLBody(@"C:\Users\Usuario\Desktop\ProyectoFinal\ProyectoFinal\Templates\EmailTemplate.html");
             Assert.AreEqual(result, string.Empty);
-        }
-
-        [TestMethod]
-        public void ExecuteSendGrid()
-        {
-            SendGridMailing sg = new SendGridMailing();
-            sg.Execute(string.Empty);
         }
     }
 }

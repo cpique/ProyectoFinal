@@ -23,7 +23,7 @@ namespace API.Services
             Content content;
             if (string.IsNullOrEmpty(template))
             {
-                content = new Content("text/plain", "Textual content");
+                content = new Content("text/plain", "Te damos la bienvenida a AMOS Gym. Visita nuestro sitio web http://amosgym.azurewebsites.net/ para enterarte de las últimas novedades y personalizar tu información");
             }
             else
             {
