@@ -13,6 +13,7 @@ using System.Configuration;
 using ProyectoFinal.Filters;
 using System.Diagnostics;
 using PagedList;
+using API.Services;
 
 namespace ProyectoFinal.Controllers
 {
@@ -157,9 +158,15 @@ namespace ProyectoFinal.Controllers
             }
             else if (ModelState.IsValid)
             {
+                var password = client.Password;
                 clientRepository.HashPassword(client);
                 clientRepository.InsertClient(client);
                 clientRepository.Save();
+
+                SendGridMailing sg = new SendGridMailing();
+                var templatePath = Server.MapPath(@"~/Templates/EmailBienvenida.html");
+                sg.Execute(templatePath, client.Email, password);
+
                 return RedirectToAction("Index", new { sortOrder = string.Empty, searchString = string.Empty });
             }
 

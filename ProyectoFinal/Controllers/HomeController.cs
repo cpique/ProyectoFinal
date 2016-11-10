@@ -165,7 +165,7 @@ namespace ProyectoFinal.Controllers
 
             //var templatePath = Server.MapPath(@"~/Templates/MailTemplate.html");
             var templatePath = Server.MapPath(@"~/Templates/EmailBienvenida.html");
-            sg.Execute(templatePath);
+            sg.Execute(templatePath, "cristian.pique@hotmail.com", "335588");
 
             return View("Index");
         }

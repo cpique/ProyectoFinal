@@ -7,19 +7,19 @@ namespace API.Services
 {
     public class SendGridMailing
     {
-        public void Execute(string template)
+        public void Execute(string template, string email, string pass)
         {
-            HelloEmail(template).Wait();
+            HelloEmail(template, email, pass).Wait();
         }
 
-        private static async Task HelloEmail(string template)
+        private static async Task HelloEmail(string template, string email, string pass)
         {
             String apiKey = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_SENDGRID_KEY");
             dynamic sg = new SendGrid.SendGridAPIClient(apiKey, "https://api.sendgrid.com");
 
             Email from = new Email("cristianpique33@gmail.com"); 
             String subject = "Bienvenido a AmosGym";
-            Email to = new Email("cristian.pique@hotmail.com");
+            Email to = new Email(email);
             Content content;
             if (string.IsNullOrEmpty(template))
             {
@@ -28,8 +28,8 @@ namespace API.Services
             else
             {
                 var emailTemplate = File.ReadAllText(template);
-                emailTemplate = emailTemplate.Replace("USER_REPLACE_TEXT", "cristian.pique@hotmail.com")
-                                             .Replace("PASS_REPLACE_TEXT", "335588");
+                emailTemplate = emailTemplate.Replace("USER_REPLACE_TEXT", email)
+                                             .Replace("PASS_REPLACE_TEXT", pass);
                 content = new Content("text/html", emailTemplate);
             }
             Mail mail = new Mail(from, subject, to, content);
