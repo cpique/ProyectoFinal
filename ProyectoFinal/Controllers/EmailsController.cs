@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace ProyectoFinal.Controllers
 {
-    //[AuthorizationPrivilege(Role = "Admin")]
+    [AuthorizationPrivilege(Role = "Admin")]
     [HandleError()]
     public class EmailsController : Controller
     {

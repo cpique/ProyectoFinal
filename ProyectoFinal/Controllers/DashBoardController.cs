@@ -108,19 +108,23 @@ namespace ProyectoFinal.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPassword(ChangePassViewModel model)
         {
+            Client currentUser = this.GetLoggedUser();
+
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError(string.Empty, "Por favor, complete todos campos");
             }
-            else if(!model.Password.Equals(model.PasswordCheck))
+            else if (!model.Password.Equals(model.PasswordCheck))
             {
                 ModelState.AddModelError("PasswordCheck", "Las contraseñas no coinciden");
             }
+            else if(!PasswordUtilities.Compare(model.OldPassword, currentUser.Password, currentUser.PasswordSalt))
+            {
+                ModelState.AddModelError("OldPassword", "La contraseña actual es incorrecta");
+            }
             else  //ModelState.IsValid && model.Password.Equals(model.PasswordCheck) both true
             {
-                Client currentUser = this.GetLoggedUser();
                 currentUser.Password = model.Password;
-
                 clientRepository.HashPassword(currentUser);
                 clientRepository.UpdateClient(currentUser);
                 clientRepository.Save();

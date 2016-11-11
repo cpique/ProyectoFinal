@@ -11,11 +11,17 @@ namespace ProyectoFinal.Models.ViewModels
     {
         [Required]
         [DataType(DataType.Password)]
+        [DisplayName("Password antigua")]
+        public string OldPassword { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [DisplayName("Nueva password")]
         public string Password { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [DisplayName("Repita password")]
+        [DisplayName("Repita nueva password")]
         public string PasswordCheck { get; set; }
     }
 }

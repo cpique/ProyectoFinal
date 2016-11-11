@@ -144,31 +144,33 @@ namespace ProyectoFinal.Controllers
         private Client Authenticate(string username, string password)
         {
             Client client = clientRepository.GetClients().Where(c => c.Email == username).FirstOrDefault();
-            if (PasswordUtilities.Compare(password, client.Password, client.PasswordSalt))
+            if (client == null)
+            {}
+            else if (PasswordUtilities.Compare(password, client.Password, client.PasswordSalt))
                 return client;
-            else
-                return null;
+
+            return null;
         }
 
-        [HttpGet]
-        [AuthorizationPrivilege(Role = "Admin")]
-        public ActionResult EmailAndSMS()
-        {
-            SMS smsService = new SMS();
+        //[HttpGet]
+        //[AuthorizationPrivilege(Role = "Admin")]
+        //public ActionResult EmailAndSMS()
+        //{
+        //    SMS smsService = new SMS();
 
-            var accountSid = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_ACCOUNT_SID");
-            var authToken = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_AUTH_TOKEN");
+        //    var accountSid = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_ACCOUNT_SID");
+        //    var authToken = Environment.GetEnvironmentVariable("ENVIRONMENT_VARIABLE_AUTH_TOKEN");
 
-            smsService.Execute(accountSid, authToken, "+1 256-305-4229", "+5492355677581", "Testing via C# !");
+        //    smsService.Execute(accountSid, authToken, "+1 256-305-4229", "+5492355677581", "Testing via C# !");
 
-            SendGridMailing sg = new SendGridMailing();
+        //    SendGridMailing sg = new SendGridMailing();
 
-            //var templatePath = Server.MapPath(@"~/Templates/MailTemplate.html");
-            var templatePath = Server.MapPath(@"~/Templates/EmailBienvenida.html");
-            sg.Execute(templatePath, "cristian.pique@hotmail.com", "335588");
+        //    //var templatePath = Server.MapPath(@"~/Templates/MailTemplate.html");
+        //    var templatePath = Server.MapPath(@"~/Templates/EmailBienvenida.html");
+        //    sg.Execute(templatePath, "cristian.pique@hotmail.com", "335588");
 
-            return View("Index");
-        }
+        //    return View("Index");
+        //}
 
 
     }

@@ -165,6 +165,7 @@ namespace ProyectoFinal.Controllers
 
                 SendGridMailing sg = new SendGridMailing();
                 var templatePath = Server.MapPath(@"~/Templates/EmailBienvenida.html");
+
                 sg.Execute(templatePath, client.Email, password);
 
                 return RedirectToAction("Index", new { sortOrder = string.Empty, searchString = string.Empty });

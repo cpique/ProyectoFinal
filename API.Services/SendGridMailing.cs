@@ -20,6 +20,7 @@ namespace API.Services
             Email from = new Email("cristianpique33@gmail.com"); 
             String subject = "Bienvenido a AmosGym";
             Email to = new Email(email);
+
             Content content;
             if (string.IsNullOrEmpty(templatePath))
             {
