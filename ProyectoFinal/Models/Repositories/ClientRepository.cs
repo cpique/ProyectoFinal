@@ -84,6 +84,14 @@ namespace ProyectoFinal.Models.Repositories
             return false;
         }
 
+        public IEnumerable<String> GetClientsWithDebt()
+        {
+            return context.Clients.ToList()
+                                  .Where(c => this.HasActivePayment(c) == false)
+                                  .Select(c => c.Email)
+                                  .Distinct().ToList();
+        }
+
         public bool IsEmailAlreadyInUse(Client client)
         {
             StackTrace stackTrace = new StackTrace();

@@ -210,6 +210,8 @@
     <Compile Include="Models\Stock.cs" />
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\ViewModels\ChangePassViewModel.cs" />
+    <Compile Include="Models\ViewModels\DestinatariesViewModel.cs" />
+    <Compile Include="Models\ViewModels\DestinataryTypeViewModel.cs" />
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
     <Compile Include="Models\ViewModels\ViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -217,6 +219,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\destinatarios.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\shop-homepage.css" />
     <Content Include="Content\shop-item.css" />
@@ -260,6 +263,7 @@
     <Content Include="Scripts\Chart.bundle.js" />
     <Content Include="Scripts\Chart.bundle.min.js" />
     <Content Include="Scripts\forViews\Activities_Catalog.js" />
+    <Content Include="Scripts\forViews\Emails_Destinatarios.js" />
     <Content Include="Scripts\forViews\Emails_Index.js" />
     <Content Include="Scripts\forViews\PaymentTypes_Catalog.js" />
     <Content Include="Scripts\forViews\Statistics_Index.js" />
@@ -373,6 +377,8 @@
     <Content Include="Views\DashBoard\Edit.cshtml" />
     <Content Include="Views\DashBoard\EditPassword.cshtml" />
     <Content Include="Views\Emails\Index.cshtml" />
+    <Content Include="Views\Emails\ThankYouPage.cshtml" />
+    <Content Include="Views\Emails\Destinatarios.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

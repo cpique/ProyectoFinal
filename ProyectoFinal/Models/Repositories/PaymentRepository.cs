@@ -31,6 +31,15 @@ namespace ProyectoFinal.Models.Repositories
             return context.Payments.Include(p => p.Client).Include(p => p.PaymentType).Where(p => p.PaymentID == id).FirstOrDefault();
         }
 
+        public IEnumerable<String> GetClientsByActivity(int activityID)
+        {
+            return context.Payments.Include(p => p.Client)
+                                   .Include(p => p.PaymentType)
+                                   .Where(c => c.PaymentType.ActivityID == activityID)
+                                   .Select(p => p.Client.Email).Distinct()
+                                   .ToList();
+        }
+
         public void InsertPayment(Payment payment)
         {
             context.Payments.Add(payment);
@@ -70,5 +79,7 @@ namespace ProyectoFinal.Models.Repositories
             }
             this.disposed = true;
         }
+
+
     }
 }

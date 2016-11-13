@@ -16,6 +16,6 @@ namespace ProyectoFinal.Utils
         public enum Genre { Mujer = 1, Hombre }
         public enum AgeClass { YoungAdult = 0, Adult, MiddleAge, Senior  }
         public enum Months { Enero = 1, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre }
-
+        public enum Destinataries { Activity = 1, ClientsWithDebt, Clientes, Admins, Profesores }
     }
 }

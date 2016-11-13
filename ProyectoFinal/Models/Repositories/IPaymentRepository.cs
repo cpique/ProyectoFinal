@@ -14,5 +14,6 @@ namespace ProyectoFinal.Models.Repositories
         void DeletePayment(int paymentID);
         void UpdatePayment(Payment payment);
         void Save();
+        IEnumerable<String> GetClientsByActivity(int activityID);
     }
 }
