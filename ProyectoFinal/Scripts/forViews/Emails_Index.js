@@ -60,9 +60,5 @@ $(document).ready(function () {
     $("input[type='reset']").click(function () {
         $("input[type='text']").val("");
     })
-
-    $("button.closeModal").click(function () {
-        $("#previewRegion").hide();
-    })
 });
 

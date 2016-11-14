@@ -11,6 +11,7 @@ namespace ProyectoFinal.Models.Repositories
         IEnumerable<PaymentType> GetPaymentTypes();
         PaymentType GetPaymentTypeByID(int paymentTypeID);
         PaymentTypePrice GetCurrentPriceByID(int paymentTypeID);
+        Activity GetActivityByPaymentTypeID(int id);
         void InsertPaymentType(PaymentType paymentType);
         void DeletePaymentType(int paymentTypeID);
         void UpdatePaymentType(PaymentType paymentType);

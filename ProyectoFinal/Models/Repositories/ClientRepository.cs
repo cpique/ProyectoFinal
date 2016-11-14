@@ -20,7 +20,7 @@ namespace ProyectoFinal.Models.Repositories
         #region Constructors
         public ClientRepository(GymContext context)
         {
-            this.context = context; 
+            this.context = context;
         }
         #endregion
 
@@ -67,6 +67,31 @@ namespace ProyectoFinal.Models.Repositories
             return context.Clients.Where(c => c.DocNumber == docNumber).First();
         }
 
+        public Dictionary<Activity, bool> ListOfPayments(Client client)
+        {
+            Dictionary<Activity, bool> response = new Dictionary<Activity, bool>();
+            List<Payment> payments = context.Clients
+                                .Include(c => c.Payments)
+                                .ToList()
+                                .Where(c => c.ClientID == client.ClientID).FirstOrDefault()
+                                .Payments.ToList();
+            foreach (var payment in payments)
+            {
+                PaymentTypeRepository paymentTypeRepository = new PaymentTypeRepository(new GymContext());
+                Activity activity = paymentTypeRepository.GetActivityByPaymentTypeID(payment.PaymentTypeID);
+
+                if (payment.Status == Catalog.Status.Active && payment.ExpirationDate.Date >= DateTime.Now.Date)
+                {
+                    response.Add(activity, true);
+                }
+                else
+                {
+                    response.Add(activity, false);
+                }
+            }
+            return response;
+        }
+
         public bool HasActivePayment(Client client)
         {
             List<Payment> payments = context.Clients
@@ -87,7 +112,7 @@ namespace ProyectoFinal.Models.Repositories
         public IEnumerable<String> GetClientsWithDebt()
         {
             return context.Clients.ToList()
-                                  .Where(c => this.HasActivePayment(c) == false)
+                                  .Where(c => this.HasActivePayment(c) == false && c.Role == Catalog.Roles.Client)
                                   .Select(c => c.Email)
                                   .Distinct().ToList();
         }

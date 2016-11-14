@@ -19,16 +19,17 @@ var Config = { //Variable que contiene una llamada AJAX genérica y una propieda
     },
 
     successCallBack: function (response) {
-        if (response.Result = "OK") {
+        if (response.Result == "OK") {
+            $(".errorAlert").hide();
             window.location.href = response.Redirect;
         }
         else {
-            //TODO
+            $(".errorAlert").show();
         }
     },
 
     errorCallBack: function (xhr, textStatus, errorThrown) {
-        //TODO
+        $(".errorAlert").show();
     },
 
     buildData: function () {

@@ -119,6 +119,8 @@ namespace ProyectoFinal.Controllers
 
             Client client = clientRepository.GetClients().Where(c => c.DocNumber == documentNumber && c.Role==Catalog.Roles.Client).FirstOrDefault();
 
+            //var result = clientRepository.ListOfPayments(client);
+
             if (client == null || (client.Role != Catalog.Roles.Client))
             {
                 //No se encontró un cliente con los datos ingresados o bien no es cliente, es admin o profesor

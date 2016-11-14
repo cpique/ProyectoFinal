@@ -36,6 +36,14 @@ namespace ProyectoFinal.Models.Repositories
                                        .FirstOrDefault();
         }
 
+        public Activity GetActivityByPaymentTypeID(int id)
+        {
+            return context.PaymentTypes.Include(p => p.Activity)
+                                       .Where(p => p.PaymentTypeID == id)
+                                       .Select(p => p.Activity)
+                                       .FirstOrDefault();
+        }
+
         public PaymentTypePrice GetCurrentPriceByID(int paymentTypeID)
         {
             var prices = context.PaymentTypePrices.Where(p => p.PaymentTypeID == paymentTypeID).ToList();

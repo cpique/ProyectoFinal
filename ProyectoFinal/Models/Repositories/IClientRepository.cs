@@ -19,5 +19,6 @@ namespace ProyectoFinal.Models.Repositories
         bool HasActivePayment(Client client);
         bool IsEmailAlreadyInUse(Client client);
         IEnumerable<String> GetClientsWithDebt();
+        Dictionary<Activity, bool> ListOfPayments(Client client);
     }
 }
