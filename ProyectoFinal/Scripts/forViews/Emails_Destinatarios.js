@@ -23,6 +23,11 @@ var Config = { //Variable que contiene una llamada AJAX genérica y una propieda
             $(".errorAlert").hide();
             window.location.href = response.Redirect;
         }
+        else if (response.Result == "NOOK_EMPTY")
+        {
+            $(".errorAlertMsj").html(response.Error);
+            $(".errorAlert").show();
+        }
         else {
             $(".errorAlert").show();
         }
@@ -44,5 +49,9 @@ var Config = { //Variable que contiene una llamada AJAX genérica y una propieda
 $(document).ready(function () {
     $("#btnSendCommunication").click(function () {
         Config.call(Config.url.preview, 'POST', Config.buildData(), Config.successCallBack, Config.errorCallBack);
+    })
+
+    $(".errorAlertX").click(function () {
+        $(".errorAlert").hide();
     })
 });

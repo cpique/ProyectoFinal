@@ -60,3 +60,16 @@ table th.actions {
        width:640px;
        height:360px;
      }
+
+
+/*Error Alerts*/
+div.alert.alert-danger.errorAlert a {
+    cursor:pointer;
+    color:#b94a48;
+
+}
+
+div.alert.alert-danger.errorAlert a span {
+    float:right;
+}
+/*Error Alerts*/

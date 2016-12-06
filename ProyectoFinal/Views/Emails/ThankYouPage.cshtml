@@ -1,12 +1,22 @@
 ﻿@{
     ViewBag.Title = "Comunicación exitosa";
+    var destinataries = Session["DestinatariesEmails"] as IEnumerable<string>;
 }
 
 <div class="container">
     <div class="row">
         <div class="col-lg-12 text-center">
             <h1>Comunicación exitosa</h1>
-            <p class="lead">La comunicación ha sido enviada correctamente a los destinatarios</p>
+            <br />
+            <p class="lead"> <span class="glyphicon glyphicon-ok"></span> La comunicación ha sido enviada correctamente a siguientes destinatarios:</p>
+            <ul class="list-unstyled">
+                @foreach (var item in destinataries)
+                {
+                    <li> @item.ToString() </li>
+                }
+            </ul>
+            <br />
+            <h1 style="font-size:8em;">&#9786;</h1>
             <ul class="list-unstyled">
                 <li>¿Qué hacer a continuación?</li>
                 <li><p></p></li>

@@ -95,7 +95,14 @@ namespace ProyectoFinal.Controllers
                 if (ModelState.IsValid)
                 {
                     IEnumerable<String> emails = this.FindDestinatariesByCategory(model);
+                    Session["DestinatariesEmails"] = emails;
                     String template = Session["FinalTemplate"].ToString();
+
+                    if (emails.Count() == 0)
+                    {
+                        return Json(new { Result = "NOOK_EMPTY", Redirect = string.Empty, Error = "El grupo seleccionado aún no posee destinatarios", Description = string.Empty });
+                    }
+
                     if (!String.IsNullOrEmpty(template))
                     {
                         SendGridMailing sg = new SendGridMailing();
