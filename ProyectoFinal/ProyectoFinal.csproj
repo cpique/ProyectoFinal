@@ -243,6 +243,10 @@
     <Content Include="Images\help\index02.jpg" />
     <Content Include="Images\help\index03.jpg" />
     <Content Include="Images\help\index04.jpg" />
+    <Content Include="Images\help\index05.JPG" />
+    <Content Include="Images\help\index06.JPG" />
+    <Content Include="Images\help\index07.JPG" />
+    <Content Include="Images\help\index08.JPG" />
     <Content Include="Images\icons\1.JPG" />
     <Content Include="Images\icons\10.JPG" />
     <Content Include="Images\icons\11.JPG" />
