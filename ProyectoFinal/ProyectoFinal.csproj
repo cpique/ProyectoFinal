@@ -271,7 +271,6 @@
     <Content Include="Scripts\forViews\Activities_Catalog.js" />
     <Content Include="Scripts\forViews\Emails_Destinatarios.js" />
     <Content Include="Scripts\forViews\Emails_Index.js" />
-    <Content Include="Scripts\forViews\Help_All.js" />
     <Content Include="Scripts\forViews\PaymentTypes_Catalog.js" />
     <Content Include="Scripts\forViews\Statistics_Index.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
