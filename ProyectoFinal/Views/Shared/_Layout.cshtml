@@ -86,6 +86,27 @@
                             </ul>
                         </li>
                     }
+
+                    @*Manejo de Pagina de ayuda*@
+                    @if (Session["Role"] != null && Session["User"] != null && Session["Role"].ToString() == "Admin")
+                    {
+                        <li>@Html.ActionLink("Ayuda", "Admins", "Help", null, null)</li> 
+                    }
+                    else if (Session["Role"] != null && Session["User"] != null && Session["Role"].ToString() == "Instructor")
+                    {
+                        <li>@Html.ActionLink("Ayuda", "Profesores", "Help", null, null)</li>
+                    }
+                    else if (Session["Role"] != null && Session["User"] != null && Session["Role"].ToString() == "Client")
+                    {
+                        <li>@Html.ActionLink("Ayuda", "Socios", "Help", null, null)</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Ayuda", "Index", "Help", null, null)</li>
+                    }
+                    @*Manejo de Pagina de ayuda*@
+
+
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
