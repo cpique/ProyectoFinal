@@ -1,111 +1,88 @@
-﻿@model PagedList.IPagedList<ProyectoFinal.Models.File>
+﻿@model IEnumerable<ProyectoFinal.Models.File>
 @using PagedList.Mvc;
 @using ProyectoFinal.Utils
 @{
     ViewBag.Title = "Index";
+    var routineID = (int)Session["RoutineID"];
 }
+@Html.Hidden("RoutineID", routineID, null);
 
+<link rel="stylesheet" type="text/css" href="~/Content/routine.css" />
 
-
-<h2>Ejercicios</h2>
-<p>
-    @Html.ActionLink("Crea nuevo ejercicio", "Create", new { id = Model.FirstOrDefault().RoutineID })
-</p>
-<hr />
 <div class="container">
-    @using (Html.BeginForm("Index", "Files", FormMethod.Get, new { @class = "form-horizontal" }))
-    {
-        <div class="form-group">
-            <label class="control-label col-xs-12 col-sm-3 col-md-4 col-lg-2" for="email">Buscar por ejercicio:</label>
-            <div class="col-xs-6 col-sm-3 col-md-4 col-lg-3">
-                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control text-box single-line" })
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-                <input type="submit" class="btn btn-default" value="Buscar" />
-            </div>
-        </div>
-    }
-</div>
+    <h1>Personaliza tu rutina</h1>
+    <p>
+        Elige los ejercicios que creas convenientes según tus disponibilidad horaria y nivel de experiencia. Puedes agregar, quitar y ordenar los elementos a tu gusto.
+        Una vez que finalices, presiona <strong>Confirmar</strong> para guardar tus cambios. También puedes descargar tu rutina con el botón <strong>Descargar</strong>.
+    </p>
 
-<div class="table-responsive">
-    <table class="table table-striped">
-        <tr class="success">
-            <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().Routine.NameFile).ToHtmlString(),
-                                                      "Index",
-                                                      new { sortOrder = ViewBag.RoutineNameSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
-            </th>
-            <th>
-                @Html.ActionLink("Día",
-                                 "Index",
-                                 new { sortOrder = ViewBag.DayParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
-            </th>
-            <th>
-                @Html.ActionLink("Músculo",
-                                 "Index",
-                                 new { sortOrder = ViewBag.MuscleSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
-            </th>
-            <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().ExerciseName).ToHtmlString(),
-                                                      "Index",
-                                                      new { sortOrder = ViewBag.ExerciseSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
-            </th>
-            <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().Peso).ToHtmlString(),
-                                                      "Index",
-                                                      new { sortOrder = ViewBag.PesoSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
-            </th>
-            <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().Repetitions).ToHtmlString(),
-                                                      "Index",
-                                                      new { sortOrder = ViewBag.Repetitions, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
-            </th>
-            <th>Acciones</th>
-        </tr>
+    <ul>
+        <li><strong>Nombre rutina:</strong> @ViewBag.RoutineName</li>
+        <li><strong>Descripción:</strong> @ViewBag.Description</li>
+    </ul>
 
-        @foreach (var item in Model)
-        {
+    <div id="table" class="table-editable">
+        <span title="Agregar registro" class="table-add glyphicon glyphicon-plus"></span>
+        <table class="table">
             <tr>
+                <th data-json="Day">Día</th>
+                <th data-json="MuscleName">Músculo</th>
+                <th data-json="ExerciseName">Ejercicio</th>
+                <th data-json="Peso">Peso</th>
+                <th data-json="Repetitions">Series</th>
+                <th data-json="RoutineID" class="hidden"></th>
+                <th></th>
+                <th></th>
+            </tr>
+            
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td spellcheck="false" contenteditable="true">@item.Day</td>
+                    <td spellcheck="false" contenteditable="true">@item.MuscleName</td>
+                    <td spellcheck="false" contenteditable="true">@item.ExerciseName</td>
+                    <td spellcheck="false" contenteditable="true">@item.Peso</td>
+                    <td spellcheck="false" contenteditable="true">@item.Repetitions</td>
+                    <td>
+                        <span title="Quitar registro" class="table-remove glyphicon glyphicon-remove"></span>
+                    </td>
+                    <td>
+                        <span title="Subir un nivel" class="table-up glyphicon glyphicon-arrow-up"></span>
+                        <span title="Bajar un nivel" class="table-down glyphicon glyphicon-arrow-down"></span>
+                    </td>
+                </tr>
+            }
+                    
+            <!-- This is our clonable table line -->
+            <tr class="hide">
+                <td spellcheck="false" contenteditable="true">Ingrese valor</td>
+                <td spellcheck="false" contenteditable="true">Ingrese valor</td>
+                <td spellcheck="false" contenteditable="true">Ingrese valor</td>
+                <td spellcheck="false" contenteditable="true">Ingrese valor</td>
+                <td spellcheck="false" contenteditable="true">Ingrese valor</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Routine.NameFile)
+                    <span class="table-remove glyphicon glyphicon-remove"></span>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Day)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MuscleName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ExerciseName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Peso)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Repetitions)
-                </td>
-                <td>
-                    <a href="@Url.Action("Details", "Files", new { id = item.FileID })" class="btn btn-primary btn-sm" title="Detalles">
-                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                    </a>
-                    <a href="@Url.Action("Edit", "Files", new { id = item.FileID })" class="btn btn-warning btn-sm" title="Editar">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                    </a>
-                    <a href="@Url.Action("Delete", "Files", new { id = item.FileID })" class="btn btn-danger btn-sm" title="Borrar">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    </a>
+                    <span class="table-up glyphicon glyphicon-arrow-up"></span>
+                    <span class="table-down glyphicon glyphicon-arrow-down"></span>
                 </td>
             </tr>
-        }
+        </table>
+    </div>
 
-    </table>
+    <button id="export-btn" class="btn btn-primary">Confirmar</button> <span id="export"></span>
 </div>
-Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
 
-@Html.PagedListPager(Model, page => Url.Action("Index",
-    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 <br />
-@Html.ActionLink("Generar PDF", "GeneratePDF", new { id = Model.FirstOrDefault().RoutineID }, new { target = "_blank" })
+<hr />
+<h3>Personaliza tu rutina</h3>
+<p>
+    Descarga tu rutina para tenerla a mano cuando lo necesites
+</p>
+@Html.ActionLink("Descargar", "GeneratePDF", new { id = routineID }, new { @class = "btn btn-primary", target = "_blank" })
+
+<script src="~/Scripts/forViews/Files_Index.js"></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

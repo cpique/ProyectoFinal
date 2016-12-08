@@ -10,6 +10,7 @@ namespace ProyectoFinal.Models.Repositories
     {
         IEnumerable<Routine> GetRoutines();
         Routine GetRoutineByID(int routineID);
+        IEnumerable<Routine> GetRoutinesByClientID(int clientID);
         void InsertRoutine(Routine routine);
         void DeleteRoutine(int routineID);
         void UpdateRoutine(Routine routine);

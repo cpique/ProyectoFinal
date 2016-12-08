@@ -36,10 +36,24 @@ namespace ProyectoFinal.Models.Repositories
             context.Files.Add(file);
         }
 
+        public void InsertListOfFiles(List<File> files)
+        {
+            context.Files.AddRange(files);
+        }
+
         public void DeleteFile(int id)
         {
             File file = context.Files.Find(id);
             context.Files.Remove(file);
+        }
+
+        public void DeleteFilesByRoutineID(int routineID)
+        {
+            List<File> files = context.Files.Where(f => f.RoutineID == routineID).ToList();
+            foreach (var file in files)
+            {
+                context.Files.Remove(file);
+            }
         }
 
         public void Save()

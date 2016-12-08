@@ -14,7 +14,7 @@ using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
-    [AuthorizationPrivilege(Role = "Admin")]
+    [AuthorizationPrivilege(Role = "Admin", OtherRole = "Client")]
     [HandleError()]
     public class RoutinesController : Controller
     {
@@ -52,7 +52,9 @@ namespace ProyectoFinal.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var routines = routineRepository.GetRoutines();
+            Client currentClient = (Client)Session["User"]; 
+
+            var routines = (Session["Role"].ToString() == "Admin") ? routineRepository.GetRoutines() : routineRepository.GetRoutinesByClientID(currentClient.ClientID);
 
             #region search
 

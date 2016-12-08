@@ -87,6 +87,13 @@
                         </li>
                     }
 
+                    @*Manejo paginas socio con mismo nivel de acceso que admin*@
+                    @if (Session["Role"] != null && Session["User"] != null && Session["Role"].ToString() == "Client")
+                    {
+                        <li>@Html.ActionLink("Rutinas", "Index", "Routines", null, null)</li>
+                    }
+                    @*Manejo paginas socio con mismo nivel de acceso que admin*@
+
                     @*Manejo paginas profesor con mismo nivel de acceso que admin*@
                     @if (Session["Role"] != null && Session["User"] != null && Session["Role"].ToString() == "Instructor")
                     {

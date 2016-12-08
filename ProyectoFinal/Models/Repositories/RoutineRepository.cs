@@ -31,6 +31,11 @@ namespace ProyectoFinal.Models.Repositories
             return context.Routines.Include(r => r.Client).Where(r => r.RoutineID == id).FirstOrDefault();
         }
 
+        public IEnumerable<Routine> GetRoutinesByClientID(int clientID)
+        {
+            return context.Routines.Include(r => r.Client).Where(r => r.ClientID == clientID).ToList();
+        }
+
         public void InsertRoutine(Routine routine)
         {
             context.Routines.Add(routine);

@@ -55,12 +55,12 @@
                                 new { sortOrder = ViewBag.StatusSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().CreationDate).ToHtmlString(),
+                @Html.ActionLink("Fecha",
                                 "Index",
                                 new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
             <th>
-                @Html.ActionLink(@Html.DisplayNameFor(model => model.FirstOrDefault().DaysInWeek).ToHtmlString(),
+                @Html.ActionLink("Dias",
                                 "Index",
                                 new { sortOrder = ViewBag.DaysSortParm, currentFilter = ViewBag.CurrentFilter }) <span class="glyphicon glyphicon-sort"></span>
             </th>
