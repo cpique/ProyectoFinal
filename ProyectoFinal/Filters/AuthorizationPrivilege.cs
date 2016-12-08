@@ -11,11 +11,17 @@ namespace ProyectoFinal.Filters
     public class AuthorizationPrivilege : ActionFilterAttribute
     {
         public string Role { get; set; }
+        public string OtherRole { get; set; }
         public const string USER = "UserName";
         public const string ROLE = "Role";
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            if (string.IsNullOrEmpty(this.OtherRole))
+            {
+                this.OtherRole = string.Empty;
+            }
+
             string userName = GetValue(context, USER);
             string userRole = GetValue(context, ROLE);
             var controllerRequested = context.RouteData.Values["controller"].ToString();
@@ -23,11 +29,11 @@ namespace ProyectoFinal.Filters
             RouteValueDictionary routeValueDictionaryForIndex = new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } }; //Logged user but different role. No permission
             context.HttpContext.Session.Add("ReturnURL", controllerRequested);
 
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userRole) || string.IsNullOrEmpty(this.Role))
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userRole))
             {
                 context.Result = new RedirectToRouteResult(routeValueDictionaryForLogin);
             }
-            else if (userRole != this.Role)
+            else if (userRole != this.Role && userRole != this.OtherRole)
             {
                 context.Result = new RedirectToRouteResult(routeValueDictionaryForIndex);
             }

@@ -13,6 +13,7 @@ using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
+    [HandleError()]
     public class ActivitySchedulesController : Controller
     {
         #region Properties

@@ -87,6 +87,14 @@
                         </li>
                     }
 
+                    @*Manejo paginas profesor con mismo nivel de acceso que admin*@
+                    @if (Session["Role"] != null && Session["User"] != null && Session["Role"].ToString() == "Instructor")
+                    {
+                        <li>@Html.ActionLink("Clientes", "Index", "Clients", null, null)</li>
+                                            <li>@Html.ActionLink("Comunicaciones", "Index", "Emails", null, null)</li>
+                    }
+                    @*Manejo paginas profesor con mismo nivel de acceso que admin*@
+
                     @*Manejo de Pagina de ayuda*@
                     @if (Session["Role"] != null && Session["User"] != null && Session["Role"].ToString() == "Admin")
                     {
@@ -105,8 +113,6 @@
                         <li>@Html.ActionLink("Ayuda", "Index", "Help", null, null)</li>
                     }
                     @*Manejo de Pagina de ayuda*@
-
-
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

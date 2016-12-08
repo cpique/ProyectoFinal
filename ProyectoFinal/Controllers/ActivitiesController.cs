@@ -14,7 +14,7 @@ using PagedList;
 
 namespace ProyectoFinal.Controllers
 {
-
+    [HandleError()]
     public class ActivitiesController : Controller
     {
         #region Properties

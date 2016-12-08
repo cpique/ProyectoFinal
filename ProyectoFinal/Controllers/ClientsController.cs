@@ -17,7 +17,7 @@ using API.Services;
 
 namespace ProyectoFinal.Controllers
 {
-    [AuthorizationPrivilege(Role = "Admin")]
+    [AuthorizationPrivilege(Role = "Admin", OtherRole = "Instructor")]
     [HandleError()]
     public class ClientsController : Controller
     {

@@ -238,6 +238,8 @@
     <Content Include="Images\08.jpg" />
     <Content Include="Images\09.jpg" />
     <Content Include="Images\10.jpg" />
+    <Content Include="Images\error\404error.jpg" />
+    <Content Include="Images\error\500error.jpg" />
     <Content Include="Images\help\index00.jpg" />
     <Content Include="Images\help\index01.jpg" />
     <Content Include="Images\help\index02.jpg" />

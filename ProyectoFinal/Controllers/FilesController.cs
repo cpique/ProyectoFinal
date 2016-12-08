@@ -17,6 +17,7 @@ using System.Web.Helpers;
 
 namespace ProyectoFinal.Controllers
 {
+    [HandleError()]
     public class FilesController : Controller
     {
         #region Properties
