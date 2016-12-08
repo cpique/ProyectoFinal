@@ -73,19 +73,19 @@ var Config = {
         if (response.Result = "OK") {
             $EXPORT.text('¡Sus cambios se han guardado exitosamente!')
                    .removeClass('text-danger').addClass('text-success')
-                   .fadeOut(9000);
+                   .fadeIn(400).fadeOut(9000);
         }
         else {
             $EXPORT.text('Ha surgido un error en el guardado. Intenta más tarde.')
                 .removeClass('text-success').addClass('text-danger')
-                .fadeOut(9000);
+                .fadeIn(400).fadeOut(9000);
         }
     },
 
     errorCallBack: function (xhr, textStatus, errorThrown) {
         $EXPORT.text('Ha surgido un error en el guardado. Intenta más tarde.')
                .removeClass('text-success').addClass('text-danger')
-               .fadeOut(9000);
+               .fadeIn(400).fadeOut(9000);
     },
 
     buildData: function (data) {
